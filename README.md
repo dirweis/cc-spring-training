@@ -14,3 +14,8 @@ Quality driven software development training on a Spring Boot example including 
      - **Warning** Don't use Lombok annotations without knowing what you do! Before using `@Data`, `@Value` better think about it!
 - Included the Spring Dev Tools
      - **Warning** Don't forget to set the Spring parameter `spring.mvc.log-resolved-exception = true`
+
+##### Step 3
+- (Re)Wrote the JavaDoc
+- Automated the JavaDoc generation in the Maven build
+- Enriched the `pom.xml` with developer information
