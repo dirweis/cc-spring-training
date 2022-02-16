@@ -3,18 +3,18 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.6.3</version>
+	</parent>
+
 	<groupId>de.infoteam</groupId>
 	<artifactId>petshop-service</artifactId>
+	<version>1.0.0</version>
 	<packaging>jar</packaging>
 
 	<name>petshop-service</name>
-	<version>1.0.0</version>
-
-	<properties>
-		<java.version>16</java.version>
-		<maven.compiler.source>${java.version}</maven.compiler.source>
-		<maven.compiler.target>${java.version}</maven.compiler.target>
-	</properties>
 
 	<developers>
 		<developer>
@@ -24,11 +24,11 @@
 		</developer>
 	</developers>
 
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.6.3</version>
-	</parent>
+	<properties>
+		<java.version>16</java.version>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+	</properties>
 
 	<dependencies>
 		<!-- Spring dependencies -->

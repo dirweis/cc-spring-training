@@ -1,7 +1,7 @@
 # cc-spring-training
 Quality driven software development training on a Spring Boot example including Quarkus migration.
 
-#### This branch contains the Result of Step 1, 2, 3
+#### This branch contains the Result of Step 1, 2, 3, 4
 ##### Step 1
 - Removed unnecessary classes
 - Removed further unnecessary code
@@ -19,3 +19,8 @@ Quality driven software development training on a Spring Boot example including 
 - (Re)Wrote the JavaDoc
 - Automated the JavaDoc generation in the Maven build
 - Enriched the `pom.xml` with developer information
+
+##### Step 4
+- Using Sonar
+- Activated nearly all Sonar rules
+- Killed 2 Sonar Issues
