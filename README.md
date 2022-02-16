@@ -1,7 +1,7 @@
 # cc-spring-training
 Quality driven software development training on a Spring Boot example including Quarkus migration.
 
-#### This branch contains the Result of Step 1, 2
+#### This branch contains the Result of Step 1, 2, 3
 ##### Step 1
 - Removed unnecessary classes
 - Removed further unnecessary code
