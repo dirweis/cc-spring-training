@@ -21,15 +21,16 @@ import lombok.NoArgsConstructor;
  * Example output:
  * 
  * <pre>
- * {
- *	"type": "/petstore/petservice/v1/pets",
- *	"title": "Request method 'GET' not supported",
- *	"instance": "c8ae7b1e-e122-4c68-8b6d-2c6823655af0"
- * }
+ {
+    "type": "/petstore/petservice/v1/pets",
+    "title": "Request method 'DELETE' not supported",
+    "instance": "urn:ERROR:51dda052-32cd-4b75-b88f-e8780b34aff3",
+    "detail": "Supported method(s): [GET, POST]"
+ }
  * </pre>
  * 
  * @author Dirk Weissmann
- * @since 2021-10-22
+ * @since 2022-02-17
  * @version 1.0
  *
  */
