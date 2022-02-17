@@ -1,7 +1,7 @@
 # cc-spring-training
 Quality driven software development training on a Spring Boot example including Quarkus migration.
 
-#### This branch contains the Result of Step 1, 2, 3, 4, 5
+#### This branch contains the Result of Step 1, 2, 3, 4, 5, 6
 ##### Step 1
 - Removed unnecessary classes
 - Removed further unnecessary code
@@ -32,3 +32,8 @@ Quality driven software development training on a Spring Boot example including 
  - Added the `@Service` bean `ErrorService` for general error handling
  - Added configuration parameters to `application.yml`
  - Added `@Configuration` bean for enabling case insensitivity for the `PetStatus` enumeration in path query parameters
+
+##### Step 6
+ - Implemented own annotations for validating with `ConstraintValidator` implementations
+     - Implemented the annotation `MultipleOf` as the REST constraint
+     - Implemented the annotation `PetIdNull` as a special checker

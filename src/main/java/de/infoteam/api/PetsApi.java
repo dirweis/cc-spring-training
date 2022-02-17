@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import de.infoteam.annotation.MultipleOf;
+import de.infoteam.annotation.PetIdNull;
 import de.infoteam.model.Pet;
 import de.infoteam.model.Pet.PetStatus;
 
@@ -37,7 +39,7 @@ import de.infoteam.model.Pet.PetStatus;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-15
- * @version 1.0
+ * @version 1.1
  * @see Pet
  *
  */
@@ -72,7 +74,7 @@ interface PetsApi {
 	 *         </dl>
 	 */
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<Void> addPet(@Valid @RequestBody final Pet pet);
+	ResponseEntity<Void> addPet(@Valid @RequestBody @PetIdNull final Pet pet);
 
 	/**
 	 * <code>DELETE /pets/{petId\}</code>: Deletes a pet resource from the store.
@@ -134,7 +136,7 @@ interface PetsApi {
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	ResponseEntity<List<Pet>> findPetsRestrictedByParameters(
 			@Min(0) @RequestParam(required = false, defaultValue = "0") Integer page,
-			@Min(10) @Max(1_000) @RequestParam(required = false, defaultValue = "20") Integer size,
+			@Min(10) @Max(1_000) @MultipleOf(10) @RequestParam(required = false, defaultValue = "20") Integer size,
 			@RequestParam(required = false) List<@Size(min = 3, max = 20) String> tags,
 			@RequestParam(required = false) Pet.PetStatus status);
 
