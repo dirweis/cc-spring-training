@@ -39,7 +39,8 @@ final class PetIdNullValidator implements ConstraintValidator<PetIdNull, Pet> {
 	@Override
 	public boolean isValid(final Pet pet, final ConstraintValidatorContext context) {
 		context.disableDefaultConstraintViolation();
-		context.buildConstraintViolationWithTemplate(message).addPropertyNode("semantic").addPropertyNode("id").addConstraintViolation();
+		context.buildConstraintViolationWithTemplate(message).addPropertyNode("semantic").addPropertyNode("id")
+			.addConstraintViolation();
 
 		return pet.id() == null;
 	}
