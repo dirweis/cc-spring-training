@@ -21,8 +21,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @param name        the pet's name, must not be {@code null}
  * @param photoUrls   the {@link List} of {@link URI}s that link to an image, may be {@code null}
  * @param tags        a {@link List} of {@link String}s as tags for the {@link Pet}, may be {@code null}
- * @param status      the {@link Pet}'s status from {@link PetStatus}, must not be {@code null}
- * @param description the description of the {@link Pet}, must not be {@code null}
+ * @param status      the pet's status from {@link PetStatus}, must not be {@code null}
+ * @param description the description of the pet, must not be {@code null}
  */
 public record Pet(UUID id, @NotNull Category category, @NotNull @Size(min = 3, max = 30) String name,
 		@JsonProperty("photo-urls") List<URI> photoUrls, List<@Size(min = 3, max = 20) String> tags,

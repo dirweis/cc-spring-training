@@ -30,7 +30,7 @@ import lombok.NoArgsConstructor;
  * </pre>
  * 
  * @author Dirk Weissmann
- * @since 2021-10-25
+ * @since 2022-02-21
  * @version 1.0
  * @see JsonErrorFactory
  *
@@ -54,7 +54,7 @@ class HttpMessageNotReadableExceptionHandler {
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	private ResponseEntity<Error> handleException(final HttpMessageNotReadableException ex) {
 		final AbstractJsonErrorHandler handler = JsonErrorFactory.getErrorHandler(ex.getMostSpecificCause(),
-				errorService, ex.getLocalizedMessage());
+				errorService);
 
 		return handler.createResponse();
 	}

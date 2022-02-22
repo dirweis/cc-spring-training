@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-17
- * @version 1.0
+ * @version 1.1
  *
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -39,7 +39,8 @@ final class PetIdNullValidator implements ConstraintValidator<PetIdNull, Pet> {
 	@Override
 	public boolean isValid(final Pet pet, final ConstraintValidatorContext context) {
 		context.disableDefaultConstraintViolation();
-		context.buildConstraintViolationWithTemplate(message).addPropertyNode("id").addConstraintViolation();
+		context.buildConstraintViolationWithTemplate(message).addPropertyNode("body").addPropertyNode("id")
+				.addConstraintViolation();
 
 		return pet.id() == null;
 	}

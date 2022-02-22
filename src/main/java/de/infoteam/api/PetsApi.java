@@ -39,7 +39,7 @@ import de.infoteam.model.Pet.PetStatus;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-15
- * @version 1.1
+ * @version 1.2
  * @see Pet
  *
  */
@@ -236,5 +236,6 @@ interface PetsApi {
 	 */
 	@PutMapping(path = "{petId}/image", consumes = { MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_JPEG_VALUE,
 			MediaType.IMAGE_PNG_VALUE })
-	ResponseEntity<Void> uploadFile(@PathVariable UUID petId, @Size(max = 2_000_000) @RequestBody byte[] body);
+	ResponseEntity<Void> uploadFile(@PathVariable UUID petId,
+			@Size(min = 10_000, max = 2_000_000) @RequestBody byte[] body);
 }

@@ -41,7 +41,7 @@ import de.infoteam.service.ErrorService;
  * 
  * @author Dirk Weissmann
  * @since 2021-10-25
- * @version 1.0
+ * @version 1.2
  *
  */
 @Order(4)
@@ -67,15 +67,19 @@ class ConstraintViolationExceptionHandler {
 						.reason(constraintViolation.getMessage()).build())
 				.toList();
 
-		final Error error = errorService.finalizeRfc7807Error("Constraint violations", null, invalidParams);
+		final boolean isSyntacticalViolation = !semanticError(ex);
 
-		final HttpStatus status = semanticError(ex) ? HttpStatus.UNPROCESSABLE_ENTITY : HttpStatus.BAD_REQUEST;
+		final String title = isSyntacticalViolation ? "Constraint violations" : "Request body validation failed";
+
+		final Error error = errorService.finalizeRfc7807Error(title, null, invalidParams);
+
+		final HttpStatus status = isSyntacticalViolation ? HttpStatus.BAD_REQUEST : HttpStatus.UNPROCESSABLE_ENTITY;
 
 		return ResponseEntity.status(status).headers(ErrorService.provideProblemJsonHeader()).body(error);
 	}
 
 	/**
-	 * Checks for an existing {@link Node} named {@code semantic} in the {@link Exception}'s
+	 * Checks for an existing {@link Node} named {@code semantic} or {@code body} in the {@link Exception}'s
 	 * {@link ConstraintViolation}s.
 	 * 
 	 * @param ex the given exception for extracting the {@link ConstraintViolation}s
@@ -86,7 +90,7 @@ class ConstraintViolationExceptionHandler {
 		return ex.getConstraintViolations().stream()
 				.anyMatch((final ConstraintViolation<?> cv) -> StreamSupport
 						.stream(cv.getPropertyPath().spliterator(), false)
-						.anyMatch((final Node node) -> "semantic".equalsIgnoreCase(node.getName())));
+						.anyMatch((final Node node) -> "body".equals(node.getName())));
 	}
 
 	/**
