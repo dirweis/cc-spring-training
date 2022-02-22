@@ -1,7 +1,7 @@
 # cc-spring-training
 Quality driven software development training on a Spring Boot example including Quarkus migration.
 
-#### This branch contains the Result of Step 1, 2, 3, 4, 5, 6
+#### This branch contains the Result of Step 1, 2, 3, 4, 5, 6, 7
 ##### Step 1
 - Removed unnecessary classes
 - Removed further unnecessary code
@@ -37,3 +37,9 @@ Quality driven software development training on a Spring Boot example including 
  - Implemented own annotations for validating with `ConstraintValidator` implementations
      - Implemented the annotation `MultipleOf` as the REST constraint
      - Implemented the annotation `PetIdNull` as a special checker
+
+##### Step 7
+ - Implemented the JUnit integration tests for the Exception Handlers
+ - Implemented the JUnit integration tests for the success cases (very rudimentary)
+ - Implemented the first JUnit test with a mocked controller
+ - Implemented some more JUnit tests for code coverage
