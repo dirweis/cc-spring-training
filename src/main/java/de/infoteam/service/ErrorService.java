@@ -9,8 +9,6 @@ import javax.validation.Valid;
 
 import org.apache.commons.lang3.RegExUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import de.infoteam.model.Error;
@@ -59,19 +57,6 @@ public class ErrorService {
 
 		return Error.builder().type(URI.create(request.getRequestURI())).title(title)
 				.instance(URI.create("urn:ERROR:" + errorId)).detail(detail).invalidParams(invalidParams).build();
-	}
-
-	/**
-	 * Provides the error response content type's header with the value {@code application/problem+json}.
-	 * 
-	 * @return the finalized {@link HttpHeaders} object, never {@code null}
-	 */
-	public static HttpHeaders provideProblemJsonHeader() {
-		final HttpHeaders headers = new HttpHeaders();
-
-		headers.setContentType(MediaType.APPLICATION_PROBLEM_JSON);
-
-		return headers;
 	}
 
 	/**

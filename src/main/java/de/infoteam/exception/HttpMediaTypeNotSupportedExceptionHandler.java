@@ -3,6 +3,7 @@ package de.infoteam.exception;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -30,7 +31,7 @@ import lombok.NoArgsConstructor;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-16
- * @version 1.0
+ * @version 1.1
  * @see <a href="https://github.com/spring-projects/spring-framework/issues/28062">HttpMediaTypeNotSupportedException
  *      getSupportedMediaTypes() fails for unknown values in Content-Type header</a>
  */
@@ -58,7 +59,7 @@ class HttpMediaTypeNotSupportedExceptionHandler {
 		final Error error = errorService.finalizeRfc7807Error(title,
 				"Supported media type(s): " + ex.getSupportedMediaTypes(), null);
 
-		return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).headers(ErrorService.provideProblemJsonHeader())
+		return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).contentType(MediaType.APPLICATION_PROBLEM_JSON)
 				.body(error);
 	}
 }

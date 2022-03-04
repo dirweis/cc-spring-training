@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import de.infoteam.model.Error;
@@ -16,7 +17,7 @@ import de.infoteam.service.ErrorService;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-17
- * @version 1.0
+ * @version 1.1
  *
  */
 public abstract class AbstractJsonErrorHandler {
@@ -49,7 +50,7 @@ public abstract class AbstractJsonErrorHandler {
 
 		final Error error = errorService.finalizeRfc7807Error("JSON Parse Error", detail, null);
 
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).headers(ErrorService.provideProblemJsonHeader())
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_PROBLEM_JSON)
 				.body(error);
 	}
 

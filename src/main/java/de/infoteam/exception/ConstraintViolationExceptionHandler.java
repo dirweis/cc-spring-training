@@ -11,6 +11,7 @@ import javax.validation.Path.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -41,7 +42,7 @@ import de.infoteam.service.ErrorService;
  * 
  * @author Dirk Weissmann
  * @since 2021-10-25
- * @version 1.2
+ * @version 1.3
  *
  */
 @Order(4)
@@ -75,7 +76,7 @@ class ConstraintViolationExceptionHandler {
 
 		final HttpStatus status = isSyntacticalViolation ? HttpStatus.BAD_REQUEST : HttpStatus.UNPROCESSABLE_ENTITY;
 
-		return ResponseEntity.status(status).headers(ErrorService.provideProblemJsonHeader()).body(error);
+		return ResponseEntity.status(status).contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
 	}
 
 	/**
