@@ -5,7 +5,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.Test;
@@ -16,6 +15,8 @@ import org.springframework.http.MediaType;
 import de.infoteam.AbstractSpringTestRunner;
 import de.infoteam.model.Error;
 import de.infoteam.model.Pet;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 
 /**
@@ -23,9 +24,10 @@ import lombok.SneakyThrows;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-22
- * @version 0.1
+ * @version 0.2
  *
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 class MockedControllerTest extends AbstractSpringTestRunner {
 
 	@MockBean
@@ -45,8 +47,7 @@ class MockedControllerTest extends AbstractSpringTestRunner {
 
 		mockMvc.perform(post(EndPointPrefix).contentType(MediaType.APPLICATION_JSON_VALUE).content(validPetBody))
 				.andExpect(status().isInternalServerError())
-				.andExpect(header().string("Content-Type", MediaType.APPLICATION_PROBLEM_JSON_VALUE))
-				.andExpect(content()
+				.andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE)).andExpect(content()
 						.string(containsString("\"title\":\"Internal problem. Please contact the support.\"")));
 	}
 }

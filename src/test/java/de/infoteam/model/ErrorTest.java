@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import de.infoteam.model.Error.ErrorBuilder;
 import de.infoteam.model.Error.InvalidParam;
 import de.infoteam.model.Error.InvalidParam.InvalidParamBuilder;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
  * Supplementary tests for the {@link ErrorBuilder}'s {@link ErrorBuilder#toString() toString} method for the sake of
@@ -17,9 +19,10 @@ import de.infoteam.model.Error.InvalidParam.InvalidParamBuilder;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-22
- * @version 1.0
+ * @version 1.1
  *
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 class ErrorTest {
 
 	/**

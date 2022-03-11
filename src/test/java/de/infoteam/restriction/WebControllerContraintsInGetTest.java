@@ -5,7 +5,6 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import javax.validation.ConstraintViolationException;
@@ -22,6 +21,8 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import de.infoteam.AbstractSpringTestRunner;
 import de.infoteam.model.Pet;
 import de.infoteam.model.Pet.PetStatus;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 
 /**
@@ -30,9 +31,10 @@ import lombok.SneakyThrows;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-21
- * @version 1.0
+ * @version 1.1
  *
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
 
 	/**
@@ -55,7 +57,7 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
 		@DisplayName("on the wrong HTTP method POST THEN respond with status 405 AND content type application/problem+json AND the expected response body")
 		void testCallGetWithWrongHttpMethodAndExpect405() {
 			mockMvc.perform(post(EndPointWithTestId)).andExpect(status().isMethodNotAllowed())
-					.andExpect(header().string("Content-Type", MediaType.APPLICATION_PROBLEM_JSON_VALUE))
+					.andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
 					.andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
 							.isInstanceOf(HttpRequestMethodNotSupportedException.class))
 					.andExpect(content().string(containsString("\"title\":\"Request method 'POST' not supported\"")))
@@ -71,7 +73,7 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
 		@DisplayName("with the pet ID is in the wrong format THEN respond with status 400 AND content type application/problem+json AND the expected response body")
 		void testCallGetWithWrongIdFormatAndExpect400() {
 			mockMvc.perform(get(EndPointPrefix + "/1")).andExpect(status().isBadRequest())
-					.andExpect(header().string("Content-Type", MediaType.APPLICATION_PROBLEM_JSON_VALUE))
+					.andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
 					.andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
 							.isInstanceOf(MethodArgumentTypeMismatchException.class))
 					.andExpect(content().string(containsString(
@@ -111,7 +113,7 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
 		@DisplayName("with a not acceptable page integer value THEN respond with status 400 AND content type application/problem+json AND the expected response body")
 		void testCallGetWithInacceptablePageIntValue() {
 			mockMvc.perform(get(EndPointPrefix + "?page=-1")).andExpect(status().isBadRequest())
-					.andExpect(header().string("Content-Type", MediaType.APPLICATION_PROBLEM_JSON_VALUE))
+					.andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
 					.andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
 							.isInstanceOf(ConstraintViolationException.class))
 					.andExpect(content().string(containsString("\"title\":\"Constraint violations")))
@@ -128,7 +130,7 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
 		@DisplayName("with a not acceptable page string value THEN respond with status 400 AND content type application/problem+json AND the expected response body")
 		void testCallGetWithInacceptablePageStringValue() {
 			mockMvc.perform(get(EndPointPrefix + "?page=m")).andExpect(status().isBadRequest())
-					.andExpect(header().string("Content-Type", MediaType.APPLICATION_PROBLEM_JSON_VALUE))
+					.andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
 					.andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
 							.isInstanceOf(MethodArgumentTypeMismatchException.class))
 					.andExpect(content().string(containsString(
@@ -145,7 +147,7 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
 		@DisplayName("with a size value that is too low THEN respond with status 400 AND content type application/problem+json AND the expected response body")
 		void testCallGetWithTooLowSizeIntValue() {
 			mockMvc.perform(get(EndPointPrefix + "?size=-1")).andExpect(status().isBadRequest())
-					.andExpect(header().string("Content-Type", MediaType.APPLICATION_PROBLEM_JSON_VALUE))
+					.andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
 					.andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
 							.isInstanceOf(ConstraintViolationException.class))
 					.andExpect(content().string(containsString("\"title\":\"Constraint violations")))
@@ -163,7 +165,7 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
 		@DisplayName("with a size value that is too high THEN respond with status 400 AND content type application/problem+json AND the expected response body")
 		void testCallGetWithTooHighSizeIntValue() {
 			mockMvc.perform(get(EndPointPrefix + "?size=999999")).andExpect(status().isBadRequest())
-					.andExpect(header().string("Content-Type", MediaType.APPLICATION_PROBLEM_JSON_VALUE))
+					.andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
 					.andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
 							.isInstanceOf(ConstraintViolationException.class))
 					.andExpect(content().string(containsString("\"title\":\"Constraint violations")))
@@ -180,7 +182,7 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
 		@DisplayName("with a not acceptable size string value THEN respond with status 400 AND content type application/problem+json AND the expected response body")
 		void testCallGetWithInacceptableSizeStringValue() {
 			mockMvc.perform(get(EndPointPrefix + "?size=k")).andExpect(status().isBadRequest())
-					.andExpect(header().string("Content-Type", MediaType.APPLICATION_PROBLEM_JSON_VALUE))
+					.andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
 					.andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
 							.isInstanceOf(MethodArgumentTypeMismatchException.class))
 					.andExpect(content().string(containsString(
@@ -198,7 +200,7 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
 		@DisplayName("with a not acceptable status value THEN respond with status 400 AND content type application/problem+json AND the expected response body")
 		void testCallGetWithInacceptableStatusValue() {
 			mockMvc.perform(get(EndPointPrefix + "?status=k")).andExpect(status().isBadRequest())
-					.andExpect(header().string("Content-Type", MediaType.APPLICATION_PROBLEM_JSON_VALUE))
+					.andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
 					.andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
 							.isInstanceOf(MethodArgumentTypeMismatchException.class))
 					.andExpect(content().string(containsString(
@@ -215,7 +217,7 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
 		@DisplayName("with a not acceptable value for a tag THEN respond with status 400 AND content type application/problem+json AND the expected response body")
 		void testCallGetWithInacceptableTagsValue() {
 			mockMvc.perform(get(EndPointPrefix + "?tags=lovely,m")).andExpect(status().isBadRequest())
-					.andExpect(header().string("Content-Type", MediaType.APPLICATION_PROBLEM_JSON_VALUE))
+					.andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
 					.andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
 							.isInstanceOf(ConstraintViolationException.class))
 					.andExpect(content().string(containsString("\"title\":\"Constraint violations")))

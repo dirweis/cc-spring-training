@@ -7,6 +7,8 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
 import de.infoteam.model.Pet.PetStatus;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
  * The tests (especially in respect to code coverage) for the {@link Pet} resource that are not covered from integration
@@ -14,9 +16,10 @@ import de.infoteam.model.Pet.PetStatus;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-21
- * @version 1.0
+ * @version 1.1
  *
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 class PetTest {
 
 	/**

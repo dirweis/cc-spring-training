@@ -14,6 +14,8 @@ import org.springframework.util.ResourceUtils;
 
 import de.infoteam.AbstractSpringTestRunner;
 import de.infoteam.model.Pet;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 
 /**
@@ -21,9 +23,10 @@ import lombok.SneakyThrows;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-21
- * @version 0.1
+ * @version 0.2
  *
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 class WebControllerPutTest extends AbstractSpringTestRunner {
 
 	/**

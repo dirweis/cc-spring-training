@@ -36,7 +36,7 @@ import lombok.AllArgsConstructor;
  * 
  * @author Dirk Weissmann
  * @since 2021-10-25
- * @version 1.1
+ * @version 1.2
  *
  */
 @AllArgsConstructor
@@ -74,8 +74,8 @@ class JsonMismatchHandler extends AbstractJsonErrorHandler {
 		final List<String> invalidParamNameParts = ex.getPath().stream().map(Reference::getFieldName).toList();
 
 		final String invalidParamName = String.join(".", invalidParamNameParts);
-		final String reasonString = cleanExMsg(ex.getLocalizedMessage());
-		final String reason = ErrorService.removePackageInformation(reasonString).trim();
+		final String reasonString = ErrorService.removePackageInformation(ex.getLocalizedMessage()).trim();
+		final String reason = cleanExMsg(reasonString);
 
 		final InvalidParam invalidParam = InvalidParam.builder().name(invalidParamName).reason(reason).build();
 

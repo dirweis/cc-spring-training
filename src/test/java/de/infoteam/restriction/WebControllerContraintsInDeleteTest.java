@@ -5,7 +5,6 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.DisplayName;
@@ -17,6 +16,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import de.infoteam.AbstractSpringTestRunner;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 
 /**
@@ -25,9 +26,10 @@ import lombok.SneakyThrows;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-22
- * @version 1.0
+ * @version 1.1
  *
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 class WebControllerContraintsInDeleteTest extends AbstractSpringTestRunner {
 
 	/**
@@ -38,7 +40,7 @@ class WebControllerContraintsInDeleteTest extends AbstractSpringTestRunner {
 	@DisplayName("WHEN the DELETE endpoint is called with a wrong HTTP method THEN respond with status 405 AND content type application/problem+json AND the expected response body")
 	void testWrongHttpMethodAndExpect405() {
 		mockMvc.perform(post(EndPointWithTestId)).andExpect(status().isMethodNotAllowed())
-				.andExpect(header().string("Content-Type", MediaType.APPLICATION_PROBLEM_JSON_VALUE))
+				.andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
 				.andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
 						.isInstanceOf(HttpRequestMethodNotSupportedException.class))
 				.andExpect(content().string(containsString("\"title\":\"Request method 'POST' not supported\"")))
@@ -53,7 +55,7 @@ class WebControllerContraintsInDeleteTest extends AbstractSpringTestRunner {
 	@DisplayName("WHEN the DELETE endpoint is called with an ID that is not well-formed THEN respond with status 400 AND content type application/problem+json AND the expected response body")
 	void testInvalidPetIdAndExpect400() {
 		mockMvc.perform(delete(EndPointPrefix + "/no")).andExpect(status().isBadRequest())
-				.andExpect(header().string("Content-Type", MediaType.APPLICATION_PROBLEM_JSON_VALUE))
+				.andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
 				.andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
 						.isInstanceOf(MethodArgumentTypeMismatchException.class))
 				.andExpect(content().string(containsString(
