@@ -24,12 +24,11 @@ import lombok.Builder;
  * @param instance      a URN carrying the error's ID, must not be {@code null}
  * @param detail        the error's detailed description, a {@link String}, may be {@code null}
  * @param invalidParams in case of parameter violations, this {@link List} is used, may be {@code null}
- * @param timestamp     the error's time stamp, must not be {@code null}
  */
 @Builder
 public record Error(@NotNull URI type, @NotNull @Size(min = 5, max = 50) String title, @NotNull URI instance,
 		@Size(min = 10, max = 200) String detail,
-		@JsonProperty("invalid_params") @Valid List<InvalidParam> invalidParams, @NotNull Long timestamp) {
+		@JsonProperty("invalid_params") @Valid List<InvalidParam> invalidParams) {
 
 	/**
 	 * The record representing an invalid parameter information DTO as part of the {@link Error} DTO.
