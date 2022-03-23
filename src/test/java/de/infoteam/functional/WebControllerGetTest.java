@@ -36,6 +36,7 @@ class WebControllerGetTest extends AbstractSpringTestRunner {
 	 *
 	 */
 	@Nested
+	@DisplayName("WHEN a valid request is sent to the GET endpoint for retrieving several pet resources restricted by")
 	class FindByParametersTest {
 
 		/**
@@ -43,7 +44,7 @@ class WebControllerGetTest extends AbstractSpringTestRunner {
 		 */
 		@Test
 		@SneakyThrows
-		@DisplayName("WHEN a valid request is sent to the GET endpoint for retrieving several pet resources restricted by their status THEN the response status 501 is returned since the endpoint is not yet implemented")
+		@DisplayName("their status THEN the response status 501 is returned since the endpoint is not yet implemented")
 		void testFindPetsRestrictedByStatusSuccessfullyAndExpect501() {
 			mockMvc.perform(get(EndPointPrefix + "?status=available")).andExpect(status().isNotImplemented());
 		}
@@ -54,7 +55,7 @@ class WebControllerGetTest extends AbstractSpringTestRunner {
 		 */
 		@Test
 		@SneakyThrows
-		@DisplayName("WHEN a valid request is sent to the GET endpoint for retrieving several pet resources restricted by the given tags THEN the response status 501 is returned since the endpoint is not yet implemented")
+		@DisplayName("the given tags THEN the response status 501 is returned since the endpoint is not yet implemented")
 		void testFindPetsRestrictedByTagsSuccessfullyAndExpect501() {
 			mockMvc.perform(get(EndPointPrefix + "?tags=nice,lovely")).andExpect(status().isNotImplemented());
 		}
@@ -65,7 +66,7 @@ class WebControllerGetTest extends AbstractSpringTestRunner {
 		 */
 		@Test
 		@SneakyThrows
-		@DisplayName("WHEN a valid request is sent to the GET endpoint for retrieving several pet resources restricted by page and size THEN the response status 501 is returned since the endpoint is not yet implemented")
+		@DisplayName("page and size THEN the response status 501 is returned since the endpoint is not yet implemented")
 		void testFindPetsRestrictedByPageAndSizeSuccessfullyAndExpect501() {
 			mockMvc.perform(get(EndPointPrefix + "?page=1&size=100")).andExpect(status().isNotImplemented());
 		}
