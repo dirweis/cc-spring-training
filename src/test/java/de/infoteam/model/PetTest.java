@@ -38,7 +38,7 @@ class PetTest {
 		assertThat(testPet.tags()).isNull();
 		assertThat(testPet.status()).isEqualTo(PetStatus.AVAILABLE);
 		assertThat(testPet.description()).isEqualTo("description");
-		assertThat(testPet).asString().isEqualTo(
+		assertThat(testPet).hasToString(
 				"Pet[id=6f09a3c7-fdec-4949-9da5-d089f9ccb378, category=null, name=name, photoUrls=null, tags=null, status=AVAILABLE, description=description]");
 	}
 }
