@@ -37,7 +37,8 @@ public @interface MultipleOf {
 	/**
 	 * The annotation's error message, gets set (overwritten) in the implementation.
 	 * <p>
-	 * <i>Don't override the message field! The message gets overwritten in the {@link PetIdNullValidator} anyways.
+	 * <em>Don't override the message field! The message gets overwritten in the {@link PetIdNullValidator}
+	 * anyways.</em>
 	 * 
 	 * @return the default error message: the empty {@link String}
 	 * 
