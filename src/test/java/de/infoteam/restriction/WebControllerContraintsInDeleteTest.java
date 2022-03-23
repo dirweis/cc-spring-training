@@ -30,6 +30,7 @@ import lombok.SneakyThrows;
  *
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@DisplayName("WHEN the DELETE endpoint is called with")
 class WebControllerContraintsInDeleteTest extends AbstractSpringTestRunner {
 
 	/**
@@ -37,7 +38,7 @@ class WebControllerContraintsInDeleteTest extends AbstractSpringTestRunner {
 	 */
 	@Test
 	@SneakyThrows
-	@DisplayName("WHEN the DELETE endpoint is called with a wrong HTTP method THEN respond with status 405 AND content type application/problem+json AND the expected response body")
+	@DisplayName("a wrong HTTP method THEN respond with status 405 AND content type application/problem+json AND the expected response body")
 	void testWrongHttpMethodAndExpect405() {
 		mockMvc.perform(post(EndPointWithTestId)).andExpect(status().isMethodNotAllowed())
 				.andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
@@ -52,7 +53,7 @@ class WebControllerContraintsInDeleteTest extends AbstractSpringTestRunner {
 	 */
 	@Test
 	@SneakyThrows
-	@DisplayName("WHEN the DELETE endpoint is called with an ID that is not well-formed THEN respond with status 400 AND content type application/problem+json AND the expected response body")
+	@DisplayName("an ID that is not well-formed THEN respond with status 400 AND content type application/problem+json AND the expected response body")
 	void testInvalidPetIdAndExpect400() {
 		mockMvc.perform(delete(EndPointPrefix + "/no")).andExpect(status().isBadRequest())
 				.andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
