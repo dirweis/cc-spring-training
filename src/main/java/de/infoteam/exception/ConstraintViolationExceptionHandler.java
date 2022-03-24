@@ -16,9 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import de.infoteam.exception.service.ErrorService;
 import de.infoteam.model.Error;
 import de.infoteam.model.Error.InvalidParam;
-import de.infoteam.service.ErrorService;
 
 /**
  * The {@link ExceptionHandler} implementation for creating {@link Error} response bodies in case of a caught

@@ -24,7 +24,7 @@ import lombok.SneakyThrows;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-21
- * @version 1.0
+ * @version 1.2
  *
  */
 @SpringBootTest
@@ -53,9 +53,14 @@ public class AbstractSpringTestRunner {
 	protected static final String EndPointImageTestId = EndPointWithTestId + "/image";
 
 	/**
-	 * The {@link String} representing a valid request body for the {@link Pet} resource.
+	 * The {@link String} representing a valid maximum request body for the {@link Pet} resource.
 	 */
-	protected static String validPetBody;
+	protected static String validPetBodyWithTags;
+
+	/**
+	 * The {@link String} representing a valid minimum request body for the {@link Pet} resource.
+	 */
+	protected static String validMinimumPetBody;
 
 	/**
 	 * Initializes frequently used objects in the inheriting test classes.
@@ -63,8 +68,12 @@ public class AbstractSpringTestRunner {
 	@BeforeAll
 	@SneakyThrows
 	static void init() {
-		final File contentFile = ResourceUtils.getFile("classpath:valid_pet_body.json");
+		final File contentFileWithTags = ResourceUtils.getFile("classpath:valid_pet_body_max.json");
 
-		validPetBody = Files.contentOf(contentFile, StandardCharsets.UTF_8);
+		validPetBodyWithTags = Files.contentOf(contentFileWithTags, StandardCharsets.UTF_8);
+
+		final File contentFileWithoutTags = ResourceUtils.getFile("classpath:valid_pet_body_min.json");
+
+		validMinimumPetBody = Files.contentOf(contentFileWithoutTags, StandardCharsets.UTF_8);
 	}
 }

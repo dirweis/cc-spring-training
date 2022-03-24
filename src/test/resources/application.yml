@@ -1,0 +1,14 @@
+spring:
+  mvc:
+    log-resolved-exception: true
+  jackson:
+    default-property-inclusion: NON_NULL
+    mapper:
+      accept-case-insensitive-enums: true
+  datasource:
+    url: 'jdbc:h2:mem:testdb;DB_CLOSE_ON_EXIT=FALSE'
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect

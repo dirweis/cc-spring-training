@@ -43,3 +43,11 @@ Quality driven software development training on a Spring Boot example.
  - Implemented the JUnit integration tests for the success cases (very rudimentary)
  - Implemented the first JUnit test with a mocked controller
  - Implemented some more JUnit tests for code coverage
+
+##### Step 8
+ - Refactored the Exception handling in case of JSON parsing errors for showing a different approach
+ - Implemented the database operation for adding a new pet resource
+ - Implemented the annotation `PhotoUrlsNull` as special checker
+ - Introduced `Mapstruct` as mapping framework
+ - Introduced `Spring Data JPA` as database framework
+ - Extended the Unit tests, some of the functional tests are now system tests since they include database transactions

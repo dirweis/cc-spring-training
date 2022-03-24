@@ -3,6 +3,7 @@ package de.infoteam.api;
 import java.util.List;
 import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import de.infoteam.annotation.MultipleOf;
 import de.infoteam.annotation.PetIdNull;
+import de.infoteam.annotation.PhotoUrlsNull;
 import de.infoteam.model.Pet;
 import de.infoteam.model.Pet.PetStatus;
 
@@ -39,7 +41,7 @@ import de.infoteam.model.Pet.PetStatus;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-15
- * @version 1.2
+ * @version 1.3
  * @see Pet
  *
  */
@@ -50,7 +52,8 @@ interface PetsApi {
 	/**
 	 * {@code POST /pets}: Add a new pet to the store.
 	 *
-	 * @param pet the {@link Pet} resource to be added to the store (required)
+	 * @param pet     the {@link Pet} resource to be added to the store (required)
+	 * @param request the {@link HttpServletRequest} for additional meta information in the request
 	 * 
 	 * @return
 	 *         <dl>
@@ -74,7 +77,7 @@ interface PetsApi {
 	 *         </dl>
 	 */
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<Void> addPet(@Valid @RequestBody @PetIdNull final Pet pet);
+	ResponseEntity<Void> addPet(@Valid @RequestBody @PetIdNull @PhotoUrlsNull Pet pet, HttpServletRequest request);
 
 	/**
 	 * <code>DELETE /pets/{petId\}</code>: Deletes a pet resource from the store.
@@ -204,7 +207,7 @@ interface PetsApi {
 	 *         </dl>
 	 */
 	@PutMapping(path = "{petId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<Void> updatePet(@PathVariable UUID petId, @Valid @RequestBody Pet pet);
+	ResponseEntity<Void> updatePet(@PathVariable UUID petId, @Valid @RequestBody @PhotoUrlsNull Pet pet);
 
 	/**
 	 * <code>PUT /pets/{petId}/image</code> Adds an image to the Pet resource

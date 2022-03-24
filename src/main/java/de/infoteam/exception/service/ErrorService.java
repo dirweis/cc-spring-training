@@ -1,18 +1,23 @@
-package de.infoteam.service;
+package de.infoteam.exception.service;
 
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.RegExUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import de.infoteam.model.Error;
 import de.infoteam.model.Error.InvalidParam;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -25,20 +30,12 @@ import lombok.extern.log4j.Log4j2;
  */
 @Service
 @Log4j2
+@RequiredArgsConstructor
 public class ErrorService {
 
-	private final HttpServletRequest request;
+	private static final Pattern doubleSpacePattern = Pattern.compile("\\p{IsSpace}{2}");
 
-	/**
-	 * The constructor used for the injection of the fields (constructor injection). (Direct) field injection is not
-	 * thread-safe here since this class is a Spring {@link Service} bean.
-	 * 
-	 * @param request the {@link HttpServletRequest} object for providing meta information, never {@code null}
-	 */
-	@Autowired
-	public ErrorService(final HttpServletRequest request) {
-		this.request = request;
-	}
+	private final HttpServletRequest request;
 
 	/**
 	 * Prepares the {@link Error} object with commonly used values.
@@ -68,5 +65,35 @@ public class ErrorService {
 	 */
 	public static String removePackageInformation(final String errorMessage) {
 		return RegExUtils.removeAll(errorMessage, "(de|com|org|io|net|\\@?javax?)(\\.\\p{IsLower}{2,20}){1,10}\\.");
+	}
+
+	/**
+	 * Clean-up of the exception message: Removing implementation-specific information and ugly characters.
+	 * 
+	 * @param exMsg the original exception message, may not be {@code null}
+	 * 
+	 * @return the clean {@link String}, never {@code null}
+	 */
+	public static String cleanExMsg(final String exMsg) {
+		final String intermediate = RegExUtils.removeAll(exMsg, "\\((\\p{IsUpper}.*?)\\)");
+
+		return doubleSpacePattern.matcher(RegExUtils.removeAll(intermediate, "(; |\\n)")).replaceAll(StringUtils.SPACE);
+	}
+
+	/**
+	 * Builds the whole {@link ResponseEntity} for all syntactical violations.
+	 * 
+	 * @param exMsg the {@link Exception} message, may not be {@code null}
+	 * 
+	 * @return the object as service error response, never {@code null}
+	 */
+	public ResponseEntity<Error> handleBodySyntaxViolations(final String exMsg) {
+		final String preparedDetail = ErrorService.removePackageInformation(exMsg);
+		final String detail = ErrorService.cleanExMsg(preparedDetail);
+
+		final Error error = finalizeRfc7807Error("JSON Parse Error", detail, null);
+
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_PROBLEM_JSON)
+				.body(error);
 	}
 }

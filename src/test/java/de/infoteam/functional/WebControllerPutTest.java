@@ -34,20 +34,33 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
 	 * 
 	 * @author Dirk Weissmann
 	 * @since 2022-02-22
-	 * @version 0.1
+	 * @version 0.2
 	 *
 	 */
 	@Nested
 	class OverridePetResourceTest {
 
 		/**
-		 * The only test so far: Sends a valid request to the endpoint for overriding a {@link Pet} resource.
+		 * Sends a valid request to the endpoint for overriding a {@link Pet} resource with a body containing tags.
 		 */
 		@Test
 		@SneakyThrows
-		@DisplayName("WHEN a valid request is sent to the PUT endpoint for a complete pet update THEN the response status 501 is returned since the endpoint is not yet implemented")
-		void testAddPetSuccessfullyAndExpect501() {
-			mockMvc.perform(put(EndPointWithTestId).contentType(MediaType.APPLICATION_JSON_VALUE).content(validPetBody))
+		@DisplayName("WHEN a valid request with a body containing tags is sent to the PUT endpoint for a complete pet update THEN the response status 501 is returned since the endpoint is not yet implemented")
+		void testUpdatePetWithMaxBodyAndExpect501() {
+			mockMvc.perform(
+					put(EndPointWithTestId).contentType(MediaType.APPLICATION_JSON_VALUE).content(validPetBodyWithTags))
+					.andExpect(status().isNotImplemented());
+		}
+
+		/**
+		 * Sends a valid request to the endpoint for overriding a {@link Pet} resource with a minimalist body.
+		 */
+		@Test
+		@SneakyThrows
+		@DisplayName("WHEN a valid request with a minimalist body is sent to the PUT endpoint for a complete pet update THEN the response status 501 is returned since the endpoint is not yet implemented")
+		void testUpdatePetWithMinBodyAndExpect501() {
+			mockMvc.perform(
+					put(EndPointWithTestId).contentType(MediaType.APPLICATION_JSON_VALUE).content(validMinimumPetBody))
 					.andExpect(status().isNotImplemented());
 		}
 	}

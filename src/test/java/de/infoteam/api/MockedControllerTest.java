@@ -27,7 +27,7 @@ import lombok.SneakyThrows;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-22
- * @version 0.3
+ * @version 0.4
  *
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -47,9 +47,9 @@ class MockedControllerTest extends AbstractSpringTestRunner {
 	@SneakyThrows
 	@DisplayName("WHEN the Post endpoint for adding a new Pet resource is called an the implementation crashes internally on an exception THEN expect a response with status code 500 and an appropriate body")
 	void testFurtherExceptionHandlerOnInternalFailAndExpect500() {
-		when(controller.addPet(any())).thenThrow(NullPointerException.class);
+		when(controller.addPet(any(), any())).thenThrow(NullPointerException.class);
 
-		mockMvc.perform(post(EndPointPrefix).contentType(MediaType.APPLICATION_JSON).content(validPetBody))
+		mockMvc.perform(post(EndPointPrefix).contentType(MediaType.APPLICATION_JSON).content(validPetBodyWithTags))
 				.andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
 						.isInstanceOf(NullPointerException.class))
 				.andExpect(status().isInternalServerError())

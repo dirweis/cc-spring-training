@@ -10,8 +10,8 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import de.infoteam.exception.service.ErrorService;
 import de.infoteam.model.Error;
-import de.infoteam.service.ErrorService;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

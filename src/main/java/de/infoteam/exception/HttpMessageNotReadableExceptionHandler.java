@@ -7,55 +7,53 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import de.infoteam.exception.jsonerror.AbstractJsonErrorHandler;
-import de.infoteam.exception.jsonerror.JsonErrorFactory;
+import de.infoteam.exception.service.ErrorService;
 import de.infoteam.model.Error;
-import de.infoteam.service.ErrorService;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 /**
- * The {@link ExceptionHandler} implementation for creating {@link Error} response bodies in case of a caught
- * {@link HttpMessageNotReadableException}. Ensures the response code {@code 400} is returned.
+ * The {@link ExceptionHandler} in case the request body is missing. Other request body violations get processed in
+ * {@link JsonParseErrorsHandler} now.
  * <p>
  * Example output:
  * 
  * <pre>
  {
     "type": "/petstore/petservice/v1/pets",
-    "title": "JSON parse error",
-    "instance": "urn:ERROR:0125084f-d9e8-49fe-8c03-64de5b771b57",
-    "detail": "Unexpected end-of-input: expected close marker for Object at [Source: line: 14, column: 1]"
+    "title": "JSON Parse Error",
+    "instance": "urn:ERROR:81f65772-d2a0-4c9f-8873-14f8215187f2",
+    "detail": "Required request body is missing"
  }
  * </pre>
  * 
  * @author Dirk Weissmann
- * @since 2022-02-21
- * @version 1.0
- * @see JsonErrorFactory
+ * @since 2022-03-11
+ * @version 2.0
  *
  */
-@Order(1)
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Order(2)
 @RestControllerAdvice
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 class HttpMessageNotReadableExceptionHandler {
 
 	@Autowired
 	private ErrorService errorService;
 
 	/**
-	 * Catches the defined {@link Exception}s and creates an {@link Error} response body.
+	 * Creates the {@link ResponseEntity} including an {@link Error} body with status {@code 400}.
 	 * 
-	 * @param ex the {@link Exception} to catch, never {@code null}
+	 * @param ex the {@link Exception} object for handling, never {@code null}
 	 * 
-	 * @return the created {@link Error} object as response body, never {@code null}
+	 * @return the {@link ResponseEntity} including an {@link Error} body
 	 * 
 	 */
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	private ResponseEntity<Error> handleException(final HttpMessageNotReadableException ex) {
-		final AbstractJsonErrorHandler handler = JsonErrorFactory.getErrorHandler(ex.getMostSpecificCause(),
-				errorService);
+		final String errorMsg = ex.getLocalizedMessage();
 
-		return handler.createResponse();
+		final String detailInfo = errorMsg.substring(0, errorMsg.indexOf(':'));
+
+		return errorService.handleBodySyntaxViolations(detailInfo);
 	}
 }

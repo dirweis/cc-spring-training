@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-16
- * @version 1.0
+ * @version 1.5
  *
  * @param id          the ID, may be {@code null} (in case of a POST request, the ID must be {@code null})
  * @param category    the pet's category, must not be {@code null}
@@ -28,8 +28,39 @@ public record Pet(UUID id, @NotNull Category category, @NotNull @Size(min = 3, m
 		@JsonProperty("photo-urls") List<URI> photoUrls, List<@Size(min = 3, max = 20) String> tags,
 		@NotNull PetStatus status, @NotNull @Size(min = 30, max = 1_000) String description) {
 
-	private enum Category {
-		DOG, CAT, BIRD, MOUSE, SPIDER;
+	/**
+	 * A little enumeration for a {@link Pet}'s category.
+	 * 
+	 * @author Dirk Weissmann
+	 * @since 2022-03-23
+	 * @version 1.0
+	 *
+	 */
+	public enum Category {
+		/**
+		 * the category representing the {@link String} {@code DOG}
+		 */
+		DOG,
+
+		/**
+		 * the category representing the {@link String} {@code CAT}
+		 */
+		CAT,
+
+		/**
+		 * the category representing the {@link String} {@code BIRD}
+		 */
+		BIRD,
+
+		/**
+		 * the category representing the {@link String} {@code MOUSE}
+		 */
+		MOUSE,
+
+		/**
+		 * the category representing the {@link String} {@code SPIDER}
+		 */
+		SPIDER;
 	}
 
 	/**

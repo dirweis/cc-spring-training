@@ -40,7 +40,7 @@ import lombok.SneakyThrows;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-18
- * @version 1.1
+ * @version 1.2
  *
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -128,7 +128,7 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
 	 * 
 	 * @author Dirk Weissmann
 	 * @since 2022-02-18
-	 * @version 1.0
+	 * @version 1.1
 	 *
 	 */
 	@DisplayName("WHEN the request body ")
@@ -198,13 +198,13 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
 			return Stream.of(Arguments.of("missing_opening_brace.json",
 					"\"detail\":\"Cannot construct instance of `Pet` (although at least one Creator exists): no String-argument constructor/factory method to deserialize from String value ('name') at [Source: line: 2, column: 2]\""),
 					Arguments.of("noJson.xml",
-							"\"detail\":\"Unexpected character ('<' (code 60)): expected a valid value at [Source: line: 1, column: 2]\""),
+							"\"detail\":\"Unexpected character ('<' (code 60)): expected a valid value (JSON String, Number, Array, Object or token 'null', 'true' or 'false') at line 1, column 2\""),
 					Arguments.of("missing_closing_brace.json",
 							"\"detail\":\"Unexpected end-of-input: expected close marker for Object (start marker at [Source: line: 1, column: 1]) at [Source: line: 11, column: 1]\""),
 					Arguments.of("missing_comma.json",
-							"\"detail\":\"Unexpected character ('\\\"' (code 34)): was expecting comma to separate Object entries at [Source: line: 3, column: 3]\""),
+							"\"detail\":\"Unexpected character ('\\\"' (code 34)): was expecting comma to separate Object entries at line 3, column 3\""),
 					Arguments.of("missing_quotation.json",
-							"\"detail\":\"Unexpected character ('i' (code 105)): was expecting double-quote to start field name at [Source: line: 2, column: 6]\""));
+							"\"detail\":\"Unexpected character ('i' (code 105)): was expecting double-quote to start field name at line 2, column 6\""));
 		}
 	}
 
@@ -227,7 +227,7 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
 	 * 
 	 * @author Dirk Weissmann
 	 * @since 2022-02-18
-	 * @version 1.0
+	 * @version 1.1
 	 *
 	 */
 	@DisplayName("WHEN the request body ")
@@ -237,13 +237,15 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
 		private static final String invalidFolderPath = "classpath:invalid_request_bodies/semantic/";
 
 		/**
-		 * 4 invalid body tests: The body is semantic violated with
+		 * 5 invalid body tests: The body is semantic violated with
 		 * <ul>
 		 * <li>an invalid enumeration value</li>
 		 * <li>an invalid ID type</li>
 		 * <li>a missing (mandatory) field</li>
 		 * <li>various constraint violations at once</li>
 		 * <li>the special case with a valid ID which is rejected since it's a POST request and IDs are forbidden</li>
+		 * <li>the special case with a photo URL entries which is rejected since they are forbidden for DB
+		 * insertion</li>
 		 * </ul>
 		 * 
 		 * @param filename       the filename of the input file that contains syntactically violated content
@@ -293,7 +295,9 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
 					Arguments.of("various_semantic_violations", MethodArgumentNotValidException.class,
 							"{\"name\":\"description\",\"reason\":\"size must be between 30 and 1000\"}"),
 					Arguments.of("forbidden_id", ConstraintViolationException.class,
-							"\"invalid_params\":[{\"name\":\"id\",\"reason\":\"POST request: The field pet.id must be null\"}]"));
+							"\"invalid_params\":[{\"name\":\"id\",\"reason\":\"POST request: The field pet.id must be null\"}]"),
+					Arguments.of("forbidden_photo_urls", ConstraintViolationException.class,
+							"\"invalid_params\":[{\"name\":\"photo-urls\",\"reason\":\"POST request: The field pet.photo-urls must be null\"}]"));
 		}
 	}
 }
