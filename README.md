@@ -58,3 +58,4 @@ Quality driven software development training on a Spring Boot example.
  - Introduced `Specification` objects using the `CriteriaBuilder` with extending not only the `JpaRepository` but also `JpaSpecificationExecutor` in the DAO interface as technology for dynamic `WHERE` clauses 
  - Implemented the unit tests as system tests
  - Enriched the `GET` endpoint's query parameters with the parameter `category`
+ - Introduced the additional error handling with the class `EntityNotFoundExceptionHandler`
