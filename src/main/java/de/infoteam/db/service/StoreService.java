@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import de.infoteam.db.dao.PetRepositoryDao;
+import de.infoteam.db.dao.TagRepositoryDao;
 import de.infoteam.db.mapper.PetMapper;
 import de.infoteam.db.model.PetEntity;
 import de.infoteam.db.model.TagEntity;
@@ -29,7 +30,7 @@ import lombok.RequiredArgsConstructor;
  * A {@link Service} bean for database operations, using a {@link Mapper} and a {@link JpaRepository}.
  * 
  * @since 2022-03-15
- * @version 0.6
+ * @version 0.8
  * @author Dirk Weissmann
  *
  */
@@ -38,8 +39,10 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 public class StoreService {
 
-	private final PetRepositoryDao petRepository;
+	private static final String ERROR_MSG_FORMAT = "Resource with ID %s not found in the persistence";
 
+	private final PetRepositoryDao petRepository;
+	private final TagRepositoryDao tagRepository;
 	private final PetMapper mapper;
 
 	/**
@@ -70,8 +73,8 @@ public class StoreService {
 	 */
 	@Transactional(readOnly = true)
 	public Pet getPetById(final UUID petId) {
-		final PetEntity entity = petRepository.findById(petId).orElseThrow(
-				() -> new EntityNotFoundException("Resource with ID " + petId + " not found in the persistence"));
+		final PetEntity entity = petRepository.findById(petId)
+				.orElseThrow(() -> new EntityNotFoundException(String.format(ERROR_MSG_FORMAT, petId)));
 
 		return mapper.entity2Dto(entity);
 	}
@@ -94,6 +97,39 @@ public class StoreService {
 				.findAll(hasStatus(status).and(hasCategory(category).and(isInTags(tags))), pageable).getContent();
 
 		return entities.stream().map(mapper::entity2Dto).toList();
+	}
+
+	/**
+	 * Deletes a {@link PetEntity} from the database. In case of a not found ID, an {@link EntityNotFoundException} is
+	 * thrown and handled in the {@link ExceptionHandler}.
+	 * 
+	 * @param petId the {@link PetEntity}'s ID, may be {@code null}
+	 */
+	public void deleteEntry(final UUID petId) {
+		final PetEntity entity = petRepository.findById(petId)
+				.orElseThrow(() -> new EntityNotFoundException(String.format(ERROR_MSG_FORMAT, petId)));
+
+		petRepository.delete(entity);
+	}
+
+	/**
+	 * Overrides a {@link PetEntity} with the given {@link Pet} DTO.
+	 * 
+	 * @param petId the {@link PetEntity}'s ID
+	 * @param pet   the given DTO
+	 */
+	public void overwritePetEntity(final UUID petId, final Pet pet) {
+		final PetEntity entity = petRepository.findById(petId)
+				.orElseThrow(() -> new EntityNotFoundException(String.format(ERROR_MSG_FORMAT, petId)));
+
+		final PetEntity updateEntity = mapper.dto2Entity(pet);
+
+		tagRepository.deleteAllInBatch(entity.getTags());
+		mapper.update(entity, updateEntity);
+
+		linkTags(entity);
+
+		petRepository.save(entity);
 	}
 
 	/**

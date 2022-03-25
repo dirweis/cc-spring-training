@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 import de.infoteam.db.model.PetEntity;
 import de.infoteam.db.model.PhotoUrlEntity;
@@ -18,7 +19,7 @@ import de.infoteam.model.Pet;
  * transformation of tag {@link String}s into complex {@link TagEntity} objects.
  * 
  * @since 2022-03-15
- * @version 0.5
+ * @version 1.0
  * @author Dirk Weissmann
  *
  */
@@ -37,9 +38,18 @@ public interface PetMapper {
 	@Mapping(target = "tags", expression = "java(mapTags2Entities(pet.tags()))")
 	PetEntity dto2Entity(Pet pet);
 
+	/**
+	 * Maps a {@link PetEntity} DTO into a {@link Pet} DTO.
+	 * 
+	 * @param petEntity the input entity
+	 * 
+	 * @return the mapped entity
+	 */
 	@Mapping(target = "photoUrls", expression = "java(mapPhotoEntities2PhotoUrls(petEntity.getPhotoUrls()))")
 	@Mapping(target = "tags", expression = "java(mapTagEntities2Tags(petEntity.getTags()))")
 	Pet entity2Dto(PetEntity petEntity);
+
+	PetEntity update(@MappingTarget PetEntity targetEntity, PetEntity updateEntity);
 
 	/**
 	 * A little helper for mapping the tags of a {@link Pet} resource into a complex {@link TagEntity}.

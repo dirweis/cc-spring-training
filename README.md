@@ -59,3 +59,8 @@ Quality driven software development training on a Spring Boot example.
  - Implemented the unit tests as system tests
  - Enriched the `GET` endpoint's query parameters with the parameter `category`
  - Introduced the additional error handling with the class `EntityNotFoundExceptionHandler`
+
+##### Step 10
+ - Implemented the `DELETE` endpoint
+ - Implemented the `PUT` endpoint for updating a resource as overwriting
+ - Introduced the `TagRepositoryDao` for updates in 1:n relations

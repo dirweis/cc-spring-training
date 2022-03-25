@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import de.infoteam.db.model.PetEntity;
 import de.infoteam.db.service.StoreService;
 import de.infoteam.model.Pet;
 import de.infoteam.model.Pet.Category;
@@ -28,7 +29,7 @@ import lombok.extern.log4j.Log4j2;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-15
- * @version 0.5
+ * @version 0.8
  *
  */
 @RestController
@@ -55,13 +56,15 @@ class PetsApiController implements PetsApi {
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <i>Not yet implemented</i>
+	 * Uses the {@link StoreService} for the deletion on the database.
 	 */
 	@Override
 	public ResponseEntity<Void> deletePet(final UUID petId) {
 		log.info("Start deleting pet entry with ID {}", petId);
 
-		return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+		storeService.deleteEntry(petId);
+
+		return ResponseEntity.noContent().build();
 	}
 
 	/**
@@ -98,11 +101,17 @@ class PetsApiController implements PetsApi {
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <i>Not yet implemented</i>
+	 * Uses a Mapstruct {@link Mapper} and a {@link JpaRepository} for overwriting the {@link PetEntity} via the
+	 * {@link StoreService}.
 	 */
 	@Override
 	public ResponseEntity<Void> updatePet(final UUID petId, final Pet pet) {
-		return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+		log.info("Start overwriting pet with ID {}.", petId);
+		log.info("The new values are: {}", pet);
+
+		storeService.overwritePetEntity(petId, pet);
+
+		return ResponseEntity.noContent().build();
 	}
 
 	/**

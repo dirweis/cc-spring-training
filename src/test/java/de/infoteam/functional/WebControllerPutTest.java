@@ -1,19 +1,33 @@
 package de.infoteam.functional;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.File;
+import java.util.Optional;
+import java.util.UUID;
+
+import javax.persistence.Entity;
+import javax.persistence.EntityNotFoundException;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.ResourceUtils;
 
 import de.infoteam.AbstractSpringTestRunner;
+import de.infoteam.db.model.PetEntity;
+import de.infoteam.db.model.TagEntity;
 import de.infoteam.model.Pet;
+import de.infoteam.model.Pet.Category;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
@@ -34,34 +48,96 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
 	 * 
 	 * @author Dirk Weissmann
 	 * @since 2022-02-22
-	 * @version 0.2
+	 * @version 1.0
 	 *
 	 */
 	@Nested
+	@NoArgsConstructor(access = AccessLevel.PRIVATE)
+	@DisplayName("WHEN a valid request is sent to the PUT endpoint for a pet that is ")
 	class OverridePetResourceTest {
 
-		/**
-		 * Sends a valid request to the endpoint for overriding a {@link Pet} resource with a body containing tags.
-		 */
-		@Test
-		@SneakyThrows
-		@DisplayName("WHEN a valid request with a body containing tags is sent to the PUT endpoint for a complete pet update THEN the response status 501 is returned since the endpoint is not yet implemented")
-		void testUpdatePetWithMaxBodyAndExpect501() {
-			mockMvc.perform(
-					put(EndPointWithTestId).contentType(MediaType.APPLICATION_JSON_VALUE).content(validPetBodyWithTags))
-					.andExpect(status().isNotImplemented());
+		@BeforeEach
+		private void prepareDb() {
+			petRepository.deleteAll();
+		}
+
+		@AfterEach
+		private void cleanUpDb() {
+			petRepository.deleteAll();
 		}
 
 		/**
-		 * Sends a valid request to the endpoint for overriding a {@link Pet} resource with a minimalist body.
+		 * Sends a valid request to the endpoint for overriding a {@link Pet} resource with an unknown pet ID.
 		 */
 		@Test
 		@SneakyThrows
-		@DisplayName("WHEN a valid request with a minimalist body is sent to the PUT endpoint for a complete pet update THEN the response status 501 is returned since the endpoint is not yet implemented")
-		void testUpdatePetWithMinBodyAndExpect501() {
+		@DisplayName("not already stored in the database THEN the response with status 404 and an appropriate body is returned")
+		void testUpdatePetNotFoundAndExpect404() {
 			mockMvc.perform(
-					put(EndPointWithTestId).contentType(MediaType.APPLICATION_JSON_VALUE).content(validMinimumPetBody))
-					.andExpect(status().isNotImplemented());
+					put(EndPointWithTestId).contentType(MediaType.APPLICATION_JSON).content(validPetBodyWithTags))
+					.andExpect(status().isNotFound())
+					.andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+					.andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
+							.isInstanceOf(EntityNotFoundException.class))
+					.andExpect(content()
+							.string(containsString("Resource with ID " + testId + " not found in the persistence")));
+		}
+
+		/**
+		 * Sends a valid request to the endpoint for overriding a {@link Pet} resource with a known pet ID. Assures that
+		 * the {@link Entity} in the database became overwritten. Includes tags for the update while the
+		 * {@link PetEntity} on the database has no {@link TagEntity} objects.
+		 */
+		@Test
+		@SneakyThrows
+		@DisplayName("already stored in the database without tags THEN the response status 204 is returned")
+		void testUpdatePetSuccessfullyWithTagsAndExpect204() {
+			final PetEntity entity = createTestEntity(false);
+
+			petRepository.save(entity);
+
+			final UUID id = entity.getId();
+
+			mockMvc.perform(put(EndPointPrefix + "/" + id).contentType(MediaType.APPLICATION_JSON)
+					.content(validPetBodyWithTags)).andExpect(status().isNoContent());
+
+			final Optional<PetEntity> newEntityOptional = petRepository.findById(id);
+
+			assertThat(newEntityOptional).isPresent().isNotEmpty();
+
+			final PetEntity newEntity = newEntityOptional.get();
+
+			assertThat(newEntity.getCategory()).isEqualTo(Category.CAT);
+			assertThat(newEntity.getTags()).hasSize(3);
+		}
+
+		/**
+		 * Sends a valid request to the endpoint for overriding a {@link Pet} resource with a known pet ID. Assures that
+		 * the {@link Entity} in the database became overwritten. The request body does not contain tags for the update
+		 * while the {@link PetEntity} on the database has some {@link TagEntity} objects.
+		 */
+		@Test
+		@SneakyThrows
+		@DisplayName("already stored in the database with tags THEN the response status 204 is returned")
+		void testUpdatePetSuccessfullyWithoutTagsAndExpect204() {
+			final PetEntity entity = createTestEntity(true);
+
+			petRepository.save(entity);
+
+			final UUID id = entity.getId();
+
+			mockMvc.perform(
+					put(EndPointPrefix + "/" + id).contentType(MediaType.APPLICATION_JSON).content(validMinimumPetBody))
+					.andExpect(status().isNoContent());
+
+			final Optional<PetEntity> newEntityOptional = petRepository.findById(id);
+
+			assertThat(newEntityOptional).isPresent().isNotEmpty();
+
+			final PetEntity newEntity = newEntityOptional.get();
+
+			assertThat(newEntity.getCategory()).isEqualTo(Category.CAT);
+			assertThat(newEntity.getTags()).isEmpty();
 		}
 	}
 
