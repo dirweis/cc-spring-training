@@ -19,6 +19,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
@@ -26,7 +27,7 @@ import lombok.NoArgsConstructor;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-18
- * @version 0.8
+ * @version 0.9
  *
  */
 @Entity(name = "photo_url")
@@ -39,6 +40,7 @@ public class PhotoUrlEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
+	@Getter
 	@Column(nullable = false)
 	private URL url;
 

@@ -51,3 +51,10 @@ Quality driven software development training on a Spring Boot example.
  - Introduced `Mapstruct` as mapping framework
  - Introduced `Spring Data JPA` as database framework
  - Extended the Unit tests, some of the functional tests are now system tests since they include database transactions
+
+##### Step 9
+ - Implemented the `GET` endpoints
+ - Introduced Spring Derived Query for demonstration purpose
+ - Introduced `Specification` objects using the `CriteriaBuilder` with extending not only the `JpaRepository` but also `JpaSpecificationExecutor` in the DAO interface as technology for dynamic `WHERE` clauses 
+ - Implemented the unit tests as system tests
+ - Enriched the `GET` endpoint's query parameters with the parameter `category`

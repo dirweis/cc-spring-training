@@ -2,6 +2,7 @@ package de.infoteam;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.UUID;
 
 import org.assertj.core.util.Files;
@@ -12,7 +13,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.ResourceUtils;
 
+import de.infoteam.db.dao.PetRepositoryDao;
+import de.infoteam.db.model.PetEntity;
+import de.infoteam.db.model.TagEntity;
 import de.infoteam.model.Pet;
+import de.infoteam.model.Pet.Category;
+import de.infoteam.model.Pet.PetStatus;
 import lombok.SneakyThrows;
 
 /**
@@ -37,15 +43,20 @@ public class AbstractSpringTestRunner {
 	@Autowired
 	protected MockMvc mockMvc;
 
+	@Autowired
+	protected PetRepositoryDao petRepository;
+
 	/**
 	 * The general endpoint's prefix.
 	 */
 	protected static final String EndPointPrefix = "http://localhost:8080/petstore/petservice/v1/pets";
 
+	protected static final String testId = "6f09a3c7-fdec-4949-9da5-d089f9ccb378";
+
 	/**
 	 * The general endpoint with a test {@link UUID}.
 	 */
-	protected static final String EndPointWithTestId = EndPointPrefix + "/6f09a3c7-fdec-4949-9da5-d089f9ccb378";
+	protected static final String EndPointWithTestId = EndPointPrefix + "/" + testId;
 
 	/**
 	 * The image endpoint with a test {@link UUID} for a {@link Pet} resource.
@@ -75,5 +86,24 @@ public class AbstractSpringTestRunner {
 		final File contentFileWithoutTags = ResourceUtils.getFile("classpath:valid_pet_body_min.json");
 
 		validMinimumPetBody = Files.contentOf(contentFileWithoutTags, StandardCharsets.UTF_8);
+	}
+
+	protected PetEntity createTestEntity(final boolean withTags) {
+		final PetEntity entity = new PetEntity();
+
+		entity.setCategory(Category.SPIDER);
+		entity.setDescription(
+				"What?? You want me to be a representative description for a what?! A SPIDER?!? You must be kidding!");
+		entity.setName("Peter Parker");
+		entity.setStatus(PetStatus.PENDING);
+
+		if (withTags) {
+			final TagEntity tagEntity = new TagEntity("subba");
+
+			tagEntity.setPet(entity);
+			entity.setTags(List.of(tagEntity));
+		}
+
+		return entity;
 	}
 }

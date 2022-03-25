@@ -42,10 +42,10 @@ import de.infoteam.model.Error.InvalidParam;
  * 
  * @author Dirk Weissmann
  * @since 2021-10-25
- * @version 1.3
+ * @version 1.4
  *
  */
-@Order(4)
+@Order(5)
 @RestControllerAdvice
 class ConstraintViolationExceptionHandler {
 

@@ -8,6 +8,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.catalina.mapper.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import de.infoteam.db.service.StoreService;
 import de.infoteam.model.Pet;
+import de.infoteam.model.Pet.Category;
+import de.infoteam.model.Pet.PetStatus;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -22,7 +28,7 @@ import lombok.extern.log4j.Log4j2;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-15
- * @version 0.2
+ * @version 0.5
  *
  */
 @RestController
@@ -39,7 +45,7 @@ class PetsApiController implements PetsApi {
 	 */
 	@Override
 	public ResponseEntity<Void> addPet(final Pet pet, final HttpServletRequest request) {
-		log.info("Unser Pet: {}", pet);
+		log.info("Start creating a pet entry on given body: {}", pet);
 
 		final UUID petId = storeService.storeNewPet(pet);
 
@@ -53,28 +59,40 @@ class PetsApiController implements PetsApi {
 	 */
 	@Override
 	public ResponseEntity<Void> deletePet(final UUID petId) {
+		log.info("Start deleting pet entry with ID {}", petId);
+
 		return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <i>Not yet implemented</i>
+	 * Uses {@link Specification}s for dynamic {@code WHERE} clauses via the {@link StoreService}.
 	 */
 	@Override
 	public ResponseEntity<List<Pet>> findPetsRestrictedByParameters(final Integer page, final Integer size,
-			final List<String> tags, final Pet.PetStatus status) {
-		return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+			final List<String> tags, final PetStatus status, final Category category) {
+		log.info("Start retrieving pets on the parameters page: {}, size: {}, tags: {}, status: {}, category: {}", page,
+				size, tags, status, category);
+
+		final List<Pet> responseBody = storeService.findByParameters(tags, status, category,
+				PageRequest.of(page, size, Sort.by(Direction.DESC, "createdTime")));
+
+		return ResponseEntity.ok(responseBody);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <i>Not yet implemented</i>
+	 * Uses the {@link StoreService} for the {@code SELECT} statement on the database.
 	 */
 	@Override
 	public ResponseEntity<Pet> getPetById(final UUID petId) {
-		return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+		log.info("Start getting pet entry with ID {}", petId);
+
+		final Pet responseBody = storeService.getPetById(petId);
+
+		return ResponseEntity.ok(responseBody);
 	}
 
 	/**

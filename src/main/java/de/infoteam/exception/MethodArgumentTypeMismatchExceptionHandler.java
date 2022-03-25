@@ -39,10 +39,10 @@ import lombok.NoArgsConstructor;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-17
- * @version 1.1
+ * @version 1.2
  *
  */
-@Order(3)
+@Order(4)
 @RestControllerAdvice
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class MethodArgumentTypeMismatchExceptionHandler {

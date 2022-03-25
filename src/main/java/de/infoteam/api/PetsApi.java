@@ -26,6 +26,7 @@ import de.infoteam.annotation.MultipleOf;
 import de.infoteam.annotation.PetIdNull;
 import de.infoteam.annotation.PhotoUrlsNull;
 import de.infoteam.model.Pet;
+import de.infoteam.model.Pet.Category;
 import de.infoteam.model.Pet.PetStatus;
 
 /**
@@ -41,7 +42,7 @@ import de.infoteam.model.Pet.PetStatus;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-15
- * @version 1.3
+ * @version 1.4
  * @see Pet
  *
  */
@@ -112,10 +113,11 @@ interface PetsApi {
 	 * <code>GET /pets</code> Finds {@link Pet} resources by the given parameters At least page and size is given for
 	 * filtering the results
 	 *
-	 * @param page   the first parameter for DB paging; default is {@code 0}
-	 * @param size   the first parameter for DB paging; default is {@code 20}
-	 * @param tags   tags for filtering the results
-	 * @param status the status value that need to be considered for filtering
+	 * @param page     the first parameter for DB paging; default is {@code 0}
+	 * @param size     the first parameter for DB paging; default is {@code 20}
+	 * @param tags     tags for filtering the results
+	 * @param status   the status value that need to be considered for filtering
+	 * @param category the category value that need to be considered for filtering
 	 * 
 	 * @return a {@link ResponseEntity} carrying the
 	 * 
@@ -141,7 +143,7 @@ interface PetsApi {
 			@Min(0) @RequestParam(required = false, defaultValue = "0") Integer page,
 			@Min(10) @Max(1_000) @MultipleOf(10) @RequestParam(required = false, defaultValue = "20") Integer size,
 			@RequestParam(required = false) List<@Size(min = 3, max = 20) String> tags,
-			@RequestParam(required = false) Pet.PetStatus status);
+			@RequestParam(required = false) PetStatus status, @RequestParam(required = false) Category category);
 
 	/**
 	 * <code>GET /pets/{petId}</code>: Finds a {@link Pet} resource by its ID

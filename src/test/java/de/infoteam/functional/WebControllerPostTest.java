@@ -11,12 +11,10 @@ import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 
 import de.infoteam.AbstractSpringTestRunner;
-import de.infoteam.db.dao.PetRepositoryDao;
 import de.infoteam.db.model.PetEntity;
 import de.infoteam.model.Pet;
 import de.infoteam.model.Pet.Category;
@@ -35,9 +33,6 @@ import lombok.SneakyThrows;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class WebControllerPostTest extends AbstractSpringTestRunner {
-
-	@Autowired
-	private PetRepositoryDao petRepository;
 
 	@AfterEach
 	private void cleanUp() {

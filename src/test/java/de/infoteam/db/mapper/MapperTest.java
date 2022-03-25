@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
  * Some special tests for the Mapstruct {@link Mapper} implemented in {@link PetMapper}. For the sake of code coverage.
  * 
  * @since 2022-03-15
- * @version 0.4
+ * @version 0.6
  * @author Dirk Weissmann
  *
  */
@@ -30,5 +30,6 @@ class MapperTest extends AbstractSpringTestRunner {
 	@Test
 	void testMapperOnNullValues() {
 		assertThat(mapper.dto2Entity(null)).isNull();
+		assertThat(mapper.entity2Dto(null)).isNull();
 	}
 }

@@ -1,24 +1,35 @@
 package de.infoteam.db.service;
 
+import java.util.List;
 import java.util.UUID;
 
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 import org.mapstruct.Mapper;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import de.infoteam.db.dao.PetRepositoryDao;
 import de.infoteam.db.mapper.PetMapper;
 import de.infoteam.db.model.PetEntity;
 import de.infoteam.db.model.TagEntity;
 import de.infoteam.model.Pet;
+import de.infoteam.model.Pet.Category;
+import de.infoteam.model.Pet.PetStatus;
 import lombok.RequiredArgsConstructor;
 
 /**
  * A {@link Service} bean for database operations, using a {@link Mapper} and a {@link JpaRepository}.
  * 
  * @since 2022-03-15
- * @version 0.4
+ * @version 0.6
  * @author Dirk Weissmann
  *
  */
@@ -50,6 +61,42 @@ public class StoreService {
 	}
 
 	/**
+	 * Selects a {@link PetEntity} database entry by its ID and maps it into a {@link Pet} DTO. In case of a not found
+	 * ID, an {@link EntityNotFoundException} is thrown and handled in the {@link ExceptionHandler}.
+	 * 
+	 * @param petId the {@link PetEntity}'s ID, may be {@code null}
+	 * 
+	 * @return the mapped DTO
+	 */
+	@Transactional(readOnly = true)
+	public Pet getPetById(final UUID petId) {
+		final PetEntity entity = petRepository.findById(petId).orElseThrow(
+				() -> new EntityNotFoundException("Resource with ID " + petId + " not found in the persistence"));
+
+		return mapper.entity2Dto(entity);
+	}
+
+	/**
+	 * Retrieves a result set of {@link PetEntity} objects by the given parameters.
+	 * 
+	 * @param status   the {@link PetStatus} as first {@code WHERE} parameter, may be {@code null}
+	 * @param tags     the {@link List} of tags as second {@code WHERE} parameter, may be {@code null}
+	 * @param category the {@link Category} of the {@link Pet}, may be {@code null}
+	 * @param pageable the paging parameter, may be {@code null}
+	 * 
+	 * @return the {@link List} of {@link Pet} DTOs after mapping the DB result
+	 */
+	@Transactional(readOnly = true)
+	public List<Pet> findByParameters(final List<String> tags, final PetStatus status, final Category category,
+			final Pageable pageable) {
+
+		final List<PetEntity> entities = petRepository
+				.findAll(hasStatus(status).and(hasCategory(category).and(isInTags(tags))), pageable).getContent();
+
+		return entities.stream().map(mapper::entity2Dto).toList();
+	}
+
+	/**
 	 * The crazy JPA "feature": Even though the {@link TagEntity} objects are already allocated to the
 	 * {@link PetEntity}, it must also be done the other way.
 	 * 
@@ -57,5 +104,41 @@ public class StoreService {
 	 */
 	private static void linkTags(final PetEntity petEntity) {
 		petEntity.getTags().forEach(tagEntity -> tagEntity.setPet(petEntity));
+	}
+
+	/**
+	 * The {@link Specification} for enriching the {@code WHERE} statement with a check on the {@link PetStatus}.
+	 * 
+	 * @param status the {@link PetStatus}, may be {@code null}
+	 * 
+	 * @return the {@link Specification} for restrictions or {@code null} in case it's not needed
+	 */
+	private static Specification<PetEntity> hasStatus(final PetStatus status) {
+		return (final Root<PetEntity> root, final CriteriaQuery<?> cq,
+				final CriteriaBuilder cb) -> status != null ? cb.equal(root.get("status"), status) : null;
+	}
+
+	/**
+	 * The {@link Specification} for enriching the {@code WHERE} statement with a check on the {@link Category}.
+	 * 
+	 * @param category the {@link Pet}'s {@link Category}, may be {@code null}
+	 * 
+	 * @return the {@link Specification} for restrictions or {@code null} in case it's not needed
+	 */
+	private static Specification<PetEntity> hasCategory(final Category category) {
+		return (final Root<PetEntity> root, final CriteriaQuery<?> cq,
+				final CriteriaBuilder cb) -> category != null ? cb.equal(root.get("category"), category) : null;
+	}
+
+	/**
+	 * The {@link Specification} for enriching the {@code WHERE} statement with a check on given tags..
+	 * 
+	 * @param tags the {@link List} of tag {@link String}s, may be {@code null}
+	 * 
+	 * @return the {@link Specification} for restrictions or {@code null} in case it's not needed
+	 */
+	private static Specification<PetEntity> isInTags(final List<String> tags) {
+		return (final Root<PetEntity> root, final CriteriaQuery<?> cq,
+				final CriteriaBuilder cb) -> tags != null ? cb.in(root.join("tags").get("tag")).value(tags) : null;
 	}
 }

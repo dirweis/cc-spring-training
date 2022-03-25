@@ -18,6 +18,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
@@ -26,7 +27,7 @@ import lombok.Setter;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-08
- * @version 1.0
+ * @version 1.1
  *
  */
 @Entity(name = "tag")
@@ -39,6 +40,7 @@ public class TagEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
+	@Getter
 	@Column(nullable = false, length = 20)
 	private String tag;
 

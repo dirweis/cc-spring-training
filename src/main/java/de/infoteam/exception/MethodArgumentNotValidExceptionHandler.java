@@ -35,10 +35,10 @@ import lombok.NoArgsConstructor;
  * 
  * @author Dirk Weissmann
  * @since 2021-10-25
- * @version 1.1
+ * @version 1.2
  *
  */
-@Order(2)
+@Order(3)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @RestControllerAdvice
 class MethodArgumentNotValidExceptionHandler {
