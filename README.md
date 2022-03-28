@@ -1,7 +1,7 @@
 # cc-spring-training
 Quality driven software development training on a Spring Boot example.
 
-#### This branch contains the Result of Step 1, 2, 3, 4, 5, 6, 7
+#### This branch contains the Result of Step 1, 2, 3, 4, 5, 6, 7, 8
 ##### Step 1
 - Removed unnecessary classes
 - Removed further unnecessary code
