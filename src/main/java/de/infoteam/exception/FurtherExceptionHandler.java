@@ -3,8 +3,6 @@ package de.infoteam.exception;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -13,7 +11,6 @@ import de.infoteam.exception.service.ErrorService;
 import de.infoteam.model.Error;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 
 /**
  * The {@link ExceptionHandler} implementation for creating {@link Error} response bodies in case of a caught further
@@ -34,13 +31,12 @@ import lombok.extern.log4j.Log4j2;
  * 
  * @author Dirk Weissmann
  * @since 2021-10-25
- * @version 1.1
+ * @version 1.5
  *
  */
 @Order(Ordered.LOWEST_PRECEDENCE)
 @RestControllerAdvice
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-@Log4j2
 class FurtherExceptionHandler {
 
 	@Autowired
@@ -56,12 +52,6 @@ class FurtherExceptionHandler {
 	 */
 	@ExceptionHandler(Throwable.class)
 	private ResponseEntity<Error> handleException(final Throwable ex) {
-		final Error error = errorService.finalizeRfc7807Error("Internal problem. Please contact the support.", null,
-				null);
-
-		log.error(ex);
-
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).contentType(MediaType.APPLICATION_PROBLEM_JSON)
-				.body(error);
+		return errorService.create500Response(ex);
 	}
 }

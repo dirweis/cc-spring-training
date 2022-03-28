@@ -17,3 +17,9 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
+minio:
+  url: http://localhost:9000
+  username: minioadmin
+  password: minioadmin
+  blocksize: 6000000
+  images-bucket-name: images

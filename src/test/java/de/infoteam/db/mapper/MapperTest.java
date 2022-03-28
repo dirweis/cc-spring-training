@@ -34,11 +34,14 @@ class MapperTest extends AbstractSpringTestRunner {
 	void testMapperOnNullValues() {
 		assertThat(mapper.dto2Entity(null)).isNull();
 		assertThat(mapper.entity2Dto(null)).isNull();
-		assertThat(mapper.update(null, null)).isNull();
+
+		final PetEntity nullEntity = null;
+
+		mapper.update(nullEntity, null);
+
+		assertThat(nullEntity).isNull();
 
 		final PetEntity entityWithTag = createTestEntity(true);
-
-		assertThat(mapper.update(entityWithTag, null)).isNull();
 
 		assertThatNullPointerException().isThrownBy(() -> mapper.update(null, entityWithTag));
 

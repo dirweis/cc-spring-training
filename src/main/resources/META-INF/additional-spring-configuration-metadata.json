@@ -1,0 +1,27 @@
+{"properties": [
+  {
+    "name": "minio.url",
+    "type": "java.net.URL",
+    "description": "The MinIo server's URL"
+  },
+  {
+    "name": "minio.username",
+    "type": "java.lang.String",
+    "description": "The MinIo username"
+  },
+  {
+    "name": "minio.password",
+    "type": "java.lang.String",
+    "description": "The MinIo password"
+  },
+  {
+    "name": "minio.blocksize",
+    "type": "long",
+    "description": "The blocksize on the MinIo server's bucket'"
+  },
+  {
+    "name": "minio.images-bucket-name",
+    "type": "java.lang.String",
+    "description": "The bucket name of the MinIo bucket for storing the images"
+  }
+]}

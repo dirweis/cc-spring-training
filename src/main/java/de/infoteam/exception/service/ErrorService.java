@@ -25,7 +25,7 @@ import lombok.extern.log4j.Log4j2;
  * 
  * @author Dirk Weissmann
  * @since 2021-10-25
- * @version 1.0
+ * @version 1.2
  *
  */
 @Service
@@ -95,5 +95,22 @@ public class ErrorService {
 
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_PROBLEM_JSON)
 				.body(error);
+	}
+
+	/**
+	 * Creates the {@code 500} Internal Server Error response.
+	 * 
+	 * @param ex the exception to be logged on {@code Error} level, must not be {@code null}
+	 * 
+	 * @return the created {@link ResponseEntity}, never {@code null}
+	 */
+	public ResponseEntity<Error> create500Response(final Throwable ex) {
+		log.error(ex);
+
+		ex.printStackTrace();
+
+		final Error error = finalizeRfc7807Error("Internal problem. Please contact the support.", null, null);
+
+		return ResponseEntity.internalServerError().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
 	}
 }

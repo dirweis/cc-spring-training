@@ -7,18 +7,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.File;
+import java.net.URL;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityNotFoundException;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.ResourceUtils;
@@ -28,6 +35,9 @@ import de.infoteam.db.model.PetEntity;
 import de.infoteam.db.model.TagEntity;
 import de.infoteam.model.Pet;
 import de.infoteam.model.Pet.Category;
+import io.minio.MinioClient;
+import io.minio.RemoveBucketArgs;
+import io.minio.RemoveObjectArgs;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
@@ -37,11 +47,21 @@ import lombok.SneakyThrows;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-21
- * @version 0.2
+ * @version 1.0
  *
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class WebControllerPutTest extends AbstractSpringTestRunner {
+
+	@BeforeEach
+	private void prepareDb() {
+		petRepository.deleteAll();
+	}
+
+	@AfterEach
+	private void cleanUpDb() {
+		petRepository.deleteAll();
+	}
 
 	/**
 	 * Tests for the "classic" {@code PUT} endpoint for overriding a {@link Pet} resource.
@@ -55,16 +75,6 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	@DisplayName("WHEN a valid request is sent to the PUT endpoint for a pet that is ")
 	class OverridePetResourceTest {
-
-		@BeforeEach
-		private void prepareDb() {
-			petRepository.deleteAll();
-		}
-
-		@AfterEach
-		private void cleanUpDb() {
-			petRepository.deleteAll();
-		}
 
 		/**
 		 * Sends a valid request to the endpoint for overriding a {@link Pet} resource with an unknown pet ID.
@@ -146,24 +156,123 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
 	 * 
 	 * @author Dirk Weissmann
 	 * @since 2022-02-22
-	 * @version 0.1
+	 * @version 1.0
 	 *
 	 */
 	@Nested
+	@NoArgsConstructor(access = AccessLevel.PRIVATE)
+	@DisplayName("WHEN a valid request is sent to the PUT endpoint for adding an image")
 	class AddImage2PetTest {
 
+		private static MinioClient minioClient;
+		private static String minioBucketName;
+
 		/**
-		 * The only test so far: Sends a valid request to the endpoint for adding an image to a {@link Pet} resource.
+		 * The Show Case for initializing some of the service's parameters in a static context: Initializes a
+		 * {@link MinioClient} object on the needed parameters from {@code application.yml}.
+		 */
+		@BeforeAll
+		@SneakyThrows
+		private static void prepareAll() {
+			final YamlPropertiesFactoryBean yamlFactory = new YamlPropertiesFactoryBean();
+
+			yamlFactory.setResources(new ClassPathResource("application.yml"));
+
+			final Properties properties = yamlFactory.getObject();
+
+			final URL minioUrl = new URL(properties.getProperty("minio.url"));
+
+			final String minioUsername = properties.getProperty("minio.username");
+			final String minioPw = properties.getProperty("minio.password");
+
+			minioBucketName = properties.getProperty("minio.images-bucket-name");
+			minioClient = MinioClient.builder().endpoint(minioUrl).credentials(minioUsername, minioPw).build();
+		}
+
+		/**
+		 * Sends a valid request to the endpoint for adding an image to a {@link Pet} resource that is not found.
 		 */
 		@Test
 		@SneakyThrows
-		@DisplayName("WHEN a valid request is sent to the PUT endpoint for adding an image to a pet resource THEN the response status 501 is returned since the endpoint is not yet implemented")
-		void testAddPetSuccessfullyAndExpect501() {
+		@DisplayName("to an unknown pet resource THEN the response status 404 is returned")
+		void testAddImageToPetNotFoundAndExpect404() {
 			final File contentFile = ResourceUtils.getFile("classpath:valid_test.jpg");
 			final byte[] content = FileUtils.readFileToByteArray(contentFile);
 
 			mockMvc.perform(put(EndPointImageTestId).contentType(MediaType.IMAGE_JPEG_VALUE).content(content))
-					.andExpect(status().isNotImplemented());
+					.andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
+							.isInstanceOf(EntityNotFoundException.class))
+					.andExpect(status().isNotFound())
+					.andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+					.andExpect(content().string(containsString("\"title\":\"Not found\"")))
+					.andExpect(content().string(containsString(
+							"\"detail\":\"Resource with ID " + testId + " not found in the persistence\"")));
+		}
+
+		/**
+		 * Sends a valid request to the endpoint for adding an image to a {@link Pet} resource that is found.
+		 */
+		@Test
+		@SneakyThrows
+		@DisplayName("to a known pet resource THEN the response status 204 is returned")
+		void testAddImageToPetFoundAndExpect204() {
+			final File contentFile = ResourceUtils.getFile("classpath:valid_test.jpg");
+			final byte[] content = FileUtils.readFileToByteArray(contentFile);
+			final String imageId = UUID.nameUUIDFromBytes(content).toString();
+
+			final PetEntity entity = createTestEntity(true);
+
+			petRepository.save(entity);
+
+			mockMvc.perform(put(EndPointPrefix + "/" + entity.getId() + "/image")
+					.contentType(MediaType.IMAGE_JPEG_VALUE).content(content)).andExpect(status().isNoContent());
+
+			final Optional<PetEntity> resultEntityOption = petRepository.findById(entity.getId());
+
+			assertThat(resultEntityOption).isPresent();
+
+			final PetEntity resultEntity = resultEntityOption.get();
+
+			assertThat(resultEntity.getPhotoUrls().size()).isOne();
+			assertThat(resultEntity.getPhotoUrls().get(0).getUrl().toString()).endsWith(imageId);
+
+			minioClient.removeObject(RemoveObjectArgs.builder().bucket(minioBucketName).object(imageId).build());
+		}
+
+		/**
+		 * Sends a valid request twice to the endpoint for adding an image to a {@link Pet} resource which ends up in a
+		 * conflict.
+		 */
+		@Test
+		@SneakyThrows
+		@DisplayName("to a pet resource twice THEN the response status 409 is returned")
+		void testAddImageToPetTwiceAndExpect409() {
+			final File contentFile = ResourceUtils.getFile("classpath:valid_test.jpg");
+			final byte[] content = FileUtils.readFileToByteArray(contentFile);
+			final String imageId = UUID.nameUUIDFromBytes(content).toString();
+
+			final PetEntity entity = createTestEntity(true);
+
+			petRepository.save(entity);
+
+			mockMvc.perform(put(EndPointPrefix + "/" + entity.getId() + "/image")
+					.contentType(MediaType.IMAGE_JPEG_VALUE).content(content)).andExpect(status().isNoContent());
+
+			mockMvc.perform(put(EndPointPrefix + "/" + entity.getId() + "/image")
+					.contentType(MediaType.IMAGE_JPEG_VALUE).content(content))
+					.andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
+							.isInstanceOf(DataIntegrityViolationException.class))
+					.andExpect(status().isConflict())
+					.andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+					.andExpect(content().string(containsString("\"title\":\"Entry already exists\"")));
+
+			minioClient.removeObject(RemoveObjectArgs.builder().bucket(minioBucketName).object(imageId).build());
+		}
+
+		@AfterAll
+		@SneakyThrows
+		private static void tearDown() {
+			minioClient.removeBucket(RemoveBucketArgs.builder().bucket(minioBucketName).build());
 		}
 	}
 }

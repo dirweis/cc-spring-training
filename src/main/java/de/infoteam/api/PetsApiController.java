@@ -13,7 +13,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,7 +28,7 @@ import lombok.extern.log4j.Log4j2;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-15
- * @version 0.8
+ * @version 1.0
  *
  */
 @RestController
@@ -117,12 +116,14 @@ class PetsApiController implements PetsApi {
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * <i>Not yet implemented</i>
+	 * Uses a <a href="https://min.io/">MinIo server</a> as document store for the images.
 	 */
 	@Override
-	public ResponseEntity<Void> uploadFile(final UUID petId, final byte[] body) {
+	public ResponseEntity<Void> uploadFile(final UUID petId, final byte[] body, final HttpServletRequest request) {
 		log.info("Image size: {}", body.length);
 
-		return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+		storeService.storeImage(petId, body, request.getContentType());
+
+		return ResponseEntity.noContent().build();
 	}
 }

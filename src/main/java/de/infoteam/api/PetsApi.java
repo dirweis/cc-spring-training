@@ -42,7 +42,7 @@ import de.infoteam.model.Pet.PetStatus;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-15
- * @version 1.4
+ * @version 1.5
  * @see Pet
  *
  */
@@ -214,8 +214,9 @@ interface PetsApi {
 	/**
 	 * <code>PUT /pets/{petId}/image</code> Adds an image to the Pet resource
 	 *
-	 * @param petId the ID of the {@link Pet} resource to enrich with an image (required)
-	 * @param body  an image of the format {@code JPEG, PNG or GIF}
+	 * @param petId   the ID of the {@link Pet} resource to enrich with an image (required)
+	 * @param body    an image of the format {@code JPEG, PNG or GIF}
+	 * @param request the {@link HttpServletRequest} for additional meta information in the request
 	 * 
 	 * @return a {@link ResponseEntity} carrying the
 	 * 
@@ -242,5 +243,5 @@ interface PetsApi {
 	@PutMapping(path = "{petId}/image", consumes = { MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_JPEG_VALUE,
 			MediaType.IMAGE_PNG_VALUE })
 	ResponseEntity<Void> uploadFile(@PathVariable UUID petId,
-			@Size(min = 10_000, max = 2_000_000) @RequestBody byte[] body);
+			@Size(min = 10_000, max = 2_000_000) @RequestBody byte[] body, HttpServletRequest request);
 }

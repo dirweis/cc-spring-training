@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-18
- * @version 0.9
+ * @version 1.0
  *
  */
 @Entity(name = "photo_url")
@@ -55,4 +55,15 @@ public class PhotoUrlEntity {
 	@Column(nullable = false)
 	@LastModifiedDate
 	private Date modifiedTime;
+
+	/**
+	 * The constructor for adding a new entity on the given URL.
+	 * 
+	 * @param pet the {@link PetEntity} for relation
+	 * @param url the given {@link URL}
+	 */
+	public PhotoUrlEntity(final PetEntity pet, final URL url) {
+		this.pet = pet;
+		this.url = url;
+	}
 }

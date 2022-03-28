@@ -64,3 +64,11 @@ Quality driven software development training on a Spring Boot example.
  - Implemented the `DELETE` endpoint
  - Implemented the `PUT` endpoint for updating a resource as overwriting
  - Introduced the `TagRepositoryDao` for updates in 1:n relations
+ 
+##### Step 11
+ - Implemented the `PUT` endpoint for adding images to Pet resources
+ - Introduced the `MinioService` class for operating on the MinIo server
+ - Introduced the Read-In of the Micro Service's properties in a static context
+ - Introduced the response code `409`
+ - Introduced the Exception Handler for the `DataIntegrityViolationException`
+ - Introduced the `properties` parameter for the `@SpringBootTest` annotation

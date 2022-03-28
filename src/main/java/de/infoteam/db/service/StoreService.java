@@ -1,5 +1,6 @@
 package de.infoteam.db.service;
 
+import java.net.URL;
 import java.util.List;
 import java.util.UUID;
 
@@ -7,6 +8,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.servlet.http.HttpServletRequest;
 
 import org.mapstruct.Mapper;
 import org.springframework.data.domain.Pageable;
@@ -17,20 +19,24 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import de.infoteam.db.dao.PetRepositoryDao;
+import de.infoteam.db.dao.PhotoUrlRepositoryDao;
 import de.infoteam.db.dao.TagRepositoryDao;
 import de.infoteam.db.mapper.PetMapper;
 import de.infoteam.db.model.PetEntity;
+import de.infoteam.db.model.PhotoUrlEntity;
 import de.infoteam.db.model.TagEntity;
+import de.infoteam.imagestore.MinioService;
 import de.infoteam.model.Pet;
 import de.infoteam.model.Pet.Category;
 import de.infoteam.model.Pet.PetStatus;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 
 /**
  * A {@link Service} bean for database operations, using a {@link Mapper} and a {@link JpaRepository}.
  * 
  * @since 2022-03-15
- * @version 0.8
+ * @version 1.0
  * @author Dirk Weissmann
  *
  */
@@ -43,7 +49,11 @@ public class StoreService {
 
 	private final PetRepositoryDao petRepository;
 	private final TagRepositoryDao tagRepository;
+	private final PhotoUrlRepositoryDao photoUrlRepository;
+
 	private final PetMapper mapper;
+
+	private final MinioService minioService;
 
 	/**
 	 * Stores a new {@link Pet} resource into the database. The {@link PetMapper} is used for mapping the {@link Pet} to
@@ -130,6 +140,32 @@ public class StoreService {
 		linkTags(entity);
 
 		petRepository.save(entity);
+	}
+
+	/**
+	 * Stores an image in the MinIo server. In addition the URL of the image on the server is stored in the database.
+	 * <p>
+	 * IMPORTANT: The database entry is done first since in case of a problem with the MinIo server the entry gets
+	 * rolled back using the {@link Transactional} annotation.
+	 * 
+	 * @param petId       the ID of the stored entity for assigning the URL, never {@code null}
+	 * @param body        the image as byte array, never empty
+	 * @param contentType the content type given from the request in the {@link HttpServletRequest} for the MinIo
+	 *                    server, never {@code null}
+	 */
+	@SneakyThrows
+	public void storeImage(final UUID petId, final byte[] body, final String contentType) {
+		final PetEntity entity = petRepository.findById(petId)
+				.orElseThrow(() -> new EntityNotFoundException(String.format(ERROR_MSG_FORMAT, petId)));
+
+		final String imageId = UUID.nameUUIDFromBytes(body).toString();
+
+		final PhotoUrlEntity urlEntity = new PhotoUrlEntity(entity,
+				new URL(minioService.getMinioUrl() + "/" + imageId));
+
+		photoUrlRepository.save(urlEntity);
+
+		minioService.storeImage(body, imageId, contentType);
 	}
 
 	/**

@@ -49,7 +49,15 @@ public interface PetMapper {
 	@Mapping(target = "tags", expression = "java(mapTagEntities2Tags(petEntity.getTags()))")
 	Pet entity2Dto(PetEntity petEntity);
 
-	PetEntity update(@MappingTarget PetEntity targetEntity, PetEntity updateEntity);
+	/**
+	 * Maps a {@link PetEntity} to another for updating the entity on the database.
+	 * 
+	 * @param targetEntity the {@link PetEntity} to be updated, may be {@code null}
+	 * @param updateEntity the {@link PetEntity} as source
+	 */
+	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "photoUrls", ignore = true)
+	void update(@MappingTarget PetEntity targetEntity, PetEntity updateEntity);
 
 	/**
 	 * A little helper for mapping the tags of a {@link Pet} resource into a complex {@link TagEntity}.
