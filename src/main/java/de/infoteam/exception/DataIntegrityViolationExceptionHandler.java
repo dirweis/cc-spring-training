@@ -31,7 +31,7 @@ import lombok.NoArgsConstructor;
  * </pre>
  * 
  * @since 2022-03-21
- * @version 1.0
+ * @version 1.1
  * @author Dirk Weissmann
  *
  */
@@ -72,7 +72,7 @@ class DataIntegrityViolationExceptionHandler {
 	private ResponseEntity<Error> create409Response(final String rawMessage) {
 		final String detail = rawMessage.substring(0, rawMessage.indexOf("Unique") - 1);
 
-		final Error error = errorService.finalizeRfc7807Error("Entry already exists", detail, null);
+		final Error error = errorService.finalizeRfc7807Error("Entry already exists", detail);
 
 		return ResponseEntity.status(HttpStatus.CONFLICT).contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
 	}

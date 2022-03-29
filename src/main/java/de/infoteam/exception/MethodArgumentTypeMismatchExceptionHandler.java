@@ -38,7 +38,7 @@ import lombok.NoArgsConstructor;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-17
- * @version 1.3
+ * @version 1.4
  *
  */
 @Order(4)
@@ -71,7 +71,7 @@ class MethodArgumentTypeMismatchExceptionHandler {
 
 		final List<InvalidParam> invalidParams = List.of(InvalidParam.builder().name(name).reason(reason).build());
 
-		final Error error = errorService.finalizeRfc7807Error(title, null, invalidParams);
+		final Error error = errorService.finalizeRfc7807Error(title, invalidParams);
 
 		return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
 	}

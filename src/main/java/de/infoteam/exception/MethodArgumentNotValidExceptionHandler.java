@@ -34,7 +34,7 @@ import lombok.NoArgsConstructor;
  * 
  * @author Dirk Weissmann
  * @since 2021-10-25
- * @version 1.3
+ * @version 1.4
  *
  */
 @Order(3)
@@ -60,7 +60,7 @@ class MethodArgumentNotValidExceptionHandler {
 						.reason(fieldError.getDefaultMessage()).build())
 				.toList();
 
-		final Error error = errorService.finalizeRfc7807Error("Request body validation failed", null, invalidParams);
+		final Error error = errorService.finalizeRfc7807Error("Request body validation failed", invalidParams);
 
 		return ResponseEntity.unprocessableEntity().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
 	}

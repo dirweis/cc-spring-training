@@ -24,7 +24,7 @@ import lombok.extern.log4j.Log4j2;
  * 
  * @author Dirk Weissmann
  * @since 2021-10-25
- * @version 1.3
+ * @version 1.5
  *
  */
 @Service
@@ -37,6 +37,41 @@ public class ErrorService {
 	private final HttpServletRequest request;
 
 	/**
+	 * Prepares the {@link Error} object with the title.
+	 * 
+	 * @param title the error's title, must not be {@code null}
+	 * 
+	 * @return the final {@link Error}, never {@code null}
+	 */
+	public Error finalizeRfc7807Error(final String title) {
+		return finalizeRfc7807Error(title, null, null);
+	}
+
+	/**
+	 * Prepares the {@link Error} object with the title and the detail field.
+	 * 
+	 * @param title  the error's title, must not be {@code null}
+	 * @param detail the error's detailed description, must not be {@code null}
+	 * 
+	 * @return the final {@link Error}, never {@code null}
+	 */
+	public Error finalizeRfc7807Error(final String title, final String detail) {
+		return finalizeRfc7807Error(title, detail, null);
+	}
+
+	/**
+	 * Prepares the {@link Error} object with the title and the {@code invalid_params} field.
+	 * 
+	 * @param title         the error's title, must not be {@code null}
+	 * @param invalidParams special field for parameter violations, must not be {@code null}
+	 * 
+	 * @return the final {@link Error}, never {@code null}
+	 */
+	public Error finalizeRfc7807Error(final String title, final List<InvalidParam> invalidParams) {
+		return finalizeRfc7807Error(title, null, invalidParams);
+	}
+
+	/**
 	 * Prepares the {@link Error} object with commonly used values.
 	 * 
 	 * @param title         the error's title, must not be {@code null}
@@ -45,7 +80,7 @@ public class ErrorService {
 	 * 
 	 * @return the final {@link Error}, never {@code null}
 	 */
-	public Error finalizeRfc7807Error(final String title, final String detail,
+	private Error finalizeRfc7807Error(final String title, final String detail,
 			@Valid final List<InvalidParam> invalidParams) {
 		final UUID errorId = UUID.randomUUID();
 
@@ -87,8 +122,8 @@ public class ErrorService {
 	 * @return the object as service error response, never {@code null}
 	 */
 	public ResponseEntity<Error> handleBodySyntaxViolations(final String exMsg) {
-		final String preparedDetail = ErrorService.removePackageInformation(exMsg);
-		final String detail = ErrorService.cleanExMsg(preparedDetail);
+		final String preparedDetail = removePackageInformation(exMsg);
+		final String detail = cleanExMsg(preparedDetail);
 
 		final Error error = finalizeRfc7807Error("JSON Parse Error", detail, null);
 
@@ -107,7 +142,7 @@ public class ErrorService {
 
 		ex.printStackTrace();
 
-		final Error error = finalizeRfc7807Error("Internal problem. Please contact the support.", null, null);
+		final Error error = finalizeRfc7807Error("Internal problem. Please contact the support.");
 
 		return ResponseEntity.internalServerError().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
 	}
