@@ -1,4 +1,4 @@
-package de.infoteam.annotation;
+package de.infoteam.exception.constraint.annotation;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -9,16 +9,15 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 /**
- * The very special validator checking the {@link Pet#photoUrls()} field on {@code null} in case of {@code POST} or
- * {@code PUT} requests.
+ * The very special validator checking the {@link Pet#id()} field on {@code null} in case of {@code POST} requests.
  * 
  * @author Dirk Weissmann
- * @since 2022-03-24
- * @version 1.0
+ * @since 2022-02-17
+ * @version 1.1
  *
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-class PhotoUrlsNullValidator implements ConstraintValidator<PhotoUrlsNull, Pet> {
+final class PetIdNullValidator implements ConstraintValidator<PetIdNull, Pet> {
 
 	private String message;
 
@@ -28,21 +27,21 @@ class PhotoUrlsNullValidator implements ConstraintValidator<PhotoUrlsNull, Pet> 
 	 * Fetches the field {@link PetIdNull#message()} for creating a customized {@link ConstraintViolation}.
 	 */
 	@Override
-	public void initialize(final PhotoUrlsNull constraintAnnotation) {
+	public void initialize(final PetIdNull constraintAnnotation) {
 		message = constraintAnnotation.message();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 * <p>
-	 * Hereby the {@link Pet#photoUrls()} field is checked on {@code null}.
+	 * Hereby the {@link Pet#id()} field is checked on {@code null}.
 	 */
 	@Override
 	public boolean isValid(final Pet pet, final ConstraintValidatorContext context) {
 		context.disableDefaultConstraintViolation();
-		context.buildConstraintViolationWithTemplate(message).addPropertyNode("body").addPropertyNode("photo-urls")
+		context.buildConstraintViolationWithTemplate(message).addPropertyNode("body").addPropertyNode("id")
 				.addConstraintViolation();
 
-		return pet.photoUrls() == null;
+		return pet.id() == null;
 	}
 }

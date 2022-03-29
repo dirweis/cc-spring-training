@@ -1,4 +1,4 @@
-package de.infoteam.annotation;
+package de.infoteam.exception.constraint.annotation;
 
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -13,24 +13,24 @@ import javax.validation.Payload;
 import de.infoteam.model.Pet;
 
 /**
- * A very special validating annotation: Validates the {@code photo-urls} field of the {@link Pet} resource on
- * {@code null} for ensuring the URLs get inserted only with inserting the images.
+ * A very special validating annotation: Validates the {@code id} field of the {@link Pet} resource on {@code null} for
+ * ensuring {@code POST} requests' non-idempotency.
  * 
  * @author Dirk Weissmann
- * @since 2022-03-24
+ * @since 2022-02-17
  * @version 1.0
  *
  */
 @Documented
 @Retention(RUNTIME)
 @Target(PARAMETER)
-@Constraint(validatedBy = PhotoUrlsNullValidator.class)
-public @interface PhotoUrlsNull {
+@Constraint(validatedBy = PetIdNullValidator.class)
+public @interface PetIdNull {
 
 	/**
 	 * @return the default message: an empty {@link String}
 	 */
-	String message() default "POST request: The field pet.photo-urls must be null";
+	String message() default "POST request: The field pet.id must be null";
 
 	/**
 	 * The mandatory groups field.

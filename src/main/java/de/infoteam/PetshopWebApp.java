@@ -4,17 +4,21 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jmx.JmxAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.MultipartAutoConfiguration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+
+import de.infoteam.configuration.MinioConfigDto;
 
 /**
  * The main class for the web microservice.
  * 
  * @author Dirk Weissmann
  * @since 2022-02-16
- * @version 1.1
+ * @version 1.2
  *
  */
 @EnableJpaAuditing
+@EnableConfigurationProperties(MinioConfigDto.class)
 @SpringBootApplication(exclude = { MultipartAutoConfiguration.class, JmxAutoConfiguration.class })
 public class PetshopWebApp {
 

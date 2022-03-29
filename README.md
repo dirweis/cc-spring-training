@@ -72,3 +72,5 @@ Quality driven software development training on a Spring Boot example.
  - Introduced the response code `409`
  - Introduced the Exception Handler for the `DataIntegrityViolationException`
  - Introduced the `properties` parameter for the `@SpringBootTest` annotation
+ - Introduced a new constraint violation annotation that uses the `Tika` framework for checking on the real content type
+ - Introduced Spring's `@ConfigurationProperties` annotation

@@ -199,7 +199,7 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
 			final File contentFile = ResourceUtils.getFile("classpath:valid_test.jpg");
 			final byte[] content = FileUtils.readFileToByteArray(contentFile);
 
-			mockMvc.perform(put(EndPointImageTestId).contentType(MediaType.IMAGE_JPEG_VALUE).content(content))
+			mockMvc.perform(put(EndPointImageTestId).contentType(MediaType.IMAGE_JPEG).content(content))
 					.andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
 							.isInstanceOf(EntityNotFoundException.class))
 					.andExpect(status().isNotFound())
@@ -214,8 +214,8 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
 		 */
 		@Test
 		@SneakyThrows
-		@DisplayName("to a known pet resource THEN the response status 204 is returned")
-		void testAddImageToPetFoundAndExpect204() {
+		@DisplayName("to a known pet resource THEN the response status 201 is returned")
+		void testAddImageToPetFoundAndExpect201() {
 			final File contentFile = ResourceUtils.getFile("classpath:valid_test.jpg");
 			final byte[] content = FileUtils.readFileToByteArray(contentFile);
 			final String imageId = UUID.nameUUIDFromBytes(content).toString();
@@ -224,8 +224,8 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
 
 			petRepository.save(entity);
 
-			mockMvc.perform(put(EndPointPrefix + "/" + entity.getId() + "/image")
-					.contentType(MediaType.IMAGE_JPEG_VALUE).content(content)).andExpect(status().isNoContent());
+			mockMvc.perform(put(EndPointPrefix + "/" + entity.getId() + "/image").contentType(MediaType.IMAGE_JPEG)
+					.content(content)).andExpect(status().isCreated());
 
 			final Optional<PetEntity> resultEntityOption = petRepository.findById(entity.getId());
 
@@ -255,11 +255,11 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
 
 			petRepository.save(entity);
 
-			mockMvc.perform(put(EndPointPrefix + "/" + entity.getId() + "/image")
-					.contentType(MediaType.IMAGE_JPEG_VALUE).content(content)).andExpect(status().isNoContent());
+			mockMvc.perform(put(EndPointPrefix + "/" + entity.getId() + "/image").contentType(MediaType.IMAGE_JPEG)
+					.content(content)).andExpect(status().isCreated());
 
-			mockMvc.perform(put(EndPointPrefix + "/" + entity.getId() + "/image")
-					.contentType(MediaType.IMAGE_JPEG_VALUE).content(content))
+			mockMvc.perform(put(EndPointPrefix + "/" + entity.getId() + "/image").contentType(MediaType.IMAGE_JPEG)
+					.content(content))
 					.andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
 							.isInstanceOf(DataIntegrityViolationException.class))
 					.andExpect(status().isConflict())
@@ -269,6 +269,9 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
 			minioClient.removeObject(RemoveObjectArgs.builder().bucket(minioBucketName).object(imageId).build());
 		}
 
+		/**
+		 * Removes the test bucket from the MinIO server after all tests are done.
+		 */
 		@AfterAll
 		@SneakyThrows
 		private static void tearDown() {

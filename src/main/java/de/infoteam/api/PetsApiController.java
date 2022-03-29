@@ -28,7 +28,7 @@ import lombok.extern.log4j.Log4j2;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-15
- * @version 1.0
+ * @version 1.1
  *
  */
 @RestController
@@ -122,8 +122,8 @@ class PetsApiController implements PetsApi {
 	public ResponseEntity<Void> uploadFile(final UUID petId, final byte[] body, final HttpServletRequest request) {
 		log.info("Image size: {}", body.length);
 
-		storeService.storeImage(petId, body, request.getContentType());
+		final URI imageUrl = storeService.storeImage(petId, body, request.getContentType());
 
-		return ResponseEntity.noContent().build();
+		return ResponseEntity.created(imageUrl).build();
 	}
 }

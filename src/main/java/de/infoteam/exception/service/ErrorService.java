@@ -10,7 +10,6 @@ import javax.validation.Valid;
 
 import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,7 +24,7 @@ import lombok.extern.log4j.Log4j2;
  * 
  * @author Dirk Weissmann
  * @since 2021-10-25
- * @version 1.2
+ * @version 1.3
  *
  */
 @Service
@@ -93,8 +92,7 @@ public class ErrorService {
 
 		final Error error = finalizeRfc7807Error("JSON Parse Error", detail, null);
 
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_PROBLEM_JSON)
-				.body(error);
+		return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
 	}
 
 	/**

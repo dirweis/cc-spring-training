@@ -1,4 +1,4 @@
-package de.infoteam.annotation;
+package de.infoteam.exception.constraint.annotation;
 
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;

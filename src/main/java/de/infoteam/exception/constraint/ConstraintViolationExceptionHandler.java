@@ -1,4 +1,4 @@
-package de.infoteam.exception;
+package de.infoteam.exception.constraint;
 
 import java.util.List;
 import java.util.stream.StreamSupport;

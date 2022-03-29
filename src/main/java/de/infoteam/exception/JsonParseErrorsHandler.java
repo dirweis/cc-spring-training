@@ -30,7 +30,7 @@ import lombok.NoArgsConstructor;
  * 
  * @author Dirk Weissmann
  * @since 2022-03-14
- * @version 1.1
+ * @version 1.2
  *
  */
 @Order(1)
@@ -151,7 +151,6 @@ class JsonParseErrorsHandler {
 		final Error error = errorService.finalizeRfc7807Error("Request body validation failed", null,
 				List.of(invalidParam));
 
-		return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).contentType(MediaType.APPLICATION_PROBLEM_JSON)
-				.body(error);
+		return ResponseEntity.unprocessableEntity().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
 	}
 }

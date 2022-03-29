@@ -22,9 +22,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import de.infoteam.annotation.MultipleOf;
-import de.infoteam.annotation.PetIdNull;
-import de.infoteam.annotation.PhotoUrlsNull;
+import de.infoteam.exception.constraint.annotation.MultipleOf;
+import de.infoteam.exception.constraint.annotation.PetIdNull;
+import de.infoteam.exception.constraint.annotation.PhotoUrlsNull;
+import de.infoteam.exception.constraint.annotation.TikaTypeCheck;
 import de.infoteam.model.Pet;
 import de.infoteam.model.Pet.Category;
 import de.infoteam.model.Pet.PetStatus;
@@ -42,7 +43,7 @@ import de.infoteam.model.Pet.PetStatus;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-15
- * @version 1.5
+ * @version 1.6
  * @see Pet
  *
  */
@@ -243,5 +244,5 @@ interface PetsApi {
 	@PutMapping(path = "{petId}/image", consumes = { MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_JPEG_VALUE,
 			MediaType.IMAGE_PNG_VALUE })
 	ResponseEntity<Void> uploadFile(@PathVariable UUID petId,
-			@Size(min = 10_000, max = 2_000_000) @RequestBody byte[] body, HttpServletRequest request);
+			@Size(min = 10_000, max = 2_000_000) @RequestBody @TikaTypeCheck byte[] body, HttpServletRequest request);
 }

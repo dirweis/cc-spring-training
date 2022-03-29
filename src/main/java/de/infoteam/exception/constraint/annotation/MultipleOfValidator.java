@@ -1,4 +1,4 @@
-package de.infoteam.annotation;
+package de.infoteam.exception.constraint.annotation;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

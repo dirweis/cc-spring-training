@@ -42,7 +42,7 @@ import lombok.SneakyThrows;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-22
- * @version 1.2
+ * @version 1.3
  *
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -319,7 +319,7 @@ class WebControllerContraintsInPutTest extends AbstractSpringTestRunner {
 	 * 
 	 * @author Dirk Weissmann
 	 * @since 2022-02-22
-	 * @version 1.0
+	 * @version 1.1
 	 *
 	 */
 	@Nested
@@ -439,14 +439,35 @@ class WebControllerContraintsInPutTest extends AbstractSpringTestRunner {
 					.getFile("classpath:invalid_request_bodies/images/invalid_too_big.jpg");
 			final byte[] content = FileUtils.readFileToByteArray(contentFile);
 
-			mockMvc.perform(put(EndPointImageTestId).contentType(MediaType.IMAGE_JPEG_VALUE).content(content))
+			mockMvc.perform(put(EndPointImageTestId).contentType(MediaType.IMAGE_JPEG).content(content))
 					.andExpect(status().isUnprocessableEntity())
-					.andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
+					.andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
 					.andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
 							.isInstanceOf(ConstraintViolationException.class))
 					.andExpect(content().string(containsString("\"title\":\"Request body validation failed\"")))
 					.andExpect(content().string(containsString(
 							"\"invalid_params\":[{\"name\":\"body\",\"reason\":\"size must be between 10000 and 2000000\"}]")));
+		}
+
+		/**
+		 * Tests the {@code PUT} endpoint while calling it with an image of a different type than given in the
+		 * {@code Content-Type}.
+		 */
+		@Test
+		@SneakyThrows
+		@DisplayName("WHEN the given image is of another type than given in the content type request header THEN respond with status 422 AND content type application/problem+json AND the expected response body")
+		void testCallPutWithBodyTypeNotContentTypeAndExpect422() {
+			final File contentFile = ResourceUtils.getFile("classpath:valid_test.jpg");
+			final byte[] content = FileUtils.readFileToByteArray(contentFile);
+
+			mockMvc.perform(put(EndPointImageTestId).contentType(MediaType.IMAGE_GIF).content(content))
+					.andExpect(status().isUnprocessableEntity())
+					.andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+					.andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
+							.isInstanceOf(ConstraintViolationException.class))
+					.andExpect(content().string(containsString("\"title\":\"Request body validation failed\"")))
+					.andExpect(content().string(containsString(
+							"\"invalid_params\":[{\"name\":\"body\",\"reason\":\"The content type given in the request header does not match the content information\"}]")));
 		}
 	}
 }

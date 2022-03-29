@@ -1,5 +1,6 @@
 package de.infoteam.db.service;
 
+import java.net.URI;
 import java.net.URL;
 import java.util.List;
 import java.util.UUID;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import de.infoteam.configuration.MinioConfigDto;
 import de.infoteam.db.dao.PetRepositoryDao;
 import de.infoteam.db.dao.PhotoUrlRepositoryDao;
 import de.infoteam.db.dao.TagRepositoryDao;
@@ -36,7 +38,7 @@ import lombok.SneakyThrows;
  * A {@link Service} bean for database operations, using a {@link Mapper} and a {@link JpaRepository}.
  * 
  * @since 2022-03-15
- * @version 1.0
+ * @version 1.1
  * @author Dirk Weissmann
  *
  */
@@ -54,6 +56,7 @@ public class StoreService {
 	private final PetMapper mapper;
 
 	private final MinioService minioService;
+	private final MinioConfigDto minioConfigDto;
 
 	/**
 	 * Stores a new {@link Pet} resource into the database. The {@link PetMapper} is used for mapping the {@link Pet} to
@@ -150,22 +153,25 @@ public class StoreService {
 	 * 
 	 * @param petId       the ID of the stored entity for assigning the URL, never {@code null}
 	 * @param body        the image as byte array, never empty
-	 * @param contentType the content type given from the request in the {@link HttpServletRequest} for the MinIo
-	 *                    server, never {@code null}
+	 * @param contentType the content type given from the {@link HttpServletRequest}
+	 * 
+	 * @return the {@link URI} object from the URL to the image
 	 */
 	@SneakyThrows
-	public void storeImage(final UUID petId, final byte[] body, final String contentType) {
+	public URI storeImage(final UUID petId, final byte[] body, final String contentType) {
 		final PetEntity entity = petRepository.findById(petId)
 				.orElseThrow(() -> new EntityNotFoundException(String.format(ERROR_MSG_FORMAT, petId)));
 
 		final String imageId = UUID.nameUUIDFromBytes(body).toString();
+		final String imageUrlString = minioConfigDto.url() + "/" + imageId;
 
-		final PhotoUrlEntity urlEntity = new PhotoUrlEntity(entity,
-				new URL(minioService.getMinioUrl() + "/" + imageId));
+		final PhotoUrlEntity urlEntity = new PhotoUrlEntity(entity, new URL(imageUrlString));
 
 		photoUrlRepository.save(urlEntity);
 
 		minioService.storeImage(body, imageId, contentType);
+
+		return URI.create(imageUrlString);
 	}
 
 	/**
