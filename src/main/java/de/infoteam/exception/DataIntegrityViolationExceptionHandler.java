@@ -56,7 +56,7 @@ class DataIntegrityViolationExceptionHandler {
 		final String rawMessage = ex.getMostSpecificCause().getLocalizedMessage();
 
 		if (rawMessage.contains("Unique")) {
-			return create409Response(rawMessage);
+			return create409Response();
 		}
 
 		return errorService.create500Response(ex);
@@ -65,14 +65,11 @@ class DataIntegrityViolationExceptionHandler {
 	/**
 	 * Creates a conflict (code {@code 409}) {@link ResponseEntity}.
 	 * 
-	 * @param rawMessage the raw detail {@link String}, never {@code null}
-	 * 
 	 * @return the {@link ResponseEntity} object with code {@code 409}
 	 */
-	private ResponseEntity<Error> create409Response(final String rawMessage) {
-		final String detail = rawMessage.substring(0, rawMessage.indexOf("Unique") - 1);
-
-		final Error error = errorService.finalizeRfc7807Error("Entry already exists", detail);
+	private ResponseEntity<Error> create409Response() {
+		final Error error = errorService.finalizeRfc7807Error("Entry already exists",
+				"Unique constraint violated (already exist)");
 
 		return ResponseEntity.status(HttpStatus.CONFLICT).contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
 	}
