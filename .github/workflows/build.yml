@@ -2,6 +2,17 @@ name: Build
 on:
   push:
     branches:
+      - step1
+      - step2
+      - step3
+      - step4
+      - step5
+      - step6
+      - step7
+      - step8
+      - step9
+      - step10
+      - step11
       - master
   pull_request:
     types: [opened, synchronize, reopened]
