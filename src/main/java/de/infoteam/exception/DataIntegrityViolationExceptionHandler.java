@@ -13,6 +13,7 @@ import de.infoteam.exception.service.ErrorService;
 import de.infoteam.model.Error;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * The {@link ExceptionHandler} implementation for creating {@link Error} response bodies in case of a caught
@@ -38,6 +39,7 @@ import lombok.NoArgsConstructor;
 @RestControllerAdvice
 @Order(7)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Log4j2
 class DataIntegrityViolationExceptionHandler {
 
 	@Autowired
@@ -53,6 +55,12 @@ class DataIntegrityViolationExceptionHandler {
 	 */
 	@ExceptionHandler(DataIntegrityViolationException.class)
 	private ResponseEntity<Error> handleException(final DataIntegrityViolationException ex) {
+		log.info("Possible null values: Exception: {}", ex);
+		log.info("Possible null values: Exception.getMostSpecificCause(): {}", ex.getMostSpecificCause());
+		log.info("Possible null values: Exception.getLocalizedMessage(): {}", ex.getLocalizedMessage());
+		log.info("Possible null values: Exception.getMostSpecificCause().getLocalizedMessage(): {}",
+				ex.getMostSpecificCause().getLocalizedMessage());
+
 		final String rawMessage = ex.getMostSpecificCause() != null ? ex.getMostSpecificCause().getLocalizedMessage()
 				: ex.getLocalizedMessage();
 
