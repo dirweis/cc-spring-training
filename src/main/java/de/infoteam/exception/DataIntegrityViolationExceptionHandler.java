@@ -55,11 +55,11 @@ class DataIntegrityViolationExceptionHandler {
 	private ResponseEntity<Error> handleException(final DataIntegrityViolationException ex) {
 		final String rawMessage = ex.getMostSpecificCause().getLocalizedMessage();
 
-		if (rawMessage.contains("Unique")) {
-			return create409Response(rawMessage);
+		if (rawMessage != null && !rawMessage.contains("Unique")) {
+			return errorService.create500Response(ex);
 		}
 
-		return errorService.create500Response(ex);
+		return create409Response(rawMessage);
 	}
 
 	/**
@@ -70,7 +70,7 @@ class DataIntegrityViolationExceptionHandler {
 	 * @return the {@link ResponseEntity} object with code {@code 409}
 	 */
 	private ResponseEntity<Error> create409Response(final String rawMessage) {
-		final String detail = rawMessage.substring(0, rawMessage.indexOf("Unique") - 1);
+		final String detail = null == rawMessage ? null : rawMessage.substring(0, rawMessage.indexOf("Unique") - 1);
 
 		final Error error = errorService.finalizeRfc7807Error("Entry already exists", detail);
 
