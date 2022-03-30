@@ -23,14 +23,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.ResourceUtils;
 
 import de.infoteam.AbstractSpringTestRunner;
+import de.infoteam.db.dao.PhotoUrlRepositoryDao;
 import de.infoteam.db.model.PetEntity;
+import de.infoteam.db.model.PhotoUrlEntity;
 import de.infoteam.db.model.TagEntity;
 import de.infoteam.model.Pet;
 import de.infoteam.model.Pet.Category;
@@ -162,10 +166,15 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
 	@DisplayName("WHEN a valid request is sent to the PUT endpoint for adding an image")
 	class AddImage2PetTest {
 
+		@Autowired
+		private PhotoUrlRepositoryDao photoUrlRepository;
+
 		private static MinioClient minioClient;
 		private static String minioBucketName;
 		private static byte[] content;
 		private static String imageId;
+
+		private static URL minioUrl;
 
 		/**
 		 * The Show Case for initializing some of the service's parameters in a static context: Initializes a
@@ -180,7 +189,7 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
 
 			final Properties properties = yamlFactory.getObject();
 
-			final URL minioUrl = new URL(properties.getProperty("minio.url"));
+			minioUrl = new URL(properties.getProperty("minio.url"));
 
 			final String minioUsername = properties.getProperty("minio.username");
 			final String minioPw = properties.getProperty("minio.password");
@@ -243,17 +252,18 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
 		@SneakyThrows
 		@DisplayName("to a pet resource twice THEN the response status 409 is returned")
 		void testAddImageToPetTwiceAndExpect409() {
-			final PetEntity entity = createTestEntity(true);
+			final PetEntity petEntity = createTestEntity(true);
 
-			petRepository.save(entity);
+			petRepository.save(petEntity);
 
-			mockMvc.perform(put(EndPointPrefix + "/" + entity.getId() + "/image").contentType(MediaType.IMAGE_JPEG)
-					.content(content)).andExpect(status().isCreated());
+			final PhotoUrlEntity photoUrlEntity = new PhotoUrlEntity(petEntity, new URL(minioUrl + "/" + imageId));
 
-			mockMvc.perform(put(EndPointPrefix + "/" + entity.getId() + "/image").contentType(MediaType.IMAGE_JPEG)
+			photoUrlRepository.save(photoUrlEntity);
+
+			mockMvc.perform(put(EndPointPrefix + "/" + petEntity.getId() + "/image").contentType(MediaType.IMAGE_JPEG)
 					.content(content))
-//					.andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
-//							.isInstanceOf(DataIntegrityViolationException.class))
+					.andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
+							.isInstanceOf(DataIntegrityViolationException.class))
 					.andExpect(status().isConflict())
 					.andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
 					.andExpect(content().string(containsString("\"title\":\"Entry already exists\"")));
