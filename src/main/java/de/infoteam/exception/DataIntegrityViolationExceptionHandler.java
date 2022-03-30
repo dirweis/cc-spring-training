@@ -13,7 +13,6 @@ import de.infoteam.exception.service.ErrorService;
 import de.infoteam.model.Error;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 
 /**
  * The {@link ExceptionHandler} implementation for creating {@link Error} response bodies in case of a caught
@@ -39,7 +38,6 @@ import lombok.extern.log4j.Log4j2;
 @RestControllerAdvice
 @Order(7)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-@Log4j2
 class DataIntegrityViolationExceptionHandler {
 
 	@Autowired
@@ -55,33 +53,23 @@ class DataIntegrityViolationExceptionHandler {
 	 */
 	@ExceptionHandler(DataIntegrityViolationException.class)
 	private ResponseEntity<Error> handleException(final DataIntegrityViolationException ex) {
-		log.info("Possible null values: Exception: {}", ex);
-		log.info("Possible null values: Exception.getMostSpecificCause(): {}", ex.getMostSpecificCause());
-		log.info("Possible null values: Exception.getLocalizedMessage(): {}", ex.getLocalizedMessage());
-		log.info("Possible null values: Exception.getMostSpecificCause().getLocalizedMessage(): {}",
-				ex.getMostSpecificCause().getLocalizedMessage());
+		final String rawMessage = ex.getMostSpecificCause().getLocalizedMessage();
 
-		final String rawMessage = ex.getMostSpecificCause() != null ? ex.getMostSpecificCause().getLocalizedMessage()
-				: ex.getLocalizedMessage();
-
-		if (rawMessage != null && !rawMessage.contains("Unique")) {
-			return errorService.create500Response(ex);
+		if (rawMessage.contains("Unique")) {
+			return create409Response();
 		}
 
-		return create409Response(rawMessage);
+		return errorService.create500Response(ex);
 	}
 
 	/**
 	 * Creates a conflict (code {@code 409}) {@link ResponseEntity}.
 	 * 
-	 * @param rawMessage the raw detail {@link String}, never {@code null}
-	 * 
 	 * @return the {@link ResponseEntity} object with code {@code 409}
 	 */
-	private ResponseEntity<Error> create409Response(final String rawMessage) {
-		final String detail = null == rawMessage ? null : rawMessage.substring(0, rawMessage.indexOf("Unique") - 1);
-
-		final Error error = errorService.finalizeRfc7807Error("Entry already exists", detail);
+	private ResponseEntity<Error> create409Response() {
+		final Error error = errorService.finalizeRfc7807Error("Entry already exists",
+				"Unique constraint violated (already exist)");
 
 		return ResponseEntity.status(HttpStatus.CONFLICT).contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
 	}
