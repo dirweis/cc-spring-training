@@ -24,7 +24,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.ResourceUtils;
@@ -237,34 +236,34 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
 			minioClient.removeObject(RemoveObjectArgs.builder().bucket(minioBucketName).object(imageId).build());
 		}
 
-		/**
-		 * Sends a valid request twice to the endpoint for adding an image to a {@link Pet} resource which ends up in a
-		 * conflict.
-		 */
-		@Test
-		@SneakyThrows
-		@DisplayName("to a pet resource twice THEN the response status 409 is returned")
-		void testAddImageToPetTwiceAndExpect409() {
-			final File contentFile = ResourceUtils.getFile("classpath:valid_test.jpg");
-			final byte[] content = FileUtils.readFileToByteArray(contentFile);
-			final String imageId = UUID.nameUUIDFromBytes(content).toString();
-
-			final PetEntity entity = createTestEntity(true);
-
-			petRepository.save(entity);
-
-			mockMvc.perform(put(EndPointPrefix + "/" + entity.getId() + "/image").contentType(MediaType.IMAGE_JPEG)
-					.content(content)).andExpect(status().isCreated());
-
-			mockMvc.perform(put(EndPointPrefix + "/" + entity.getId() + "/image").contentType(MediaType.IMAGE_JPEG)
-					.content(content))
-					.andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
-							.isInstanceOf(DataIntegrityViolationException.class))
-					.andExpect(status().isConflict())
-					.andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-					.andExpect(content().string(containsString("\"title\":\"Entry already exists\"")));
-
-			minioClient.removeObject(RemoveObjectArgs.builder().bucket(minioBucketName).object(imageId).build());
-		}
+//		/**
+//		 * Sends a valid request twice to the endpoint for adding an image to a {@link Pet} resource which ends up in a
+//		 * conflict.
+//		 */
+//		@Test
+//		@SneakyThrows
+//		@DisplayName("to a pet resource twice THEN the response status 409 is returned")
+//		void testAddImageToPetTwiceAndExpect409() {
+//			final File contentFile = ResourceUtils.getFile("classpath:valid_test.jpg");
+//			final byte[] content = FileUtils.readFileToByteArray(contentFile);
+//			final String imageId = UUID.nameUUIDFromBytes(content).toString();
+//
+//			final PetEntity entity = createTestEntity(true);
+//
+//			petRepository.save(entity);
+//
+//			mockMvc.perform(put(EndPointPrefix + "/" + entity.getId() + "/image").contentType(MediaType.IMAGE_JPEG)
+//					.content(content)).andExpect(status().isCreated());
+//
+//			mockMvc.perform(put(EndPointPrefix + "/" + entity.getId() + "/image").contentType(MediaType.IMAGE_JPEG)
+//					.content(content))
+//					.andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
+//							.isInstanceOf(DataIntegrityViolationException.class))
+//					.andExpect(status().isConflict())
+//					.andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+//					.andExpect(content().string(containsString("\"title\":\"Entry already exists\"")));
+//
+//			minioClient.removeObject(RemoveObjectArgs.builder().bucket(minioBucketName).object(imageId).build());
+//		}
 	}
 }
