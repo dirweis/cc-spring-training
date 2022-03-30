@@ -2,11 +2,7 @@ name: Build
 on:
   push:
     branches:
-      - step7
-      - step8
-      - step9
-      - step10
-      - step11
+      - master
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
