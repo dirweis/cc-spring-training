@@ -138,9 +138,7 @@ public class ErrorService {
 	 * @return the created {@link ResponseEntity}, never {@code null}
 	 */
 	public ResponseEntity<Error> create500Response(final Throwable ex) {
-		log.error(ex);
-
-		ex.printStackTrace();
+		log.error("Internal Error Stack trace", ex);
 
 		final Error error = finalizeRfc7807Error("Internal problem. Please contact the support.");
 
