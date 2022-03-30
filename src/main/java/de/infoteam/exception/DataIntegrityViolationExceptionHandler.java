@@ -53,7 +53,8 @@ class DataIntegrityViolationExceptionHandler {
 	 */
 	@ExceptionHandler(DataIntegrityViolationException.class)
 	private ResponseEntity<Error> handleException(final DataIntegrityViolationException ex) {
-		final String rawMessage = ex.getMostSpecificCause().getLocalizedMessage();
+		final String rawMessage = ex.getMostSpecificCause() != null ? ex.getMostSpecificCause().getLocalizedMessage()
+				: ex.getLocalizedMessage();
 
 		if (rawMessage != null && !rawMessage.contains("Unique")) {
 			return errorService.create500Response(ex);
