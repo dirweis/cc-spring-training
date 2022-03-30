@@ -1,0 +1,20 @@
+spring:
+  mvc:
+    log-resolved-exception: true
+  jackson:
+    default-property-inclusion: NON_NULL
+    mapper:
+      accept-case-insensitive-enums: true
+  datasource:
+    url: 'jdbc:h2:mem:testdb;DB_CLOSE_ON_EXIT=FALSE'
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+minio:
+  url: https://play.min.io
+  username: Q3AM3UQ867SPQQA43P2F
+  password: zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG
+  blocksize: 6000000
+  images-bucket-name: images-test

@@ -1,0 +1,12 @@
+{
+	"id": "6f09a3c7-fdec-4949-9da5-d089f9ccb378",
+	"name": "Mauzi",
+	"status": "AVAILABLe",
+	"description" : "Eine ganz, ganz liebe Katze, die ganz einfach zu halten und stubenrein ist.",
+	"tags": [
+	    "lovely",
+	    "not snappish",
+	    "nervous"
+	],
+	"category" : "cat"
+}
