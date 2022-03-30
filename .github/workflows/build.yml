@@ -3,10 +3,6 @@ on:
   push:
     branches:
       - master
-      - step7
-      - step8
-      - step9
-      - step10
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
