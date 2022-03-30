@@ -53,15 +53,13 @@ class DataIntegrityViolationExceptionHandler {
 	 */
 	@ExceptionHandler(DataIntegrityViolationException.class)
 	private ResponseEntity<Error> handleException(final DataIntegrityViolationException ex) {
+		final String rawMessage = ex.getMostSpecificCause().getLocalizedMessage();
 
-		if (ex.getMostSpecificCause() != null) {
-			final String rawMessage = ex.getMostSpecificCause().getLocalizedMessage();
-			if (rawMessage != null && !rawMessage.contains("Unique")) {
-				return errorService.create500Response(ex);
-			}
+		if (rawMessage != null && !rawMessage.contains("Unique")) {
+			return errorService.create500Response(ex);
 		}
 
-		return create409Response(null);
+		return create409Response(rawMessage);
 	}
 
 	/**
