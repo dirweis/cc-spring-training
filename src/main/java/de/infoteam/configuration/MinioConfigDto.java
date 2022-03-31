@@ -12,8 +12,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author Dirk Weissmann
  * 
  * @param url              the MinIO server's URL
- * @param username         the MinIO user's username
- * @param password         the MinIO user's password
+ * @param accessKey        the MinIO user's username token
+ * @param secretKey        the MinIO user's password token
  * @param imagesBucketName the name for the images' bucket on the MinIO server
  * @param blocksize        the mandatory part size parameter for storing into the MinIO bucket, must not be
  *                         {@code null}, min. value is {@code 5,242,880}
@@ -22,6 +22,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  *
  */
 @ConfigurationProperties(prefix = "minio")
-public record MinioConfigDto(URL url, String username, String password, String imagesBucketName, long blocksize) {
+public record MinioConfigDto(URL url, String accessKey, String secretKey, String imagesBucketName, long blocksize) {
 	/* nothing special in this Record */
 }
