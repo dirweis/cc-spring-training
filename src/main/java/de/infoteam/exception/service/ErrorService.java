@@ -125,7 +125,7 @@ public class ErrorService {
 		final String preparedDetail = removePackageInformation(exMsg);
 		final String detail = cleanExMsg(preparedDetail);
 
-		final Error error = finalizeRfc7807Error("JSON Parse Error", detail, null);
+		final Error error = finalizeRfc7807Error("JSON Parse Error", detail);
 
 		return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
 	}
