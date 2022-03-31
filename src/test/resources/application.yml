@@ -11,6 +11,9 @@ spring:
     username: sa
     password: password
   jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
     database-platform: org.hibernate.dialect.H2Dialect
 minio:
   url: http://localhost:9000
