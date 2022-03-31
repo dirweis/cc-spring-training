@@ -32,7 +32,7 @@ import lombok.NoArgsConstructor;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-17
- * @version 1.1
+ * @version 1.0
  *
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -54,7 +54,7 @@ class HttpRequestMethodNotSupportedExceptionHandler {
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
 	private ResponseEntity<Error> handleException(final HttpRequestMethodNotSupportedException ex) {
 		final Error error = errorService.finalizeRfc7807Error(ex.getLocalizedMessage(),
-				"Supported method(s): " + ex.getSupportedHttpMethods(), null);
+				"Supported method(s): " + ex.getSupportedHttpMethods());
 
 		return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).contentType(MediaType.APPLICATION_PROBLEM_JSON)
 				.body(error);
