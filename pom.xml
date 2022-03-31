@@ -11,7 +11,7 @@
 
 	<groupId>de.infoteam</groupId>
 	<artifactId>petshop-service</artifactId>
-	<version>1.0.0</version>
+	<version>0.7.0</version>
 	<packaging>jar</packaging>
 
 	<name>petshop-service</name>
@@ -29,6 +29,8 @@
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<mapstruct.version>1.4.2.Final</mapstruct.version>
+		<sonar.organization>dirweis</sonar.organization>
+  		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 
 	<dependencies>
