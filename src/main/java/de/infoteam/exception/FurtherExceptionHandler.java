@@ -58,7 +58,7 @@ class FurtherExceptionHandler {
 		final Error error = errorService.finalizeRfc7807Error("Internal problem. Please contact the support.", null,
 				null);
 
-		log.error(ex);
+		log.error("Internal Error Stack trace", ex);
 
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(ErrorService.provideProblemJsonHeader())
 				.body(error);
