@@ -53,7 +53,7 @@ class EntityNotFoundExceptionHandler {
 	 */
 	@ExceptionHandler(EntityNotFoundException.class)
 	private ResponseEntity<Error> handleException(final EntityNotFoundException ex) {
-		final Error error = errorService.finalizeRfc7807Error("Not found", ex.getLocalizedMessage(), null);
+		final Error error = errorService.finalizeRfc7807Error("Not found", ex.getLocalizedMessage());
 
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
 	}

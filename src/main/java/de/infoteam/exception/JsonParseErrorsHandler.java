@@ -124,7 +124,7 @@ class JsonParseErrorsHandler {
 		final String detail = ex.getOriginalMessage() + " at line " + location.getLineNr() + ", column "
 				+ location.getColumnNr();
 
-		final Error error = errorService.finalizeRfc7807Error("JSON Parse Error", detail, null);
+		final Error error = errorService.finalizeRfc7807Error("JSON Parse Error", detail);
 
 		return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
 	}
@@ -148,10 +148,8 @@ class JsonParseErrorsHandler {
 
 		final InvalidParam invalidParam = InvalidParam.builder().name(invalidParamName).reason(reason).build();
 
-		final Error error = errorService.finalizeRfc7807Error("Request body validation failed", null,
-				List.of(invalidParam));
+		final Error error = errorService.finalizeRfc7807Error("Request body validation failed", List.of(invalidParam));
 
-		return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).contentType(MediaType.APPLICATION_PROBLEM_JSON)
-				.body(error);
+		return ResponseEntity.unprocessableEntity().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
 	}
 }
