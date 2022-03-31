@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -71,9 +71,8 @@ class MethodArgumentTypeMismatchExceptionHandler {
 
 		final List<InvalidParam> invalidParams = List.of(InvalidParam.builder().name(name).reason(reason).build());
 
-		final Error error = errorService.finalizeRfc7807Error(title, null, invalidParams);
+		final Error error = errorService.finalizeRfc7807Error(title, invalidParams);
 
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).headers(ErrorService.provideProblemJsonHeader())
-				.body(error);
+		return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
 	}
 }

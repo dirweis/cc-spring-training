@@ -2,7 +2,7 @@ package de.infoteam.exception;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -48,10 +48,8 @@ class MissingServletRequestParameterExceptionHandler {
 	 */
 	@ExceptionHandler(MissingServletRequestParameterException.class)
 	private ResponseEntity<Error> handleException(final MissingServletRequestParameterException ex) {
-		final Error error = errorService.finalizeRfc7807Error("Missing query parameter", ex.getLocalizedMessage(),
-				null);
+		final Error error = errorService.finalizeRfc7807Error("Missing query parameter", ex.getLocalizedMessage());
 
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).headers(ErrorService.provideProblemJsonHeader())
-				.body(error);
+		return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
 	}
 }
