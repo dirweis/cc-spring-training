@@ -54,7 +54,7 @@ class HttpRequestMethodNotSupportedExceptionHandler {
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
 	private ResponseEntity<Error> handleException(final HttpRequestMethodNotSupportedException ex) {
 		final Error error = errorService.finalizeRfc7807Error(ex.getLocalizedMessage(),
-				"Supported method(s): " + ex.getSupportedHttpMethods(), null);
+				"Supported method(s): " + ex.getSupportedHttpMethods());
 
 		return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).contentType(MediaType.APPLICATION_PROBLEM_JSON)
 				.body(error);

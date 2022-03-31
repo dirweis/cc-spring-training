@@ -57,7 +57,7 @@ class HttpMediaTypeNotSupportedExceptionHandler {
 		final String title = msg.contains("''") ? "Request header 'content-type' not found" : msg;
 
 		final Error error = errorService.finalizeRfc7807Error(title,
-				"Supported media type(s): " + ex.getSupportedMediaTypes(), null);
+				"Supported media type(s): " + ex.getSupportedMediaTypes());
 
 		return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).contentType(MediaType.APPLICATION_PROBLEM_JSON)
 				.body(error);

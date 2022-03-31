@@ -10,7 +10,6 @@ import javax.validation.Valid;
 
 import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -38,6 +37,41 @@ public class ErrorService {
 	private final HttpServletRequest request;
 
 	/**
+	 * Prepares the {@link Error} object with commonly used values and a specific title.
+	 * 
+	 * @param title the error's title, must not be {@code null}
+	 * 
+	 * @return the final {@link Error}, never {@code null}
+	 */
+	public Error finalizeRfc7807Error(final String title) {
+		return finalizeRfc7807Error(title, null, null);
+	}
+
+	/**
+	 * Prepares the {@link Error} object with commonly used values and a specific title and detail information.
+	 * 
+	 * @param title  the error's title, must not be {@code null}
+	 * @param detail the error's {@code detail} field's value, never {@code null}
+	 * 
+	 * @return the final {@link Error}, never {@code null}
+	 */
+	public Error finalizeRfc7807Error(final String title, final String detail) {
+		return finalizeRfc7807Error(title, detail, null);
+	}
+
+	/**
+	 * Prepares the {@link Error} object with commonly used values and a specific title.
+	 * 
+	 * @param title         the error's title, must not be {@code null}
+	 * @param invalidParams the error's {@code invalid_params} field's value, never {@code null}
+	 * 
+	 * @return the final {@link Error}, never {@code null}
+	 */
+	public Error finalizeRfc7807Error(final String title, final List<InvalidParam> invalidParams) {
+		return finalizeRfc7807Error(title, null, invalidParams);
+	}
+
+	/**
 	 * Prepares the {@link Error} object with commonly used values.
 	 * 
 	 * @param title         the error's title, must not be {@code null}
@@ -46,7 +80,7 @@ public class ErrorService {
 	 * 
 	 * @return the final {@link Error}, never {@code null}
 	 */
-	public Error finalizeRfc7807Error(final String title, final String detail,
+	private Error finalizeRfc7807Error(final String title, final String detail,
 			@Valid final List<InvalidParam> invalidParams) {
 		final UUID errorId = UUID.randomUUID();
 
@@ -91,9 +125,8 @@ public class ErrorService {
 		final String preparedDetail = ErrorService.removePackageInformation(exMsg);
 		final String detail = ErrorService.cleanExMsg(preparedDetail);
 
-		final Error error = finalizeRfc7807Error("JSON Parse Error", detail, null);
+		final Error error = finalizeRfc7807Error("JSON Parse Error", detail);
 
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_PROBLEM_JSON)
-				.body(error);
+		return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
 	}
 }
