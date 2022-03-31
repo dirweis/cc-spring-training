@@ -30,7 +30,7 @@ class MinioConfiguration {
 	 */
 	@Bean
 	MinioClient getMinioClient(final MinioConfigDto configDto) {
-		return MinioClient.builder().endpoint(configDto.url()).credentials(configDto.username(), configDto.password())
+		return MinioClient.builder().endpoint(configDto.url()).credentials(configDto.accessKey(), configDto.secretKey())
 				.build();
 	}
 }

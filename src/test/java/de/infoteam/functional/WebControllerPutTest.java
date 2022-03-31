@@ -191,11 +191,11 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
 
 			minioUrl = new URL(properties.getProperty("minio.url"));
 
-			final String minioUsername = properties.getProperty("minio.username");
-			final String minioPw = properties.getProperty("minio.password");
+			final String minioAccessKey = properties.getProperty("minio.access-key");
+			final String minioSecretKey = properties.getProperty("minio.secret-key");
 
 			minioBucketName = properties.getProperty("minio.images-bucket-name");
-			minioClient = MinioClient.builder().endpoint(minioUrl).credentials(minioUsername, minioPw).build();
+			minioClient = MinioClient.builder().endpoint(minioUrl).credentials(minioAccessKey, minioSecretKey).build();
 
 			final File contentFile = ResourceUtils.getFile("classpath:valid_test.jpg");
 

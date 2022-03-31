@@ -5,14 +5,14 @@
     "description": "The MinIo server's URL"
   },
   {
-    "name": "minio.username",
+    "name": "minio.access-key",
     "type": "java.lang.String",
-    "description": "The MinIo username"
+    "description": "The MinIo username token"
   },
   {
-    "name": "minio.password",
+    "name": "minio.secret-key",
     "type": "java.lang.String",
-    "description": "The MinIo password"
+    "description": "The MinIo password token"
   },
   {
     "name": "minio.blocksize",
