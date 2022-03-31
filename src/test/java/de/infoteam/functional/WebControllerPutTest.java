@@ -36,7 +36,6 @@ import de.infoteam.db.model.TagEntity;
 import de.infoteam.model.Pet;
 import de.infoteam.model.Pet.Category;
 import io.minio.MinioClient;
-import io.minio.RemoveBucketArgs;
 import io.minio.RemoveObjectArgs;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -166,6 +165,8 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
 
 		private static MinioClient minioClient;
 		private static String minioBucketName;
+		private static byte[] content;
+		private static String imageId;
 
 		/**
 		 * The Show Case for initializing some of the service's parameters in a static context: Initializes a
@@ -179,14 +180,17 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
 			yamlFactory.setResources(new ClassPathResource("application.yml"));
 
 			final Properties properties = yamlFactory.getObject();
-
 			final URL minioUrl = new URL(properties.getProperty("minio.url"));
-
 			final String minioUsername = properties.getProperty("minio.username");
 			final String minioPw = properties.getProperty("minio.password");
 
 			minioBucketName = properties.getProperty("minio.images-bucket-name");
 			minioClient = MinioClient.builder().endpoint(minioUrl).credentials(minioUsername, minioPw).build();
+
+			final File contentFile = ResourceUtils.getFile("classpath:valid_test.jpg");
+
+			content = FileUtils.readFileToByteArray(contentFile);
+			imageId = UUID.nameUUIDFromBytes(content).toString();
 		}
 
 		/**
@@ -196,9 +200,6 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
 		@SneakyThrows
 		@DisplayName("to an unknown pet resource THEN the response status 404 is returned")
 		void testAddImageToPetNotFoundAndExpect404() {
-			final File contentFile = ResourceUtils.getFile("classpath:valid_test.jpg");
-			final byte[] content = FileUtils.readFileToByteArray(contentFile);
-
 			mockMvc.perform(put(EndPointImageTestId).contentType(MediaType.IMAGE_JPEG).content(content))
 					.andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
 							.isInstanceOf(EntityNotFoundException.class))
@@ -216,10 +217,6 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
 		@SneakyThrows
 		@DisplayName("to a known pet resource THEN the response status 201 is returned")
 		void testAddImageToPetFoundAndExpect201() {
-			final File contentFile = ResourceUtils.getFile("classpath:valid_test.jpg");
-			final byte[] content = FileUtils.readFileToByteArray(contentFile);
-			final String imageId = UUID.nameUUIDFromBytes(content).toString();
-
 			final PetEntity entity = createTestEntity(true);
 
 			petRepository.save(entity);
@@ -235,8 +232,6 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
 
 			assertThat(resultEntity.getPhotoUrls().size()).isOne();
 			assertThat(resultEntity.getPhotoUrls().get(0).getUrl().toString()).endsWith(imageId);
-
-			minioClient.removeObject(RemoveObjectArgs.builder().bucket(minioBucketName).object(imageId).build());
 		}
 
 		/**
@@ -247,10 +242,6 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
 		@SneakyThrows
 		@DisplayName("to a pet resource twice THEN the response status 409 is returned")
 		void testAddImageToPetTwiceAndExpect409() {
-			final File contentFile = ResourceUtils.getFile("classpath:valid_test.jpg");
-			final byte[] content = FileUtils.readFileToByteArray(contentFile);
-			final String imageId = UUID.nameUUIDFromBytes(content).toString();
-
 			final PetEntity entity = createTestEntity(true);
 
 			petRepository.save(entity);
@@ -265,17 +256,15 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
 					.andExpect(status().isConflict())
 					.andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
 					.andExpect(content().string(containsString("\"title\":\"Entry already exists\"")));
-
-			minioClient.removeObject(RemoveObjectArgs.builder().bucket(minioBucketName).object(imageId).build());
 		}
 
 		/**
-		 * Removes the test bucket from the MinIO server after all tests are done.
+		 * Removes the test bucket's image from the MinIO server after all tests are done.
 		 */
 		@AfterAll
 		@SneakyThrows
 		private static void tearDown() {
-			minioClient.removeBucket(RemoveBucketArgs.builder().bucket(minioBucketName).build());
+			minioClient.removeObject(RemoveObjectArgs.builder().bucket(minioBucketName).object(imageId).build());
 		}
 	}
 }

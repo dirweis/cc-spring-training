@@ -5,8 +5,6 @@ import java.io.ByteArrayInputStream;
 import org.springframework.stereotype.Service;
 
 import de.infoteam.configuration.MinioConfigDto;
-import io.minio.BucketExistsArgs;
-import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import lombok.RequiredArgsConstructor;
@@ -38,10 +36,6 @@ public class MinioService {
 	 */
 	@SneakyThrows
 	public void storeImage(final byte[] image, final String imageId, final String contentType) {
-		if (!client.bucketExists(BucketExistsArgs.builder().bucket(minioConfig.imagesBucketName()).build())) {
-			client.makeBucket(MakeBucketArgs.builder().bucket(minioConfig.imagesBucketName()).build());
-		}
-
 		final PutObjectArgs argl = PutObjectArgs.builder().bucket(minioConfig.imagesBucketName()).object(imageId)
 				.contentType(contentType).stream(new ByteArrayInputStream(image), image.length, minioConfig.blocksize())
 				.build();
