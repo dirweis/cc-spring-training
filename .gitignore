@@ -4,3 +4,4 @@ target/
 .settings
 .openapi-generator-ignore
 .openapi-generator
+.factorypath
