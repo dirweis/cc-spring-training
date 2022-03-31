@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -62,9 +61,7 @@ class MethodArgumentTypeMismatchExceptionHandler {
 	private ResponseEntity<Error> handleException(final MethodArgumentTypeMismatchException ex) {
 		final String errorMsg = ErrorService.removePackageInformation(ex.getLocalizedMessage());
 
-		final int semicolonPos = errorMsg.indexOf(';');
-
-		final String title = errorMsg.substring(0, semicolonPos);
+		final String title = errorMsg.substring(0, errorMsg.indexOf(';'));
 		final String name = ex.getName();
 		final String reasonUncut = errorMsg.substring(errorMsg.indexOf(':') + 2);
 		final String reason = reasonUncut.contains("; ") ? reasonUncut.substring(0, reasonUncut.indexOf(';') + 1)
@@ -72,9 +69,8 @@ class MethodArgumentTypeMismatchExceptionHandler {
 
 		final List<InvalidParam> invalidParams = List.of(InvalidParam.builder().name(name).reason(reason).build());
 
-		final Error error = errorService.finalizeRfc7807Error(title, null, invalidParams);
+		final Error error = errorService.finalizeRfc7807Error(title, invalidParams);
 
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_PROBLEM_JSON)
-				.body(error);
+		return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
 	}
 }

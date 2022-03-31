@@ -72,7 +72,7 @@ class ConstraintViolationExceptionHandler {
 
 		final String title = isSyntacticalViolation ? "Constraint violations" : "Request body validation failed";
 
-		final Error error = errorService.finalizeRfc7807Error(title, null, invalidParams);
+		final Error error = errorService.finalizeRfc7807Error(title, invalidParams);
 
 		final HttpStatus status = isSyntacticalViolation ? HttpStatus.BAD_REQUEST : HttpStatus.UNPROCESSABLE_ENTITY;
 

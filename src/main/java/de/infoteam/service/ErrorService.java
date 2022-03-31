@@ -8,11 +8,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.RegExUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import de.infoteam.model.Error;
 import de.infoteam.model.Error.InvalidParam;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -20,24 +20,49 @@ import lombok.extern.log4j.Log4j2;
  * 
  * @author Dirk Weissmann
  * @since 2021-10-25
- * @version 1.0
+ * @version 1.1
  *
  */
 @Service
 @Log4j2
+@RequiredArgsConstructor
 public class ErrorService {
 
 	private final HttpServletRequest request;
 
 	/**
-	 * The constructor used for the injection of the fields (constructor injection). (Direct) field injection is not
-	 * thread-safe here since this class is a Spring {@link Service} bean.
+	 * Prepares the {@link Error} object with commonly used values and a specific title.
 	 * 
-	 * @param request the {@link HttpServletRequest} object for providing meta information, never {@code null}
+	 * @param title the error's title, must not be {@code null}
+	 * 
+	 * @return the final {@link Error}, never {@code null}
 	 */
-	@Autowired
-	public ErrorService(final HttpServletRequest request) {
-		this.request = request;
+	public Error finalizeRfc7807Error(final String title) {
+		return finalizeRfc7807Error(title, null, null);
+	}
+
+	/**
+	 * Prepares the {@link Error} object with commonly used values and a specific title and detail information.
+	 * 
+	 * @param title  the error's title, must not be {@code null}
+	 * @param detail the error's {@code detail} field's value, never {@code null}
+	 * 
+	 * @return the final {@link Error}, never {@code null}
+	 */
+	public Error finalizeRfc7807Error(final String title, final String detail) {
+		return finalizeRfc7807Error(title, detail, null);
+	}
+
+	/**
+	 * Prepares the {@link Error} object with commonly used values and a specific title.
+	 * 
+	 * @param title         the error's title, must not be {@code null}
+	 * @param invalidParams the error's {@code invalid_params} field's value, never {@code null}
+	 * 
+	 * @return the final {@link Error}, never {@code null}
+	 */
+	public Error finalizeRfc7807Error(final String title, final List<InvalidParam> invalidParams) {
+		return finalizeRfc7807Error(title, null, invalidParams);
 	}
 
 	/**
@@ -49,7 +74,7 @@ public class ErrorService {
 	 * 
 	 * @return the final {@link Error}, never {@code null}
 	 */
-	public Error finalizeRfc7807Error(final String title, final String detail,
+	private Error finalizeRfc7807Error(final String title, final String detail,
 			@Valid final List<InvalidParam> invalidParams) {
 		final UUID errorId = UUID.randomUUID();
 

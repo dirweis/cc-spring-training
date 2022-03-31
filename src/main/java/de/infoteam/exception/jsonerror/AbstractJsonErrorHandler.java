@@ -17,7 +17,7 @@ import de.infoteam.service.ErrorService;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-17
- * @version 1.2
+ * @version 1.0
  *
  */
 public abstract class AbstractJsonErrorHandler {
@@ -49,10 +49,9 @@ public abstract class AbstractJsonErrorHandler {
 		final String preparedDetail = ErrorService.removePackageInformation(exMsg);
 		final String detail = cleanExMsg(preparedDetail);
 
-		final Error error = errorService.finalizeRfc7807Error("JSON Parse Error", detail, null);
+		final Error error = errorService.finalizeRfc7807Error("JSON Parse Error", detail);
 
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_PROBLEM_JSON)
-				.body(error);
+		return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
 	}
 
 	/**

@@ -36,7 +36,7 @@ import lombok.AllArgsConstructor;
  * 
  * @author Dirk Weissmann
  * @since 2021-10-25
- * @version 1.2
+ * @version 1.0
  *
  */
 @AllArgsConstructor
@@ -79,10 +79,8 @@ class JsonMismatchHandler extends AbstractJsonErrorHandler {
 
 		final InvalidParam invalidParam = InvalidParam.builder().name(invalidParamName).reason(reason).build();
 
-		final Error error = errorService.finalizeRfc7807Error("Request body validation failed", null,
-				List.of(invalidParam));
+		final Error error = errorService.finalizeRfc7807Error("Request body validation failed", List.of(invalidParam));
 
-		return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).contentType(MediaType.APPLICATION_PROBLEM_JSON)
-				.body(error);
+		return ResponseEntity.unprocessableEntity().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
 	}
 }
