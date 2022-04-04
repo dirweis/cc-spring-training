@@ -1,6 +1,6 @@
 package de.infoteam.exception.jsonerror;
 
-import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import de.infoteam.model.Error;
@@ -34,9 +34,8 @@ class JsonSemanticErrorHandler extends AbstractJsonErrorHandler {
 		final int firstColonOffset = detail.indexOf(':');
 
 		final Error error = errorService.finalizeRfc7807Error("Request body validation failed",
-				detail.substring(firstColonOffset, detail.indexOf(':', firstColonOffset + 1)), null);
+				detail.substring(firstColonOffset, detail.indexOf(':', firstColonOffset + 1)));
 
-		return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).headers(ErrorService.provideProblemJsonHeader())
-				.body(error);
+		return ResponseEntity.unprocessableEntity().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
 	}
 }

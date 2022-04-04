@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -60,9 +60,8 @@ class MethodArgumentNotValidExceptionHandler {
 						.reason(fieldError.getDefaultMessage()).build())
 				.toList();
 
-		final Error error = errorService.finalizeRfc7807Error("Request body validation failed", null, invalidParams);
+		final Error error = errorService.finalizeRfc7807Error("Request body validation failed", invalidParams);
 
-		return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).headers(ErrorService.provideProblemJsonHeader())
-				.body(error);
+		return ResponseEntity.unprocessableEntity().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
 	}
 }

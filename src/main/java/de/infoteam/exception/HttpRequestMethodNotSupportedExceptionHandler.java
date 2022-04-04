@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -53,9 +54,9 @@ class HttpRequestMethodNotSupportedExceptionHandler {
 	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
 	private ResponseEntity<Error> handleException(final HttpRequestMethodNotSupportedException ex) {
 		final Error error = errorService.finalizeRfc7807Error(ex.getLocalizedMessage(),
-				"Supported method(s): " + ex.getSupportedHttpMethods(), null);
+				"Supported method(s): " + ex.getSupportedHttpMethods());
 
-		return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).headers(ErrorService.provideProblemJsonHeader())
+		return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).contentType(MediaType.APPLICATION_PROBLEM_JSON)
 				.body(error);
 	}
 }

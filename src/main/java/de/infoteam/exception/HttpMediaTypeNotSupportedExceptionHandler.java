@@ -3,6 +3,7 @@ package de.infoteam.exception;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -56,9 +57,9 @@ class HttpMediaTypeNotSupportedExceptionHandler {
 		final String title = msg.contains("''") ? "Request header 'content-type' not found" : msg;
 
 		final Error error = errorService.finalizeRfc7807Error(title,
-				"Supported media type(s): " + ex.getSupportedMediaTypes(), null);
+				"Supported media type(s): " + ex.getSupportedMediaTypes());
 
-		return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).headers(ErrorService.provideProblemJsonHeader())
+		return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).contentType(MediaType.APPLICATION_PROBLEM_JSON)
 				.body(error);
 	}
 }

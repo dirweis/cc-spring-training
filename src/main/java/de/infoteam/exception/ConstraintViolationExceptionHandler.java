@@ -11,6 +11,7 @@ import javax.validation.Path.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -67,11 +68,11 @@ class ConstraintViolationExceptionHandler {
 						.reason(constraintViolation.getMessage()).build())
 				.toList();
 
-		final Error error = errorService.finalizeRfc7807Error("Constraint violations", null, invalidParams);
+		final Error error = errorService.finalizeRfc7807Error("Constraint violations", invalidParams);
 
 		final HttpStatus status = semanticError(ex) ? HttpStatus.UNPROCESSABLE_ENTITY : HttpStatus.BAD_REQUEST;
 
-		return ResponseEntity.status(status).headers(ErrorService.provideProblemJsonHeader()).body(error);
+		return ResponseEntity.status(status).contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
 	}
 
 	/**

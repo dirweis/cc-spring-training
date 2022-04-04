@@ -3,6 +3,7 @@ package de.infoteam.exception.jsonerror;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
@@ -73,15 +74,13 @@ class JsonMismatchHandler extends AbstractJsonErrorHandler {
 		final List<String> invalidParamNameParts = ex.getPath().stream().map(Reference::getFieldName).toList();
 
 		final String invalidParamName = String.join(".", invalidParamNameParts);
-		final String reasonString = cleanExMsg(ex.getLocalizedMessage());
-		final String reason = ErrorService.removePackageInformation(reasonString).trim();
+		final String reasonString = ErrorService.removePackageInformation(ex.getLocalizedMessage());
+		final String reason = cleanExMsg(reasonString).trim();
 
 		final InvalidParam invalidParam = InvalidParam.builder().name(invalidParamName).reason(reason).build();
 
-		final Error error = errorService.finalizeRfc7807Error("Request body validation failed", null,
-				List.of(invalidParam));
+		final Error error = errorService.finalizeRfc7807Error("Request body validation failed", List.of(invalidParam));
 
-		return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).headers(ErrorService.provideProblemJsonHeader())
-				.body(error);
+		return ResponseEntity.unprocessableEntity().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
 	}
 }

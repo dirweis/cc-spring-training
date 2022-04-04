@@ -3,7 +3,7 @@ package de.infoteam.exception;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -55,12 +55,10 @@ class FurtherExceptionHandler {
 	 */
 	@ExceptionHandler(Throwable.class)
 	private ResponseEntity<Error> handleException(final Throwable ex) {
-		final Error error = errorService.finalizeRfc7807Error("Internal problem. Please contact the support.", null,
-				null);
+		final Error error = errorService.finalizeRfc7807Error("Internal problem. Please contact the support.");
 
 		log.error(ex);
 
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).headers(ErrorService.provideProblemJsonHeader())
-				.body(error);
+		return ResponseEntity.internalServerError().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
 	}
 }
