@@ -46,7 +46,8 @@ public abstract class AbstractJsonErrorHandler {
 	 * @return the object as service error response, never {@code null}
 	 */
 	protected static ResponseEntity<Error> handleSyntaxViolations(final String exMsg, final ErrorService errorService) {
-		final String detail = cleanExMsg(exMsg);
+		final String preparedDetail = ErrorService.removePackageInformation(exMsg);
+		final String detail = cleanExMsg(preparedDetail);
 
 		final Error error = errorService.finalizeRfc7807Error("JSON Parse Error", detail);
 
