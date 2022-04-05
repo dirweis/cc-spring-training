@@ -52,10 +52,6 @@ public class PhotoUrlEntity {
 	@CreatedDate
 	private Date createdTime;
 
-	@Column(nullable = false)
-	@LastModifiedDate
-	private Date modifiedTime;
-
 	/**
 	 * The constructor for adding a new entity on the given URL.
 	 * 
