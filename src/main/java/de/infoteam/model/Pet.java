@@ -13,7 +13,7 @@ public record Pet(UUID id, @NotNull Category category, @NotNull @Size(min = 3, m
 		@JsonProperty("photo-urls") List<URI> photoUrls, List<@Size(min = 3, max = 20) String> tags,
 		@NotNull PetStatus status, @NotNull @Size(min = 30, max = 1_000) String description) {
 
-	private enum Category {
+	public enum Category {
 		DOG, CAT, BIRD, MOUSE, SPIDER;
 	}
 
