@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import de.infoteam.model.Pet;
+import de.infoteam.model.Pet.Category;
+import de.infoteam.model.Pet.PetStatus;
 
 @Validated
 @RequestMapping("/petstore/petservice/v1/pets")
@@ -54,10 +56,11 @@ interface PetsApi {
 	/**
 	 * GET /pets: Finds Pet resources by the given parameters At least page and size is given for filtering the results
 	 *
-	 * @param page   Default is 0 (required)
-	 * @param size   Default is 20 (required)
-	 * @param tags   Tags to filter by (optional)
-	 * @param status Status values that need to be considered for filtering (optional)
+	 * @param page     Default is 0 (required)
+	 * @param size     Default is 20 (required)
+	 * @param tags     Tags to filter by (optional)
+	 * @param status   Status values that need to be considered for filtering (optional)
+	 * @param category Category values that need to be considered for filtering (optional)
 	 * 
 	 * @return successful operation (status code 200) or Invalid status value (status code 400) or User not allowed
 	 *         (status code 401) or Wrong HTTP method (status code 405) or Media type not acceptable (status code 415)
@@ -68,7 +71,7 @@ interface PetsApi {
 			@Min(0) @RequestParam(required = false, defaultValue = "0") Integer page,
 			@Min(10) @Max(1_000) @RequestParam(required = false, defaultValue = "20") Integer size,
 			@RequestParam(required = false) List<@Size(min = 3, max = 20) String> tags,
-			@RequestParam(required = false) Pet.PetStatus status);
+			@RequestParam(required = false) PetStatus status, @RequestParam(required = false) Category category);
 
 	/**
 	 * GET /pets/{petId}: Find pet by ID Returns a single pet resource
