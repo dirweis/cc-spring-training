@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import de.infoteam.db.service.StoreService;
 import de.infoteam.model.Pet;
+import de.infoteam.model.Pet.Category;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -63,7 +64,7 @@ class PetsApiController implements PetsApi {
 	 */
 	@Override
 	public ResponseEntity<List<Pet>> findPetsRestrictedByParameters(final Integer page, final Integer size,
-			final List<String> tags, final Pet.PetStatus status) {
+			final List<String> tags, final Pet.PetStatus status, final Category category) {
 		return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
 	}
 

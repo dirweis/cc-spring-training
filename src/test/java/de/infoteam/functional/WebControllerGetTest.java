@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import de.infoteam.AbstractSpringTestRunner;
 import de.infoteam.model.Pet;
+import de.infoteam.model.Pet.Category;
 import de.infoteam.model.Pet.PetStatus;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -47,6 +48,16 @@ class WebControllerGetTest extends AbstractSpringTestRunner {
 		@DisplayName("their status THEN the response status 501 is returned since the endpoint is not yet implemented")
 		void testFindPetsRestrictedByStatusSuccessfullyAndExpect501() {
 			mockMvc.perform(get(EndPointPrefix + "?status=available")).andExpect(status().isNotImplemented());
+		}
+
+		/**
+		 * Sends a valid request to the endpoint using the {@link Category} parameter for filtering the result set.
+		 */
+		@Test
+		@SneakyThrows
+		@DisplayName("their category THEN the response status 501 is returned since the endpoint is not yet implemented")
+		void testFindPetsRestrictedByCategorySuccessfullyAndExpect501() {
+			mockMvc.perform(get(EndPointPrefix + "?category=cat")).andExpect(status().isNotImplemented());
 		}
 
 		/**
