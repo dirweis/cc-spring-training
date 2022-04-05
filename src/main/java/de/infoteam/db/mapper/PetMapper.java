@@ -49,6 +49,8 @@ public interface PetMapper {
 	@Mapping(target = "tags", expression = "java(mapTagEntities2Tags(petEntity.getTags()))")
 	Pet entity2Dto(PetEntity petEntity);
 
+	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "photoUrls", ignore = true)
 	PetEntity update(@MappingTarget PetEntity targetEntity, PetEntity updateEntity);
 
 	/**
