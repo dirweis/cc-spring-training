@@ -1,4 +1,4 @@
-package de.infoteam.db.mapper.model;
+package de.infoteam.db.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import de.infoteam.AbstractSpringTestRunner;
 import de.infoteam.db.dao.PetRepositoryDao;
-import de.infoteam.db.model.PetEntity;
-import de.infoteam.db.model.PhotoUrlEntity;
 import de.infoteam.model.Pet.Category;
 import de.infoteam.model.Pet.PetStatus;
 import lombok.AccessLevel;
