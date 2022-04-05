@@ -53,10 +53,6 @@ public class TagEntity {
 	@CreatedDate
 	private Date createdTime;
 
-	@Column(nullable = false)
-	@LastModifiedDate
-	private Date modifiedTime;
-
 	/**
 	 * Constructor for the only field that is to be set here by the developer: The name of the tag.
 	 * 
