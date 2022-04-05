@@ -45,7 +45,8 @@ class MockedControllerTest extends AbstractSpringTestRunner {
 	 */
 	@Test
 	@SneakyThrows
-	@DisplayName("WHEN the Post endpoint for adding a new Pet resource is called an the implementation crashes internally on an exception THEN expect a response with status code 500 and an appropriate body")
+	@DisplayName("WHEN the Post endpoint for adding a new Pet resource is called an the implementation crashes internally on an exception THEN "
+			+ "expect a response with status code 500 and an appropriate body")
 	void testFurtherExceptionHandlerOnInternalFailAndExpect500() {
 		when(controller.addPet(any())).thenThrow(NullPointerException.class);
 

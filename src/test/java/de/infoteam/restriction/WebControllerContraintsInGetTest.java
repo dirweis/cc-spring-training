@@ -20,6 +20,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import de.infoteam.AbstractSpringTestRunner;
 import de.infoteam.model.Pet;
+import de.infoteam.model.Pet.Category;
 import de.infoteam.model.Pet.PetStatus;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -207,6 +208,24 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
 							"\"title\":\"Failed to convert value of type 'String' to required type 'Pet$PetStatus'\"")))
 					.andExpect(content().string(containsString(
 							"{\"invalid_params\":[{\"name\":\"status\",\"reason\":\"Failed to convert from type [String] to type [@RequestParam Pet$PetStatus] for value 'k';\"}]")));
+		}
+
+		/**
+		 * Test for an unknown enum value of the {@code category} parameter: The value {@code k} is not of the type
+		 * {@link Category}.
+		 */
+		@Test
+		@SneakyThrows
+		@DisplayName("with a not acceptable category value THEN respond with status 400 AND content type application/problem+json AND the expected response body")
+		void testCallGetWithInacceptableCategoryValue() {
+			mockMvc.perform(get(EndPointPrefix + "?category=k")).andExpect(status().isBadRequest())
+					.andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
+					.andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
+							.isInstanceOf(MethodArgumentTypeMismatchException.class))
+					.andExpect(content().string(containsString(
+							"\"title\":\"Failed to convert value of type 'String' to required type 'Pet$Category'\"")))
+					.andExpect(content().string(containsString(
+							"{\"invalid_params\":[{\"name\":\"category\",\"reason\":\"Failed to convert from type [String] to type [@RequestParam Pet$Category] for value 'k';\"}]")));
 		}
 
 		/**
