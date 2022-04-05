@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import de.infoteam.model.Pet;
+import de.infoteam.model.Pet.Category;
 
 @RestController
 class PetsApiController implements PetsApi {
@@ -30,7 +31,7 @@ class PetsApiController implements PetsApi {
 
 	@Override
 	public ResponseEntity<List<Pet>> findPetsRestrictedByParameters(final Integer page, final Integer size,
-			final List<String> tags, final Pet.PetStatus status) {
+			final List<String> tags, final Pet.PetStatus status, final Category category) {
 		return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
 	}
 
