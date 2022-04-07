@@ -1,4 +1,4 @@
-package de.infoteam.api;
+package de.training.api;
 
 import java.util.List;
 import java.util.UUID;
@@ -7,9 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import de.infoteam.model.Pet;
-import de.infoteam.model.Pet.Category;
-import de.infoteam.model.Pet.PetStatus;
+import de.training.model.Pet;
+import de.training.model.Pet.Category;
+import de.training.model.Pet.PetStatus;
 import lombok.extern.log4j.Log4j2;
 
 @RestController
