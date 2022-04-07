@@ -23,5 +23,10 @@
     "name": "minio.images-bucket-name",
     "type": "java.lang.String",
     "description": "The bucket name of the MinIO bucket for storing the images"
+  },
+  {
+    "name": "minio.browse-port",
+    "type": "int",
+    "description": "The MinIO server browse port"
   }
 ]}
