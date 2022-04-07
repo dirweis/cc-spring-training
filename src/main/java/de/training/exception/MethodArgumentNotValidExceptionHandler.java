@@ -1,4 +1,4 @@
-package de.infoteam.exception;
+package de.training.exception;
 
 import java.util.List;
 
@@ -11,9 +11,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import de.infoteam.model.Error;
-import de.infoteam.model.Error.InvalidParam;
-import de.infoteam.service.ErrorService;
+import de.training.model.Error;
+import de.training.model.Error.InvalidParam;
+import de.training.service.ErrorService;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

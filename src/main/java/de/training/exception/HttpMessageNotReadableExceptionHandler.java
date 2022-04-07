@@ -1,4 +1,4 @@
-package de.infoteam.exception;
+package de.training.exception;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
@@ -7,10 +7,10 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import de.infoteam.exception.jsonerror.AbstractJsonErrorHandler;
-import de.infoteam.exception.jsonerror.JsonErrorFactory;
-import de.infoteam.model.Error;
-import de.infoteam.service.ErrorService;
+import de.training.exception.jsonerror.AbstractJsonErrorHandler;
+import de.training.exception.jsonerror.JsonErrorFactory;
+import de.training.model.Error;
+import de.training.service.ErrorService;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

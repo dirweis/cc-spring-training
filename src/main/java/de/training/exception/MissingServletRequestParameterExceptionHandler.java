@@ -1,4 +1,4 @@
-package de.infoteam.exception;
+package de.training.exception;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
@@ -8,8 +8,8 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import de.infoteam.model.Error;
-import de.infoteam.service.ErrorService;
+import de.training.model.Error;
+import de.training.service.ErrorService;
 
 /**
  * The {@link ExceptionHandler} implementation for creating {@link Error} response bodies in case of a caught

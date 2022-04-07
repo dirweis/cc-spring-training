@@ -1,10 +1,10 @@
-package de.infoteam.exception.jsonerror;
+package de.training.exception.jsonerror;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
-import de.infoteam.model.Error;
-import de.infoteam.service.ErrorService;
+import de.training.model.Error;
+import de.training.service.ErrorService;
 import lombok.AllArgsConstructor;
 
 /**

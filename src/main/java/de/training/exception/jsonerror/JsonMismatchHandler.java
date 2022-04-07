@@ -1,4 +1,4 @@
-package de.infoteam.exception.jsonerror;
+package de.training.exception.jsonerror;
 
 import java.util.List;
 
@@ -9,9 +9,9 @@ import org.springframework.http.ResponseEntity;
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 
-import de.infoteam.model.Error;
-import de.infoteam.model.Error.InvalidParam;
-import de.infoteam.service.ErrorService;
+import de.training.model.Error;
+import de.training.model.Error.InvalidParam;
+import de.training.service.ErrorService;
 import lombok.AllArgsConstructor;
 
 /**

@@ -1,4 +1,4 @@
-package de.infoteam.exception.jsonerror;
+package de.training.exception.jsonerror;
 
 import java.net.MalformedURLException;
 
@@ -8,7 +8,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.io.JsonEOFException;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 
-import de.infoteam.service.ErrorService;
+import de.training.service.ErrorService;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

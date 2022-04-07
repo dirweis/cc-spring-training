@@ -1,4 +1,4 @@
-package de.infoteam.exception.jsonerror;
+package de.training.exception.jsonerror;
 
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -9,8 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
-import de.infoteam.model.Error;
-import de.infoteam.service.ErrorService;
+import de.training.model.Error;
+import de.training.service.ErrorService;
 
 /**
  * An abstract class as super implementation for JSON violations in the request body.

@@ -1,11 +1,11 @@
-package de.infoteam.configuration;
+package de.training.configuration;
 
 import java.util.Locale;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 
-import de.infoteam.model.Pet.PetStatus;
+import de.training.model.Pet.PetStatus;
 
 /**
  * Minimalist converter bean for processing {@link PetStatus} values in parameters (path / query) case insensitively.

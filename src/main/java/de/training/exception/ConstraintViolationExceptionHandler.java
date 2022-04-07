@@ -1,4 +1,4 @@
-package de.infoteam.exception;
+package de.training.exception;
 
 import java.util.List;
 import java.util.stream.StreamSupport;
@@ -16,9 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import de.infoteam.model.Error;
-import de.infoteam.model.Error.InvalidParam;
-import de.infoteam.service.ErrorService;
+import de.training.model.Error;
+import de.training.model.Error.InvalidParam;
+import de.training.service.ErrorService;
 
 /**
  * The {@link ExceptionHandler} implementation for creating {@link Error} response bodies in case of a caught

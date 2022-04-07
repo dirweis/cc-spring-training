@@ -1,4 +1,4 @@
-package de.infoteam.model;
+package de.training.model;
 
 import java.net.URI;
 import java.util.List;

@@ -1,4 +1,4 @@
-package de.infoteam.service;
+package de.training.service;
 
 import java.net.URI;
 import java.util.List;
@@ -11,8 +11,8 @@ import org.apache.commons.lang3.RegExUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import de.infoteam.model.Error;
-import de.infoteam.model.Error.InvalidParam;
+import de.training.model.Error;
+import de.training.model.Error.InvalidParam;
 import lombok.extern.log4j.Log4j2;
 
 /**

@@ -1,4 +1,4 @@
-package de.infoteam.api;
+package de.training.api;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,9 +21,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import de.infoteam.model.Pet;
-import de.infoteam.model.Pet.Category;
-import de.infoteam.model.Pet.PetStatus;
+import de.training.model.Pet;
+import de.training.model.Pet.Category;
+import de.training.model.Pet.PetStatus;
 
 /**
  * The end points of the {@link RestController} for handling the pets' information.
