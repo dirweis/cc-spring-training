@@ -31,7 +31,6 @@ import lombok.Setter;
  */
 @Entity(name = "tag")
 @Table(indexes = @Index(columnList = "tag"), uniqueConstraints = @UniqueConstraint(columnNames = { "pet_id", "tag" }))
-@NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class TagEntity {
 
