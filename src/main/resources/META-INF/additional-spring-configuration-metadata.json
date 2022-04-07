@@ -23,5 +23,10 @@
     "name": "minio.secret-key",
     "type": "java.lang.String",
     "description": "The MinIO server secret key"
+  },
+  {
+    "name": "minio.browse-port",
+    "type": "int",
+    "description": "The Minio server browse port"
   }
 ]}
