@@ -135,7 +135,7 @@
 					<show>package</show>
 					<nohelp>true</nohelp>
 					<!-- WTF (no comment) -->
-					<excludePackageNames>de.infoteam.db.mapper</excludePackageNames>
+					<excludePackageNames>de.training.db.mapper</excludePackageNames>
 				</configuration>
 			</plugin>
 
