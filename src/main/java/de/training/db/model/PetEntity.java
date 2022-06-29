@@ -12,9 +12,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Index;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -37,9 +35,6 @@ import lombok.Setter;
  *
  */
 @Entity(name = "pet")
-@Table(indexes = { @Index(columnList = "category"), @Index(columnList = "name"), @Index(columnList = "status"),
-		@Index(columnList = "category,name"), @Index(columnList = "category,status"),
-		@Index(columnList = "name,status"), @Index(columnList = "category,name,status") })
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @Getter
