@@ -9,7 +9,6 @@ import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -29,7 +28,7 @@ import lombok.NoArgsConstructor;
  *
  */
 @Entity(name = "photo_url")
-@Table(indexes = @Index(columnList = "url"), uniqueConstraints = @UniqueConstraint(columnNames = { "pet_id", "url" }))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = { "pet_id", "url" }))
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class PhotoUrlEntity {
