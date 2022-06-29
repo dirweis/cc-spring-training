@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-18
- * @version 0.9
+ * @version 1.0
  *
  */
 @Entity(name = "photo_url")
