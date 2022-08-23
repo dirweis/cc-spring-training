@@ -2,6 +2,7 @@
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=dirweis_cc-spring-training&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=dirweis_cc-spring-training)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=dirweis_cc-spring-training&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=dirweis_cc-spring-training)
 [![Coverage %](https://sonarcloud.io/api/project_badges/measure?project=dirweis_cc-spring-training&metric=coverage)](https://sonarcloud.io/dashboard?id=dirweis_cc-spring-training)
+<a href="https://coveralls.io/github/cc-spring-training/cc-spring-training?branch=master"><img alt="Coverage Status" src="https://coveralls.io/repos/github/cc-spring-training/cc-spring-training/badge.svg?branch=master"></a>
 # cc-spring-training
 Quality driven software development training on a Spring Boot example.
 
