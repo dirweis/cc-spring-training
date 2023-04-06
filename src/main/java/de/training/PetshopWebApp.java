@@ -16,13 +16,13 @@ import org.springframework.boot.autoconfigure.web.servlet.MultipartAutoConfigura
 @SpringBootApplication(exclude = { MultipartAutoConfiguration.class, JmxAutoConfiguration.class })
 public class PetshopWebApp {
 
-	/**
-	 * The main method not doing much but running the service until stopped explicitly.
-	 * 
-	 * @param args no arguments needed, for examples see
-	 *             <a href="https://www.baeldung.com/spring-boot-command-line-arguments">Baeldung Spring arguments</a>
-	 */
-	public static void main(final String[] args) {
-		SpringApplication.run(PetshopWebApp.class, args);
-	}
+    /**
+     * The main method not doing much but running the service until stopped explicitly.
+     * 
+     * @param args no arguments needed, for examples see
+     *             <a href="https://www.baeldung.com/spring-boot-command-line-arguments">Baeldung Spring arguments</a>
+     */
+    public static void main(final String[] args) {
+        SpringApplication.run(PetshopWebApp.class, args);
+    }
 }

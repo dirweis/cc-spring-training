@@ -3,11 +3,11 @@ package de.training.model;
 import java.net.URI;
 import java.util.List;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 /**
  * The record representing the Error DTO for RFC 7807 specified error response bodies.
@@ -25,22 +25,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @param timestamp     the error's time stamp, must not be {@code null}
  */
 public record Error(@NotNull URI type, @NotNull @Size(min = 5, max = 50) String title, @NotNull URI instance,
-		@Size(min = 10, max = 200) String detail,
-		@JsonProperty("invalid_params") @Valid List<InvalidParam> invalidParams, @NotNull Long timestamp) {
+        @Size(min = 10, max = 200) String detail,
+        @JsonProperty("invalid_params") @Valid List<InvalidParam> invalidParams, @NotNull Long timestamp) {
 
-	/**
-	 * The record representing an invalid parameter information DTO as part of the {@link Error} DTO.
-	 * 
-	 * @author Dirk Weissmann
-	 * @since 2022-02-16
-	 * @version 1.0
-	 * 
-	 * @param name   the parameter's name, must not be {@code null}
-	 * @param reason the parameter violation's reason, must not be {@code null}
-	 *
-	 */
-	public record InvalidParam(@NotNull @Size(min = 3, max = 20) String name,
-			@NotNull @Size(min = 8, max = 200) String reason) {
-		/* Nothing special in this record */
-	}
+    /**
+     * The record representing an invalid parameter information DTO as part of the {@link Error} DTO.
+     * 
+     * @author Dirk Weissmann
+     * @since 2022-02-16
+     * @version 1.0
+     * 
+     * @param name   the parameter's name, must not be {@code null}
+     * @param reason the parameter violation's reason, must not be {@code null}
+     *
+     */
+    public record InvalidParam(@NotNull @Size(min = 3, max = 20) String name,
+            @NotNull @Size(min = 8, max = 200) String reason) {
+        /* Nothing special in this record */
+    }
 }
