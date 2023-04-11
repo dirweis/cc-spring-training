@@ -46,33 +46,29 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class MethodArgumentTypeMismatchExceptionHandler {
 
-	@Autowired
-	private ErrorService errorService;
+    @Autowired
+    private ErrorService errorService;
 
-	/**
-	 * Catches the defined {@link Exception}s and creates an {@link Error} response body.
-	 * 
-	 * @param ex the {@link Exception} to catch, never {@code null}
-	 * 
-	 * @return the created {@link Error} object as response body, never {@code null}
-	 * 
-	 */
-	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
-	private ResponseEntity<Error> handleException(final MethodArgumentTypeMismatchException ex) {
-		final String errorMsg = ErrorService.removePackageInformation(ex.getLocalizedMessage());
+    /**
+     * Catches the defined {@link Exception}s and creates an {@link Error} response body.
+     * 
+     * @param ex the {@link Exception} to catch, never {@code null}
+     * 
+     * @return the created {@link Error} object as response body, never {@code null}
+     * 
+     */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    private ResponseEntity<Error> handleException(final MethodArgumentTypeMismatchException ex) {
+        final String errorMsg = ErrorService.removePackageInformation(ex.getLocalizedMessage());
 
-		final int semicolonPos = errorMsg.indexOf(';');
+        final String title = errorMsg.substring(0, errorMsg.indexOf(';'));
+        final String name = ex.getName();
+        final String reason = errorMsg.substring(errorMsg.indexOf(';') + 2);
 
-		final String title = errorMsg.substring(0, semicolonPos);
-		final String name = ex.getName();
-		final String reasonUncut = errorMsg.substring(errorMsg.indexOf(':') + 2);
-		final String reason = reasonUncut.contains("; ") ? reasonUncut.substring(0, reasonUncut.indexOf(';') + 1)
-				: reasonUncut;
+        final List<InvalidParam> invalidParams = List.of(InvalidParam.builder().name(name).reason(reason).build());
 
-		final List<InvalidParam> invalidParams = List.of(InvalidParam.builder().name(name).reason(reason).build());
+        final Error error = errorService.finalizeRfc7807Error(title, invalidParams);
 
-		final Error error = errorService.finalizeRfc7807Error(title, invalidParams);
-
-		return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
-	}
+        return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
+    }
 }

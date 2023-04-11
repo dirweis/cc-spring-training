@@ -1,10 +1,9 @@
 package de.training.annotation;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
-import javax.validation.ConstraintViolation;
-
 import de.training.model.Pet;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintViolation;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -19,29 +18,29 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 final class PetIdNullValidator implements ConstraintValidator<PetIdNull, Pet> {
 
-	private String message;
+    private String message;
 
-	/**
-	 * {@inheritDoc}
-	 * <p>
-	 * Fetches the field {@link PetIdNull#message()} for creating a customized {@link ConstraintViolation}.
-	 */
-	@Override
-	public void initialize(final PetIdNull constraintAnnotation) {
-		message = constraintAnnotation.message();
-	}
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Fetches the field {@link PetIdNull#message()} for creating a customized {@link ConstraintViolation}.
+     */
+    @Override
+    public void initialize(final PetIdNull constraintAnnotation) {
+        message = constraintAnnotation.message();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 * <p>
-	 * Hereby the {@link Pet#id()} field is checked on {@code null}.
-	 */
-	@Override
-	public boolean isValid(final Pet pet, final ConstraintValidatorContext context) {
-		context.disableDefaultConstraintViolation();
-		context.buildConstraintViolationWithTemplate(message).addPropertyNode("body").addPropertyNode("id")
-				.addConstraintViolation();
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Hereby the {@link Pet#id()} field is checked on {@code null}.
+     */
+    @Override
+    public boolean isValid(final Pet pet, final ConstraintValidatorContext context) {
+        context.disableDefaultConstraintViolation();
+        context.buildConstraintViolationWithTemplate(message).addPropertyNode("body").addPropertyNode("id")
+                .addConstraintViolation();
 
-		return pet.id() == null;
-	}
+        return pet.id() == null;
+    }
 }

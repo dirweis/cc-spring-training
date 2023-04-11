@@ -36,57 +36,57 @@ import lombok.SneakyThrows;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class WebControllerPostTest extends AbstractSpringTestRunner {
 
-	@Autowired
-	private PetRepositoryDao petRepository;
+    @Autowired
+    private PetRepositoryDao petRepository;
 
-	@AfterEach
-	private void cleanUp() {
-		petRepository.deleteAll();
-	}
+    @AfterEach
+    void cleanUp() {
+        petRepository.deleteAll();
+    }
 
-	/**
-	 * Sends a valid request with a maximum example body to the endpoint for creating a new {@link Pet} resource.
-	 */
-	@Test
-	@SneakyThrows
-	@DisplayName("WHEN a valid request with a body including tags is sent to the Post endpoint for pet creation THEN the response status 201 is expected and the database must contain the entry")
-	void testAddPetMaxBodyAndExpect201() {
-		final MvcResult result = mockMvc
-				.perform(post(EndPointPrefix).contentType(MediaType.APPLICATION_JSON_VALUE)
-						.content(validPetBodyWithTags))
-				.andExpect(status().isCreated()).andExpect(header().exists("Location"))
-				.andExpect(header().string("Location", startsWith("/petstore/petservice/v1/pets/"))).andReturn();
+    /**
+     * Sends a valid request with a maximum example body to the endpoint for creating a new {@link Pet} resource.
+     */
+    @Test
+    @SneakyThrows
+    @DisplayName("WHEN a valid request with a body including tags is sent to the Post endpoint for pet creation THEN the response status 201 is expected and the database must contain the entry")
+    void testAddPetMaxBodyAndExpect201() {
+        final MvcResult result = mockMvc
+                .perform(post(EndPointPrefix).contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(validPetBodyWithTags))
+                .andExpect(status().isCreated()).andExpect(header().exists("Location"))
+                .andExpect(header().string("Location", startsWith("/petstore/petservice/v1/pets/"))).andReturn();
 
-		final String locationHeader = result.getResponse().getHeader("Location");
-		final UUID entityId = UUID.fromString(locationHeader.substring(locationHeader.lastIndexOf('/') + 1));
+        final String locationHeader = result.getResponse().getHeader("Location");
+        final UUID entityId = UUID.fromString(locationHeader.substring(locationHeader.lastIndexOf('/') + 1));
 
-		final PetEntity entity = petRepository.findById(entityId).get();
+        final PetEntity entity = petRepository.findById(entityId).get();
 
-		assertThat(entity).isNotNull();
-		assertThat(entity.getCategory()).isEqualTo(Category.CAT);
-		assertThat(entity.getTags()).hasSize(3);
-	}
+        assertThat(entity).isNotNull();
+        assertThat(entity.getCategory()).isEqualTo(Category.CAT);
+        assertThat(entity.getTags()).hasSize(3);
+    }
 
-	/**
-	 * Sends a valid request with a minimum example body to the endpoint for creating a new {@link Pet} resource.
-	 */
-	@Test
-	@SneakyThrows
-	@DisplayName("WHEN a valid request with a body without tags is sent to the Post endpoint for pet creation THEN the response status 201 is expected and the database must contain the entry")
-	void testAddPetMinBodyAndExpect201() {
-		final MvcResult result = mockMvc
-				.perform(
-						post(EndPointPrefix).contentType(MediaType.APPLICATION_JSON_VALUE).content(validMinimumPetBody))
-				.andExpect(status().isCreated()).andExpect(header().exists("Location"))
-				.andExpect(header().string("Location", startsWith("/petstore/petservice/v1/pets/"))).andReturn();
+    /**
+     * Sends a valid request with a minimum example body to the endpoint for creating a new {@link Pet} resource.
+     */
+    @Test
+    @SneakyThrows
+    @DisplayName("WHEN a valid request with a body without tags is sent to the Post endpoint for pet creation THEN the response status 201 is expected and the database must contain the entry")
+    void testAddPetMinBodyAndExpect201() {
+        final MvcResult result = mockMvc
+                .perform(
+                        post(EndPointPrefix).contentType(MediaType.APPLICATION_JSON_VALUE).content(validMinimumPetBody))
+                .andExpect(status().isCreated()).andExpect(header().exists("Location"))
+                .andExpect(header().string("Location", startsWith("/petstore/petservice/v1/pets/"))).andReturn();
 
-		final String locationHeader = result.getResponse().getHeader("Location");
-		final UUID entityId = UUID.fromString(locationHeader.substring(locationHeader.lastIndexOf('/') + 1));
+        final String locationHeader = result.getResponse().getHeader("Location");
+        final UUID entityId = UUID.fromString(locationHeader.substring(locationHeader.lastIndexOf('/') + 1));
 
-		final PetEntity entity = petRepository.findById(entityId).get();
+        final PetEntity entity = petRepository.findById(entityId).get();
 
-		assertThat(entity).isNotNull();
-		assertThat(entity.getCategory()).isEqualTo(Category.CAT);
-		assertThat(entity.getTags()).isEmpty();
-	}
+        assertThat(entity).isNotNull();
+        assertThat(entity.getCategory()).isEqualTo(Category.CAT);
+        assertThat(entity.getTags()).isEmpty();
+    }
 }
