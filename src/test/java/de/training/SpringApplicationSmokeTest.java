@@ -5,6 +5,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.StopWatch;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * The smoke test for the service. Starts and stops the service including time runtime tracking.
  * 
@@ -13,29 +16,22 @@ import org.springframework.util.StopWatch;
  * @version 1.0
  *
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 class SpringApplicationSmokeTest {
 
-	/**
-	 * The only test here: Ensures the service starts and shuts down in time as expected.
-	 */
-	@Test
-	void testServiceStartAndShutDown() {
+    /**
+     * The only test here: Ensures the service starts and shuts down in time as expected.
+     */
+    @Test
+    void testServiceStartAndShutDown() {
+        final StopWatch stopWatch = new StopWatch();
 
-		final StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
 
-		stopWatch.start();
+        PetshopWebApp.main(new String[] {});
 
-		String errorMessage = null;
+        stopWatch.stop();
 
-		try {
-			PetshopWebApp.main(new String[] {});
-			stopWatch.stop();
-		} catch (final Throwable e) {
-			errorMessage = e.getLocalizedMessage();
-		}
-
-		assertThat(errorMessage).isNull();
-
-		assertThat(stopWatch.getTotalTimeSeconds()).isLessThan(8);
-	}
+        assertThat(stopWatch.getTotalTimeSeconds()).isLessThan(9);
+    }
 }

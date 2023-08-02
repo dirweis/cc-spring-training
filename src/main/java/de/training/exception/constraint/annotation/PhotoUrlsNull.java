@@ -7,10 +7,9 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import javax.validation.Constraint;
-import javax.validation.Payload;
-
 import de.training.model.Pet;
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 
 /**
  * A very special validating annotation: Validates the {@code photo-urls} field of the {@link Pet} resource on
@@ -27,22 +26,22 @@ import de.training.model.Pet;
 @Constraint(validatedBy = PhotoUrlsNullValidator.class)
 public @interface PhotoUrlsNull {
 
-	/**
-	 * @return the default message: an empty {@link String}
-	 */
-	String message() default "POST request: The field pet.photo-urls must be null";
+    /**
+     * @return the default message: an empty {@link String}
+     */
+    String message() default "POST request: The field pet.photo-urls must be null";
 
-	/**
-	 * The mandatory groups field.
-	 * 
-	 * @return empty list
-	 */
-	Class<?>[] groups() default {};
+    /**
+     * The mandatory groups field.
+     * 
+     * @return empty list
+     */
+    Class<?>[] groups() default {};
 
-	/**
-	 * The mandatory payload field.
-	 * 
-	 * @return empty list
-	 */
-	Class<? extends Payload>[] payload() default {};
+    /**
+     * The mandatory payload field.
+     * 
+     * @return empty list
+     */
+    Class<? extends Payload>[] payload() default {};
 }

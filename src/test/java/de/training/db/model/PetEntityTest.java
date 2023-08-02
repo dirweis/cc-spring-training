@@ -26,37 +26,37 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class PetEntityTest extends AbstractSpringTestRunner {
 
-	@Autowired
-	private PetRepositoryDao petRepository;
+    @Autowired
+    PetRepositoryDao petRepository;
 
-	@AfterEach
-	private void cleanUp() {
-		petRepository.deleteAll();
-	}
+    @AfterEach
+    void cleanUp() {
+        petRepository.deleteAll();
+    }
 
-	/**
-	 * Tests the getters for all fields. Most of these assertions will become obsolete shortly (when the behavior tests
-	 * for a GET endpoint is implemented). But this test is OK anyways.
-	 */
-	@Test
-	void testAllGetters() {
-		final PetEntity entity = new PetEntity();
+    /**
+     * Tests the getters for all fields. Most of these assertions will become obsolete shortly (when the behavior tests
+     * for a GET endpoint is implemented). But this test is OK anyways.
+     */
+    @Test
+    void testAllGetters() {
+        final PetEntity entity = new PetEntity();
 
-		entity.setCategory(Category.BIRD);
-		entity.setDescription("This is a wonderful description of a bird. Maybe a parrot.");
-		entity.setName("Bob the Bird");
-		entity.setStatus(PetStatus.AVAILABLE);
+        entity.setCategory(Category.BIRD);
+        entity.setDescription("This is a wonderful description of a bird. Maybe a parrot.");
+        entity.setName("Bob the Bird");
+        entity.setStatus(PetStatus.AVAILABLE);
 
-		petRepository.save(entity);
+        petRepository.save(entity);
 
-		assertThat(entity.getId()).isInstanceOf(UUID.class);
-		assertThat(entity.getCategory()).isEqualTo(Category.BIRD);
-		assertThat(entity.getDescription()).isNotEmpty();
-		assertThat(entity.getName()).startsWith("Bob");
-		assertThat(entity.getStatus()).isEqualTo(PetStatus.AVAILABLE);
-		assertThat(entity.getTags()).isNull();
-		assertThat(entity.getPhotoUrls()).isNull();
+        assertThat(entity.getId()).isInstanceOf(UUID.class);
+        assertThat(entity.getCategory()).isEqualTo(Category.BIRD);
+        assertThat(entity.getDescription()).isNotEmpty();
+        assertThat(entity.getName()).startsWith("Bob");
+        assertThat(entity.getStatus()).isEqualTo(PetStatus.AVAILABLE);
+        assertThat(entity.getTags()).isNull();
+        assertThat(entity.getPhotoUrls()).isNull();
 
-		assertThat(entity.getCreatedTime()).isEqualTo(entity.getModifiedTime());
-	}
+        assertThat(entity.getCreatedTime()).isEqualTo(entity.getModifiedTime());
+    }
 }
