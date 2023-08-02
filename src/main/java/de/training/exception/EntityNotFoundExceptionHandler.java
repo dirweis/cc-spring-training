@@ -1,7 +1,5 @@
 package de.training.exception;
 
-import javax.persistence.EntityNotFoundException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -12,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import de.training.exception.service.ErrorService;
 import de.training.model.Error;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -41,20 +40,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class EntityNotFoundExceptionHandler {
 
-	@Autowired
-	private ErrorService errorService;
+    @Autowired
+    private ErrorService errorService;
 
-	/**
-	 * Catches the defined {@link Exception}s and creates an {@link Error} response body.
-	 * 
-	 * @param ex the {@link Exception} to catch, never {@code null}
-	 * 
-	 * @return the created {@link Error} object as response body, never {@code null}
-	 */
-	@ExceptionHandler(EntityNotFoundException.class)
-	private ResponseEntity<Error> handleException(final EntityNotFoundException ex) {
-		final Error error = errorService.finalizeRfc7807Error("Not found", ex.getLocalizedMessage());
+    /**
+     * Catches the defined {@link Exception}s and creates an {@link Error} response body.
+     * 
+     * @param ex the {@link Exception} to catch, never {@code null}
+     * 
+     * @return the created {@link Error} object as response body, never {@code null}
+     */
+    @ExceptionHandler(EntityNotFoundException.class)
+    private ResponseEntity<Error> handleException(final EntityNotFoundException ex) {
+        final Error error = errorService.finalizeRfc7807Error("Not found", ex.getLocalizedMessage());
 
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
-	}
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
+    }
 }

@@ -3,11 +3,6 @@ package de.training.exception;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Path;
-import javax.validation.Path.Node;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -19,6 +14,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import de.training.exception.service.ErrorService;
 import de.training.model.Error;
 import de.training.model.Error.InvalidParam;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Path;
+import jakarta.validation.Path.Node;
 
 /**
  * The {@link ExceptionHandler} implementation for creating {@link Error} response bodies in case of a caught
@@ -49,60 +48,61 @@ import de.training.model.Error.InvalidParam;
 @RestControllerAdvice
 class ConstraintViolationExceptionHandler {
 
-	@Autowired
-	private ErrorService errorService;
+    @Autowired
+    private ErrorService errorService;
 
-	/**
-	 * Catches the defined {@link Exception}s and creates an {@link Error} response body.
-	 * 
-	 * @param ex the {@link Exception} to catch, never {@code null}
-	 * 
-	 * @return the created {@link Error} object as response body, never {@code null}
-	 * 
-	 */
-	@ExceptionHandler(ConstraintViolationException.class)
-	private ResponseEntity<Error> handleException(final ConstraintViolationException ex) {
-		final List<InvalidParam> invalidParams = ex.getConstraintViolations().stream()
-				.map(constraintViolation -> InvalidParam.builder()
-						.name(extractParamNameFromPath(constraintViolation.getPropertyPath()))
-						.reason(constraintViolation.getMessage()).build())
-				.toList();
+    /**
+     * Catches the defined {@link Exception}s and creates an {@link Error} response body.
+     * 
+     * @param ex the {@link Exception} to catch, never {@code null}
+     * 
+     * @return the created {@link Error} object as response body, never {@code null}
+     * 
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
+    private ResponseEntity<Error> handleException(final ConstraintViolationException ex) {
+        final List<InvalidParam> invalidParams = ex.getConstraintViolations().stream()
+                .map(constraintViolation -> InvalidParam.builder()
+                        .name(ConstraintViolationExceptionHandler
+                                .extractParamNameFromPath(constraintViolation.getPropertyPath()))
+                        .reason(constraintViolation.getMessage()).build())
+                .toList();
 
-		final boolean isSyntacticalViolation = !semanticError(ex);
+        final boolean isSyntacticalViolation = !ConstraintViolationExceptionHandler.semanticError(ex);
 
-		final String title = isSyntacticalViolation ? "Constraint violations" : "Request body validation failed";
+        final String title = isSyntacticalViolation ? "Constraint violations" : "Request body validation failed";
 
-		final Error error = errorService.finalizeRfc7807Error(title, invalidParams);
+        final Error error = errorService.finalizeRfc7807Error(title, invalidParams);
 
-		final HttpStatus status = isSyntacticalViolation ? HttpStatus.BAD_REQUEST : HttpStatus.UNPROCESSABLE_ENTITY;
+        final HttpStatus status = isSyntacticalViolation ? HttpStatus.BAD_REQUEST : HttpStatus.UNPROCESSABLE_ENTITY;
 
-		return ResponseEntity.status(status).contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
-	}
+        return ResponseEntity.status(status).contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
+    }
 
-	/**
-	 * Checks for an existing {@link Node} named {@code semantic} or {@code body} in the {@link Exception}'s
-	 * {@link ConstraintViolation}s.
-	 * 
-	 * @param ex the given exception for extracting the {@link ConstraintViolation}s
-	 * 
-	 * @return {@code true} if found
-	 */
-	private static boolean semanticError(final ConstraintViolationException ex) {
-		return ex.getConstraintViolations().stream()
-				.anyMatch((final ConstraintViolation<?> cv) -> StreamSupport
-						.stream(cv.getPropertyPath().spliterator(), false)
-						.anyMatch((final Node node) -> "body".equals(node.getName())));
-	}
+    /**
+     * Checks for an existing {@link Node} named {@code semantic} or {@code body} in the {@link Exception}'s
+     * {@link ConstraintViolation}s.
+     * 
+     * @param ex the given exception for extracting the {@link ConstraintViolation}s
+     * 
+     * @return {@code true} if found
+     */
+    private static boolean semanticError(final ConstraintViolationException ex) {
+        return ex.getConstraintViolations().stream()
+                .anyMatch((final ConstraintViolation<?> cv) -> StreamSupport
+                        .stream(cv.getPropertyPath().spliterator(), false)
+                        .anyMatch((final Node node) -> "body".equals(node.getName())));
+    }
 
-	/**
-	 * Extracts the parameter name from the last node in the property path.
-	 * 
-	 * @param propertyPath the given property {@link Path}, must not be {@code null}
-	 * 
-	 * @return the parameter name, never {@code null}
-	 */
-	private static String extractParamNameFromPath(final Path propertyPath) {
-		return StreamSupport.stream(propertyPath.spliterator(), false).map(Node::getName)
-				.reduce((first, second) -> second).orElseGet(propertyPath::toString);
-	}
+    /**
+     * Extracts the parameter name from the last node in the property path.
+     * 
+     * @param propertyPath the given property {@link Path}, must not be {@code null}
+     * 
+     * @return the parameter name, never {@code null}
+     */
+    private static String extractParamNameFromPath(final Path propertyPath) {
+        return StreamSupport.stream(propertyPath.spliterator(), false).map(Node::getName)
+                .reduce((first, second) -> second).orElseGet(propertyPath::toString);
+    }
 }
