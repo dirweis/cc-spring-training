@@ -4,8 +4,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.catalina.mapper.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +19,7 @@ import de.training.db.service.StoreService;
 import de.training.model.Pet;
 import de.training.model.Pet.Category;
 import de.training.model.Pet.PetStatus;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -35,95 +34,95 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 class PetsApiController implements PetsApi {
 
-	@Autowired
-	private StoreService storeService;
+    @Autowired
+    private StoreService storeService;
 
-	/**
-	 * {@inheritDoc}
-	 * <p>
-	 * Uses a Mapstruct {@link Mapper} and a {@link JpaRepository} via the {@link StoreService}.
-	 */
-	@Override
-	public ResponseEntity<Void> addPet(final Pet pet, final HttpServletRequest request) {
-		log.info("Start creating a pet entry on given body: {}", pet);
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Uses a Mapstruct {@link Mapper} and a {@link JpaRepository} via the {@link StoreService}.
+     */
+    @Override
+    public ResponseEntity<Void> addPet(final Pet pet, final HttpServletRequest request) {
+        log.info("Start creating a pet entry on given body: {}", pet);
 
-		final UUID petId = storeService.storeNewPet(pet);
+        final UUID petId = storeService.storeNewPet(pet);
 
-		return ResponseEntity.created(URI.create(request.getRequestURI() + "/" + petId)).build();
-	}
+        return ResponseEntity.created(URI.create(request.getRequestURI() + "/" + petId)).build();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 * <p>
-	 * Uses the {@link StoreService} for the deletion on the database.
-	 */
-	@Override
-	public ResponseEntity<Void> deletePet(final UUID petId) {
-		log.info("Start deleting pet entry with ID {}", petId);
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Uses the {@link StoreService} for the deletion on the database.
+     */
+    @Override
+    public ResponseEntity<Void> deletePet(final UUID petId) {
+        log.info("Start deleting pet entry with ID {}", petId);
 
-		storeService.deleteEntry(petId);
+        storeService.deleteEntry(petId);
 
-		return ResponseEntity.noContent().build();
-	}
+        return ResponseEntity.noContent().build();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 * <p>
-	 * Uses {@link Specification}s for dynamic {@code WHERE} clauses via the {@link StoreService}.
-	 */
-	@Override
-	public ResponseEntity<List<Pet>> findPetsRestrictedByParameters(final Integer page, final Integer size,
-			final List<String> tags, final PetStatus status, final Category category) {
-		log.info("Start retrieving pets on the parameters page: {}, size: {}, tags: {}, status: {}, category: {}", page,
-				size, tags, status, category);
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Uses {@link Specification}s for dynamic {@code WHERE} clauses via the {@link StoreService}.
+     */
+    @Override
+    public ResponseEntity<List<Pet>> findPetsRestrictedByParameters(final Integer page, final Integer size,
+            final List<String> tags, final PetStatus status, final Category category) {
+        log.info("Start retrieving pets on the parameters page: {}, size: {}, tags: {}, status: {}, category: {}", page,
+                size, tags, status, category);
 
-		final List<Pet> responseBody = storeService.findByParameters(tags, status, category,
-				PageRequest.of(page, size, Sort.by(Direction.DESC, "createdTime")));
+        final List<Pet> responseBody = storeService.findByParameters(tags, status, category,
+                PageRequest.of(page, size, Sort.by(Direction.DESC, "createdTime")));
 
-		return ResponseEntity.ok(responseBody);
-	}
+        return ResponseEntity.ok(responseBody);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 * <p>
-	 * Uses the {@link StoreService} for the {@code SELECT} statement on the database.
-	 */
-	@Override
-	public ResponseEntity<Pet> getPetById(final UUID petId) {
-		log.info("Start getting pet entry with ID {}", petId);
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Uses the {@link StoreService} for the {@code SELECT} statement on the database.
+     */
+    @Override
+    public ResponseEntity<Pet> getPetById(final UUID petId) {
+        log.info("Start getting pet entry with ID {}", petId);
 
-		final Pet responseBody = storeService.getPetById(petId);
+        final Pet responseBody = storeService.getPetById(petId);
 
-		return ResponseEntity.ok(responseBody);
-	}
+        return ResponseEntity.ok(responseBody);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 * <p>
-	 * Uses a Mapstruct {@link Mapper} and a {@link JpaRepository} for overwriting the {@link PetEntity} via the
-	 * {@link StoreService}.
-	 */
-	@Override
-	public ResponseEntity<Void> updatePet(final UUID petId, final Pet pet) {
-		log.info("Start overwriting pet with ID {}.", petId);
-		log.info("The new values are: {}", pet);
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Uses a Mapstruct {@link Mapper} and a {@link JpaRepository} for overwriting the {@link PetEntity} via the
+     * {@link StoreService}.
+     */
+    @Override
+    public ResponseEntity<Void> updatePet(final UUID petId, final Pet pet) {
+        log.info("Start overwriting pet with ID {}.", petId);
+        log.info("The new values are: {}", pet);
 
-		storeService.overwritePetEntity(petId, pet);
+        storeService.overwritePetEntity(petId, pet);
 
-		return ResponseEntity.noContent().build();
-	}
+        return ResponseEntity.noContent().build();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 * <p>
-	 * Uses a <a href="https://min.io/">MinIo server</a> as document store for the images.
-	 */
-	@Override
-	public ResponseEntity<Void> uploadFile(final UUID petId, final byte[] body, final HttpServletRequest request) {
-		log.info("Image size: {}", body.length);
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Uses a <a href="https://min.io/">MinIo server</a> as document store for the images.
+     */
+    @Override
+    public ResponseEntity<Void> uploadFile(final UUID petId, final byte[] body, final HttpServletRequest request) {
+        log.info("Image size: {}", body.length);
 
-		final URI imageUrl = storeService.storeImage(petId, body, request.getContentType());
+        final URI imageUrl = storeService.storeImage(petId, body, request.getContentType());
 
-		return ResponseEntity.created(imageUrl).build();
-	}
+        return ResponseEntity.created(imageUrl).build();
+    }
 }

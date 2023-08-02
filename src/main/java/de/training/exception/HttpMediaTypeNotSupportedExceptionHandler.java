@@ -36,30 +36,30 @@ import lombok.NoArgsConstructor;
  *      getSupportedMediaTypes() fails for unknown values in Content-Type header</a>
  */
 @Order(0)
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @RestControllerAdvice
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 class HttpMediaTypeNotSupportedExceptionHandler {
 
-	@Autowired
-	private ErrorService errorService;
+    @Autowired
+    private ErrorService errorService;
 
-	/**
-	 * Catches the defined {@link Exception}s and creates an {@link Error} response body.
-	 * 
-	 * @param ex the {@link Exception} to catch, never {@code null}
-	 * 
-	 * @return the created {@link Error} object as response body, never {@code null}
-	 * 
-	 */
-	@ExceptionHandler(HttpMediaTypeNotSupportedException.class)
-	private ResponseEntity<Error> handleException(final HttpMediaTypeNotSupportedException ex) {
-		final String msg = ex.getLocalizedMessage();
-		final String title = msg.contains("''") ? "Request header 'content-type' not found" : msg;
+    /**
+     * Catches the defined {@link Exception}s and creates an {@link Error} response body.
+     * 
+     * @param ex the {@link Exception} to catch, never {@code null}
+     * 
+     * @return the created {@link Error} object as response body, never {@code null}
+     * 
+     */
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    private ResponseEntity<Error> handleException(final HttpMediaTypeNotSupportedException ex) {
+        final String msg = ex.getLocalizedMessage();
+        final String title = !msg.contains("'") ? "Request header 'content-type' not found" : msg;
 
-		final Error error = errorService.finalizeRfc7807Error(title,
-				"Supported media type(s): " + ex.getSupportedMediaTypes());
+        final Error error = errorService.finalizeRfc7807Error(title,
+                "Supported media type(s): " + ex.getSupportedMediaTypes());
 
-		return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).contentType(MediaType.APPLICATION_PROBLEM_JSON)
-				.body(error);
-	}
+        return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).contentType(MediaType.APPLICATION_PROBLEM_JSON)
+                .body(error);
+    }
 }

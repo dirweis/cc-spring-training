@@ -8,8 +8,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.UUID;
 
-import javax.persistence.EntityNotFoundException;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +17,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import de.training.AbstractSpringTestRunner;
 import de.training.db.model.PetEntity;
 import de.training.model.Pet;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
@@ -35,44 +34,44 @@ import lombok.SneakyThrows;
 @DisplayName("WHEN a valid ID for a pet resource")
 class WebControllerDeleteTest extends AbstractSpringTestRunner {
 
-	@AfterEach
-	private void cleanUp() {
-		petRepository.deleteAll();
-	}
+    @AfterEach
+    void cleanUp() {
+        petRepository.deleteAll();
+    }
 
-	/**
-	 * Calls the {@code DELETE} endpoint for deleting a {@link Pet} resource that doesn't exist and expects a response
-	 * with code {@code 404}.
-	 */
-	@Test
-	@SneakyThrows
-	@DisplayName("that is not stored yet is given to the DELETE enpoint THEN respond with status 404 and the appropriate body")
-	void testDeletePetNotFoundAndExpect404() {
-		mockMvc.perform(delete(EndPointWithTestId))
-				.andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
-						.isInstanceOf(EntityNotFoundException.class))
-				.andExpect(status().isNotFound()).andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-				.andExpect(content().string(
-						containsString("\"detail\":\"Resource with ID " + testId + " not found in the persistence\"")));
-	}
+    /**
+     * Calls the {@code DELETE} endpoint for deleting a {@link Pet} resource that doesn't exist and expects a response
+     * with code {@code 404}.
+     */
+    @Test
+    @SneakyThrows
+    @DisplayName("that is not stored yet is given to the DELETE enpoint THEN respond with status 404 and the appropriate body")
+    void testDeletePetNotFoundAndExpect404() {
+        mockMvc.perform(delete(EndPointWithTestId))
+                .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
+                        .isInstanceOf(EntityNotFoundException.class))
+                .andExpect(status().isNotFound()).andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(content().string(
+                        containsString("\"detail\":\"Resource with ID " + testId + " not found in the persistence\"")));
+    }
 
-	/**
-	 * Calls the {@code DELETE} endpoint for deleting a {@link Pet} resource and expects a response with code
-	 * {@code 204}.
-	 */
-	@Test
-	@SneakyThrows
-	@DisplayName("is given to the DELETE enpoint THEN respond with status 204")
-	void testDeletePetFoundAndExpect204() {
+    /**
+     * Calls the {@code DELETE} endpoint for deleting a {@link Pet} resource and expects a response with code
+     * {@code 204}.
+     */
+    @Test
+    @SneakyThrows
+    @DisplayName("is given to the DELETE enpoint THEN respond with status 204")
+    void testDeletePetFoundAndExpect204() {
 
-		final PetEntity entity = createTestEntity(true);
+        final PetEntity entity = createTestEntity(true);
 
-		petRepository.save(entity);
+        petRepository.save(entity);
 
-		final UUID entityId = entity.getId();
+        final UUID entityId = entity.getId();
 
-		mockMvc.perform(delete(EndPointPrefix + "/" + entityId)).andExpect(status().isNoContent());
+        mockMvc.perform(delete(EndPointPrefix + "/" + entityId)).andExpect(status().isNoContent());
 
-		assertThat(petRepository.findById(entityId)).isNotPresent();
-	}
+        assertThat(petRepository.findById(entityId)).isNotPresent();
+    }
 }
