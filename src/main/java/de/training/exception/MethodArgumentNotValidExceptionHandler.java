@@ -38,30 +38,30 @@ import lombok.NoArgsConstructor;
  *
  */
 @Order(2)
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @RestControllerAdvice
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 class MethodArgumentNotValidExceptionHandler {
 
-	@Autowired
-	private ErrorService errorService;
+    @Autowired
+    private ErrorService errorService;
 
-	/**
-	 * Catches the defined {@link Exception}s and creates an {@link Error} response body.
-	 * 
-	 * @param ex the {@link Exception} to catch, never {@code null}
-	 * 
-	 * @return the created {@link Error} object as response body, never {@code null}
-	 * 
-	 */
-	@ExceptionHandler(MethodArgumentNotValidException.class)
-	private ResponseEntity<Error> handleException(final MethodArgumentNotValidException ex) {
-		final List<InvalidParam> invalidParams = ex.getAllErrors().stream().filter(FieldError.class::isInstance)
-				.map(FieldError.class::cast).map(fieldError -> InvalidParam.builder().name(fieldError.getField())
-						.reason(fieldError.getDefaultMessage()).build())
-				.toList();
+    /**
+     * Catches the defined {@link Exception}s and creates an {@link Error} response body.
+     * 
+     * @param ex the {@link Exception} to catch, never {@code null}
+     * 
+     * @return the created {@link Error} object as response body, never {@code null}
+     * 
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    private ResponseEntity<Error> handleException(final MethodArgumentNotValidException ex) {
+        final List<InvalidParam> invalidParams = ex.getAllErrors().stream().filter(FieldError.class::isInstance)
+                .map(FieldError.class::cast).map(fieldError -> InvalidParam.builder().name(fieldError.getField())
+                        .reason(fieldError.getDefaultMessage()).build())
+                .toList();
 
-		final Error error = errorService.finalizeRfc7807Error("Request body validation failed", invalidParams);
+        final Error error = errorService.finalizeRfc7807Error("Request body validation failed", invalidParams);
 
-		return ResponseEntity.unprocessableEntity().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
-	}
+        return ResponseEntity.unprocessableEntity().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
+    }
 }
