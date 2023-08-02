@@ -36,29 +36,29 @@ import lombok.extern.log4j.Log4j2;
  * @version 1.0
  *
  */
-@Order(Ordered.LOWEST_PRECEDENCE)
-@RestControllerAdvice
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Log4j2
+@RestControllerAdvice
+@Order(Ordered.LOWEST_PRECEDENCE)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 class FurtherExceptionHandler {
 
-	@Autowired
-	private ErrorService errorService;
+    @Autowired
+    private ErrorService errorService;
 
-	/**
-	 * Catches the defined {@link Exception}s and creates an {@link Error} response body.
-	 * 
-	 * @param ex the {@link Exception} to catch, never {@code null}
-	 * 
-	 * @return the created {@link Error} object as response body, never {@code null}
-	 * 
-	 */
-	@ExceptionHandler(Throwable.class)
-	private ResponseEntity<Error> handleException(final Throwable ex) {
-		final Error error = errorService.finalizeRfc7807Error("Internal problem. Please contact the support.");
+    /**
+     * Catches the defined {@link Exception}s and creates an {@link Error} response body.
+     * 
+     * @param ex the {@link Exception} to catch, never {@code null}
+     * 
+     * @return the created {@link Error} object as response body, never {@code null}
+     * 
+     */
+    @ExceptionHandler(Throwable.class)
+    private ResponseEntity<Error> handleException(final Throwable ex) {
+        final Error error = errorService.finalizeRfc7807Error("Internal problem. Please contact the support.");
 
-		log.error("Internal Error Stack trace", ex);
+        log.error("Internal Error Stack trace", ex);
 
-		return ResponseEntity.internalServerError().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
-	}
+        return ResponseEntity.internalServerError().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
+    }
 }

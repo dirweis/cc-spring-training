@@ -36,26 +36,26 @@ import lombok.NoArgsConstructor;
  *
  */
 @Order(1)
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @RestControllerAdvice
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 class HttpMessageNotReadableExceptionHandler {
 
-	@Autowired
-	private ErrorService errorService;
+    @Autowired
+    private ErrorService errorService;
 
-	/**
-	 * Catches the defined {@link Exception}s and creates an {@link Error} response body.
-	 * 
-	 * @param ex the {@link Exception} to catch, never {@code null}
-	 * 
-	 * @return the created {@link Error} object as response body, never {@code null}
-	 * 
-	 */
-	@ExceptionHandler(HttpMessageNotReadableException.class)
-	private ResponseEntity<Error> handleException(final HttpMessageNotReadableException ex) {
-		final AbstractJsonErrorHandler handler = JsonErrorFactory.getErrorHandler(ex.getMostSpecificCause(),
-				errorService, ex.getLocalizedMessage());
+    /**
+     * Catches the defined {@link Exception}s and creates an {@link Error} response body.
+     * 
+     * @param ex the {@link Exception} to catch, never {@code null}
+     * 
+     * @return the created {@link Error} object as response body, never {@code null}
+     * 
+     */
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    private ResponseEntity<Error> handleException(final HttpMessageNotReadableException ex) {
+        final AbstractJsonErrorHandler handler = JsonErrorFactory.getErrorHandler(ex.getMostSpecificCause(),
+                errorService, ex.getLocalizedMessage());
 
-		return handler.createResponse();
-	}
+        return handler.createResponse();
+    }
 }
