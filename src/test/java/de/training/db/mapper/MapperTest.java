@@ -24,56 +24,56 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class MapperTest extends AbstractSpringTestRunner {
 
-	@Autowired
-	private PetMapper mapper;
+    @Autowired
+    private PetMapper mapper;
 
-	/**
-	 * Ensures the mapper's correct behavior with {@code null} values.
-	 */
-	@Test
-	void testMapperOnNullValues() {
-		assertThat(mapper.dto2Entity(null)).isNull();
-		assertThat(mapper.entity2Dto(null)).isNull();
-		assertThat(mapper.update(null, null)).isNull();
+    /**
+     * Ensures the mapper's correct behavior with {@code null} values.
+     */
+    @Test
+    void testMapperOnNullValues() {
+        assertThat(mapper.dto2Entity(null)).isNull();
+        assertThat(mapper.entity2Dto(null)).isNull();
+        assertThat(mapper.update(null, null)).isNull();
 
-		final PetEntity entityWithTag = createTestEntity(true);
+        final PetEntity entityWithTag = createTestEntity(true);
 
-		assertThat(mapper.update(entityWithTag, null)).isNull();
+        assertThat(mapper.update(entityWithTag, null)).isEqualTo(entityWithTag);
 
-		assertThatNullPointerException().isThrownBy(() -> mapper.update(null, entityWithTag));
+        assertThatNullPointerException().isThrownBy(() -> mapper.update(null, entityWithTag));
 
-		final PetEntity targetEntity = createTestEntity(false);
-		final PetEntity sourceEntity = createTestEntity(false);
+        final PetEntity targetEntity = createTestEntity(false);
+        final PetEntity sourceEntity = createTestEntity(false);
 
-		mapper.update(targetEntity, sourceEntity);
+        mapper.update(targetEntity, sourceEntity);
 
-		assertThat(targetEntity.getTags()).isNull();
-	}
+        assertThat(targetEntity.getTags()).isNull();
+    }
 
-	/**
-	 * Ensures the transfer of {@link TagEntity} objects in the {@link PetEntity} in the update method.
-	 */
-	@Test
-	void testMapperUpdateAddTags() {
-		final PetEntity targetEntity = createTestEntity(false);
-		final PetEntity sourceEntity = createTestEntity(true);
+    /**
+     * Ensures the transfer of {@link TagEntity} objects in the {@link PetEntity} in the update method.
+     */
+    @Test
+    void testMapperUpdateAddTags() {
+        final PetEntity targetEntity = createTestEntity(false);
+        final PetEntity sourceEntity = createTestEntity(true);
 
-		mapper.update(targetEntity, sourceEntity);
+        mapper.update(targetEntity, sourceEntity);
 
-		assertThat(targetEntity.getTags().size()).isOne();
-	}
+        assertThat(targetEntity.getTags().size()).isOne();
+    }
 
-	/**
-	 * Ensures the deletion of {@link TagEntity} objects in the target {@link PetEntity} in case the target entity
-	 * contains some and the source entity doesn't.
-	 */
-	@Test
-	void testMapperUpdateRemoveTags() {
-		final PetEntity targetEntity = createTestEntity(true);
-		final PetEntity sourceEntity = createTestEntity(false);
+    /**
+     * Ensures the deletion of {@link TagEntity} objects in the target {@link PetEntity} in case the target entity
+     * contains some and the source entity doesn't.
+     */
+    @Test
+    void testMapperUpdateRemoveTags() {
+        final PetEntity targetEntity = createTestEntity(true);
+        final PetEntity sourceEntity = createTestEntity(false);
 
-		mapper.update(targetEntity, sourceEntity);
+        mapper.update(targetEntity, sourceEntity);
 
-		assertThat(targetEntity.getTags()).isNull();
-	}
+        assertThat(targetEntity.getTags()).isNull();
+    }
 }

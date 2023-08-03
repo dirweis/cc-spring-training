@@ -35,8 +35,8 @@ import lombok.NoArgsConstructor;
  * @author Dirk Weissmann
  *
  */
-@RestControllerAdvice
 @Order(6)
+@RestControllerAdvice
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class EntityNotFoundExceptionHandler {
 

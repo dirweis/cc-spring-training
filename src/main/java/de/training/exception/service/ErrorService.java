@@ -27,8 +27,8 @@ import lombok.extern.log4j.Log4j2;
  * @version 1.0
  *
  */
-@Service
 @Log4j2
+@Service
 @RequiredArgsConstructor
 public class ErrorService {
 

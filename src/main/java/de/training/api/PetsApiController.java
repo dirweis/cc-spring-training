@@ -31,8 +31,8 @@ import lombok.extern.log4j.Log4j2;
  * @version 0.8
  *
  */
-@RestController
 @Log4j2
+@RestController
 class PetsApiController implements PetsApi {
 
     @Autowired
@@ -45,7 +45,7 @@ class PetsApiController implements PetsApi {
      */
     @Override
     public ResponseEntity<Void> addPet(final Pet pet, final HttpServletRequest request) {
-        PetsApiController.log.info("Start creating a pet entry on given body: {}", pet);
+        log.info("Start creating a pet entry on given body: {}", pet);
 
         final UUID petId = storeService.storeNewPet(pet);
 
@@ -59,7 +59,7 @@ class PetsApiController implements PetsApi {
      */
     @Override
     public ResponseEntity<Void> deletePet(final UUID petId) {
-        PetsApiController.log.info("Start deleting pet entry with ID {}", petId);
+        log.info("Start deleting pet entry with ID {}", petId);
 
         storeService.deleteEntry(petId);
 
@@ -74,8 +74,7 @@ class PetsApiController implements PetsApi {
     @Override
     public ResponseEntity<List<Pet>> findPetsRestrictedByParameters(final Integer page, final Integer size,
             final List<String> tags, final PetStatus status, final Category category) {
-        PetsApiController.log.info(
-                "Start retrieving pets on the parameters page: {}, size: {}, tags: {}, status: {}, category: {}", page,
+        log.info("Start retrieving pets on the parameters page: {}, size: {}, tags: {}, status: {}, category: {}", page,
                 size, tags, status, category);
 
         final List<Pet> responseBody = storeService.findByParameters(tags, status, category,
@@ -91,7 +90,7 @@ class PetsApiController implements PetsApi {
      */
     @Override
     public ResponseEntity<Pet> getPetById(final UUID petId) {
-        PetsApiController.log.info("Start getting pet entry with ID {}", petId);
+        log.info("Start getting pet entry with ID {}", petId);
 
         final Pet responseBody = storeService.getPetById(petId);
 
@@ -106,8 +105,8 @@ class PetsApiController implements PetsApi {
      */
     @Override
     public ResponseEntity<Void> updatePet(final UUID petId, final Pet pet) {
-        PetsApiController.log.info("Start overwriting pet with ID {}.", petId);
-        PetsApiController.log.info("The new values are: {}", pet);
+        log.info("Start overwriting pet with ID {}.", petId);
+        log.info("The new values are: {}", pet);
 
         storeService.overwritePetEntity(petId, pet);
 
@@ -121,7 +120,7 @@ class PetsApiController implements PetsApi {
      */
     @Override
     public ResponseEntity<Void> uploadFile(final UUID petId, final byte[] body) {
-        PetsApiController.log.info("Image size: {}", body.length);
+        log.info("Image size: {}", body.length);
 
         return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
     }

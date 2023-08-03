@@ -149,6 +149,7 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
      *
      */
     @Nested
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     class AddImage2PetTest {
 
         /**

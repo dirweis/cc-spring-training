@@ -28,6 +28,7 @@ class SpringApplicationSmokeTest {
         stopWatch.start();
 
         PetshopWebApp.main(new String[] {});
+
         stopWatch.stop();
 
         Assertions.assertThat(stopWatch.getTotalTimeSeconds()).isLessThan(9);

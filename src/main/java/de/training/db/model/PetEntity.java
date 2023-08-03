@@ -1,11 +1,9 @@
 package de.training.db.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -18,6 +16,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
@@ -62,19 +61,17 @@ public class PetEntity {
     private String description;
 
     @Setter
-    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
-    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<TagEntity> tags;
 
-    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
-    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<PhotoUrlEntity> photoUrls;
 
     @Column(nullable = false, updatable = false)
     @CreatedDate
-    private Date createdTime;
+    private LocalDateTime createdTime;
 
     @Column(nullable = false)
     @LastModifiedDate
-    private Date modifiedTime;
+    private LocalDateTime modifiedTime;
 }

@@ -34,8 +34,8 @@ import lombok.RequiredArgsConstructor;
  *
  */
 @Service
-@RequiredArgsConstructor
 @Transactional
+@RequiredArgsConstructor
 public class StoreService {
 
     private static final String ERROR_MSG_FORMAT = "Resource with ID %s not found in the persistence";
@@ -55,7 +55,7 @@ public class StoreService {
     public UUID storeNewPet(final Pet petDto) {
         final PetEntity entity = mapper.dto2Entity(petDto);
 
-        StoreService.linkTags(entity);
+        linkTags(entity);
 
         petRepository.save(entity);
 
@@ -73,7 +73,7 @@ public class StoreService {
     @Transactional(readOnly = true)
     public Pet getPetById(final UUID petId) {
         final PetEntity entity = petRepository.findById(petId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format(StoreService.ERROR_MSG_FORMAT, petId)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format(ERROR_MSG_FORMAT, petId)));
 
         return mapper.entity2Dto(entity);
     }
@@ -93,9 +93,7 @@ public class StoreService {
             final Pageable pageable) {
 
         final List<PetEntity> entities = petRepository
-                .findAll(StoreService.hasStatus(status)
-                        .and(StoreService.hasCategory(category).and(StoreService.isInTags(tags))), pageable)
-                .getContent();
+                .findAll(hasStatus(status).and(hasCategory(category).and(isInTags(tags))), pageable).getContent();
 
         return entities.stream().map(mapper::entity2Dto).toList();
     }
@@ -108,7 +106,7 @@ public class StoreService {
      */
     public void deleteEntry(final UUID petId) {
         final PetEntity entity = petRepository.findById(petId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format(StoreService.ERROR_MSG_FORMAT, petId)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format(ERROR_MSG_FORMAT, petId)));
 
         petRepository.delete(entity);
     }
@@ -121,14 +119,14 @@ public class StoreService {
      */
     public void overwritePetEntity(final UUID petId, final Pet pet) {
         final PetEntity entity = petRepository.findById(petId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format(StoreService.ERROR_MSG_FORMAT, petId)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format(ERROR_MSG_FORMAT, petId)));
 
         final PetEntity updateEntity = mapper.dto2Entity(pet);
 
         tagRepository.deleteAllInBatch(entity.getTags());
         mapper.update(entity, updateEntity);
 
-        StoreService.linkTags(entity);
+        linkTags(entity);
 
         petRepository.save(entity);
     }

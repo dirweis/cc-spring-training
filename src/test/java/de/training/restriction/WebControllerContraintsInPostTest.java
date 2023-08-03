@@ -42,6 +42,7 @@ import lombok.SneakyThrows;
  * @version 1.2
  *
  */
+@DisplayName("WHEN the HTTP")
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
 
@@ -50,7 +51,7 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
      */
     @Test
     @SneakyThrows
-    @DisplayName("WHEN the HTTP method is DELETE THEN respond with status 405 AND content type application/problem+json AND the expected response body")
+    @DisplayName("method is DELETE THEN respond with status 405 AND content type application/problem+json AND the expected response body")
     void testCallPostWithWrongHttpMethodAndExpect405() {
         mockMvc.perform(delete(EndPointPrefix)).andExpect(status().isMethodNotAllowed())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
@@ -65,7 +66,7 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
      */
     @Test
     @SneakyThrows
-    @DisplayName("WHEN the HTTP request header Content-Type is missing THEN respond with status 415 AND content type application/problem+json AND the expected response body")
+    @DisplayName("request header Content-Type is missing THEN respond with status 415 AND content type application/problem+json AND the expected response body")
     void testCallPostWithMissingContentTypeAndExpect415() {
         mockMvc.perform(post(EndPointPrefix)).andExpect(status().isUnsupportedMediaType())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
@@ -80,7 +81,7 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
      */
     @Test
     @SneakyThrows
-    @DisplayName("WHEN the HTTP request header Content-Type is wrong (but known) THEN respond with status 415 AND content type application/problem+json AND the expected response body")
+    @DisplayName("request header Content-Type is wrong (but known) THEN respond with status 415 AND content type application/problem+json AND the expected response body")
     void testCallPostWithWrongContentTypeAndExpect415() {
         mockMvc.perform(post(EndPointPrefix).contentType(MediaType.APPLICATION_XML_VALUE))
                 .andExpect(status().isUnsupportedMediaType())
@@ -98,7 +99,7 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
      */
     @Test
     @SneakyThrows
-    @DisplayName("WHEN the HTTP request header Content-Type is wrong (and not known) THEN respond with status 415 AND content type application/problem+json AND the expected response body")
+    @DisplayName("request header Content-Type is wrong (and not known) THEN respond with status 415 AND content type application/problem+json AND the expected response body")
     void testCallPostWithUnknownContentTypeAndExpect415() {
         mockMvc.perform(post(EndPointPrefix).contentType("crazy")).andExpect(status().isUnsupportedMediaType())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
@@ -130,8 +131,9 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
      * @version 1.1
      *
      */
-    @DisplayName("WHEN the request body ")
     @Nested
+    @DisplayName("WHEN the request body")
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     class JsonSyntacticalViolationTest {
 
         private static final String invalidFolderPath = "classpath:invalid_request_bodies/syntactical/";
@@ -229,8 +231,9 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
      * @version 1.1
      *
      */
-    @DisplayName("WHEN the request body ")
     @Nested
+    @DisplayName("WHEN the request body")
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     class JsonSemanticViolationTest {
 
         private static final String invalidFolderPath = "classpath:invalid_request_bodies/semantic/";
