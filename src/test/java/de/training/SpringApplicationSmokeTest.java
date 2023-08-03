@@ -1,6 +1,7 @@
 package de.training;
 
-import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.util.StopWatch;
 
@@ -23,14 +24,14 @@ class SpringApplicationSmokeTest {
      */
     @Test
     void testServiceStartAndShutDown() {
-
         final StopWatch stopWatch = new StopWatch();
 
         stopWatch.start();
 
         PetshopWebApp.main(new String[] {});
+
         stopWatch.stop();
 
-        Assertions.assertThat(stopWatch.getTotalTimeSeconds()).isLessThan(9);
+        assertThat(stopWatch.getTotalTimeSeconds()).isLessThan(9);
     }
 }

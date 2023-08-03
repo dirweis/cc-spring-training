@@ -22,8 +22,8 @@ import jakarta.validation.Payload;
  *
  */
 @Documented
-@Retention(RUNTIME)
 @Target(PARAMETER)
+@Retention(RUNTIME)
 @Constraint(validatedBy = MultipleOfValidator.class)
 public @interface MultipleOf {
 

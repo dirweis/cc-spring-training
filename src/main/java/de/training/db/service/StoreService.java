@@ -33,8 +33,8 @@ import lombok.RequiredArgsConstructor;
  *
  */
 @Service
-@RequiredArgsConstructor
 @Transactional
+@RequiredArgsConstructor
 public class StoreService {
 
     private final PetRepositoryDao petRepository;

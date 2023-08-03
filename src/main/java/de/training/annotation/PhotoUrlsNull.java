@@ -21,8 +21,8 @@ import jakarta.validation.Payload;
  *
  */
 @Documented
-@Retention(RUNTIME)
 @Target(PARAMETER)
+@Retention(RUNTIME)
 @Constraint(validatedBy = PhotoUrlsNullValidator.class)
 public @interface PhotoUrlsNull {
 

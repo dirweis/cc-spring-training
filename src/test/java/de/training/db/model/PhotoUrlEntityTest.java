@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class PhotoUrlEntityTest {
 
-	@Test
-	void testEmptyEntity() {
-		final PhotoUrlEntity entity = new PhotoUrlEntity();
+    @Test
+    void testEmptyEntity() {
+        final PhotoUrlEntity entity = new PhotoUrlEntity();
 
-		assertThat(entity.getUrl()).isNull();
-	}
+        assertThat(entity.getUrl()).isNull();
+    }
 }

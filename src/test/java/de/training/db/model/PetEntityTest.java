@@ -1,8 +1,9 @@
 package de.training.db.model;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.UUID;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,14 +49,14 @@ class PetEntityTest extends AbstractSpringTestRunner {
 
         petRepository.save(entity);
 
-        Assertions.assertThat(entity.getId()).isInstanceOf(UUID.class);
-        Assertions.assertThat(entity.getCategory()).isEqualTo(Category.BIRD);
-        Assertions.assertThat(entity.getDescription()).isNotEmpty();
-        Assertions.assertThat(entity.getName()).startsWith("Bob");
-        Assertions.assertThat(entity.getStatus()).isEqualTo(PetStatus.AVAILABLE);
-        Assertions.assertThat(entity.getTags()).isNull();
-        Assertions.assertThat(entity.getPhotoUrls()).isNull();
+        assertThat(entity.getId()).isInstanceOf(UUID.class);
+        assertThat(entity.getCategory()).isEqualTo(Category.BIRD);
+        assertThat(entity.getDescription()).isNotEmpty();
+        assertThat(entity.getName()).startsWith("Bob");
+        assertThat(entity.getStatus()).isEqualTo(PetStatus.AVAILABLE);
+        assertThat(entity.getTags()).isNull();
+        assertThat(entity.getPhotoUrls()).isNull();
 
-        Assertions.assertThat(entity.getCreatedTime()).isEqualTo(entity.getModifiedTime());
+        assertThat(entity.getCreatedTime()).isEqualTo(entity.getModifiedTime());
     }
 }

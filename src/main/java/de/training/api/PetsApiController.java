@@ -30,8 +30,8 @@ import lombok.extern.log4j.Log4j2;
  * @version 0.5
  *
  */
-@RestController
 @Log4j2
+@RestController
 class PetsApiController implements PetsApi {
 
     @Autowired
