@@ -35,28 +35,28 @@ import lombok.NoArgsConstructor;
  * @version 1.2
  *
  */
-@Order(Ordered.HIGHEST_PRECEDENCE)
 @RestControllerAdvice
+@Order(Ordered.HIGHEST_PRECEDENCE)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class HttpRequestMethodNotSupportedExceptionHandler {
 
-	@Autowired
-	private ErrorService errorService;
+    @Autowired
+    private ErrorService errorService;
 
-	/**
-	 * Catches the defined {@link Exception}s and creates an {@link Error} response body.
-	 * 
-	 * @param ex the {@link Exception} to catch, never {@code null}
-	 * 
-	 * @return the created {@link Error} object as response body, never {@code null}
-	 * 
-	 */
-	@ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-	private ResponseEntity<Error> handleException(final HttpRequestMethodNotSupportedException ex) {
-		final Error error = errorService.finalizeRfc7807Error(ex.getLocalizedMessage(),
-				"Supported method(s): " + ex.getSupportedHttpMethods());
+    /**
+     * Catches the defined {@link Exception}s and creates an {@link Error} response body.
+     * 
+     * @param ex the {@link Exception} to catch, never {@code null}
+     * 
+     * @return the created {@link Error} object as response body, never {@code null}
+     * 
+     */
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    private ResponseEntity<Error> handleException(final HttpRequestMethodNotSupportedException ex) {
+        final Error error = errorService.finalizeRfc7807Error(ex.getLocalizedMessage(),
+                "Supported method(s): " + ex.getSupportedHttpMethods());
 
-		return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).contentType(MediaType.APPLICATION_PROBLEM_JSON)
-				.body(error);
-	}
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).contentType(MediaType.APPLICATION_PROBLEM_JSON)
+                .body(error);
+    }
 }

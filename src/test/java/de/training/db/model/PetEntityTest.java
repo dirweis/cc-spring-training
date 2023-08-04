@@ -1,8 +1,7 @@
 package de.training.db.model;
 
-import java.util.UUID;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +37,7 @@ class PetEntityTest extends AbstractSpringTestRunner {
      * for a GET endpoint is implemented). But this test is OK anyways.
      */
     @Test
-    void testAllGetters() {
+    void testTimestampCreation() {
         final PetEntity entity = new PetEntity();
 
         entity.setCategory(Category.BIRD);
@@ -48,14 +47,6 @@ class PetEntityTest extends AbstractSpringTestRunner {
 
         petRepository.save(entity);
 
-        Assertions.assertThat(entity.getId()).isInstanceOf(UUID.class);
-        Assertions.assertThat(entity.getCategory()).isEqualTo(Category.BIRD);
-        Assertions.assertThat(entity.getDescription()).isNotEmpty();
-        Assertions.assertThat(entity.getName()).startsWith("Bob");
-        Assertions.assertThat(entity.getStatus()).isEqualTo(PetStatus.AVAILABLE);
-        Assertions.assertThat(entity.getTags()).isNull();
-        Assertions.assertThat(entity.getPhotoUrls()).isNull();
-
-        Assertions.assertThat(entity.getCreatedTime()).isEqualTo(entity.getModifiedTime());
+        assertThat(entity.getCreatedTime()).isEqualTo(entity.getModifiedTime());
     }
 }

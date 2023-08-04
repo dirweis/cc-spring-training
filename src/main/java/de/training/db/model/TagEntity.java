@@ -1,6 +1,6 @@
 package de.training.db.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -28,10 +28,10 @@ import lombok.Setter;
  * @version 1.1
  *
  */
-@Entity(name = "tag")
-@Table(indexes = @Index(columnList = "tag"), uniqueConstraints = @UniqueConstraint(columnNames = { "pet_id", "tag" }))
 @NoArgsConstructor
+@Entity(name = "tag")
 @EntityListeners(AuditingEntityListener.class)
+@Table(indexes = @Index(columnList = "tag"), uniqueConstraints = @UniqueConstraint(columnNames = { "pet_id", "tag" }))
 public class TagEntity {
 
     @Id
@@ -49,7 +49,7 @@ public class TagEntity {
 
     @Column(nullable = false, updatable = false)
     @CreatedDate
-    private Date createdTime;
+    private LocalDateTime createdTime;
 
     /**
      * Constructor for the only field that is to be set here by the developer: The name of the tag.

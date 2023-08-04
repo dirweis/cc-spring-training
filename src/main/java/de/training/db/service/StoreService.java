@@ -42,8 +42,8 @@ import lombok.SneakyThrows;
  *
  */
 @Service
-@RequiredArgsConstructor
 @Transactional
+@RequiredArgsConstructor
 public class StoreService {
 
     private static final String ERROR_MSG_FORMAT = "Resource with ID %s not found in the persistence";
@@ -104,7 +104,6 @@ public class StoreService {
     @Transactional(readOnly = true)
     public List<Pet> findByParameters(final List<String> tags, final PetStatus status, final Category category,
             final Pageable pageable) {
-
         final List<PetEntity> entities = petRepository
                 .findAll(StoreService.hasStatus(status)
                         .and(StoreService.hasCategory(category).and(StoreService.isInTags(tags))), pageable)
@@ -211,7 +210,7 @@ public class StoreService {
     }
 
     /**
-     * The {@link Specification} for enriching the {@code WHERE} statement with a check on given tags..
+     * The {@link Specification} for enriching the {@code WHERE} statement with a check on given tags.
      * 
      * @param tags the {@link List} of tag {@link String}s, may be {@code null}
      * 

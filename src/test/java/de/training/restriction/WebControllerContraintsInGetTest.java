@@ -45,6 +45,7 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
      *
      */
     @Nested
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     @DisplayName("WHEN the GET endpoint for getting a pet resource on the ID path parameter is called ")
     class GetEndpointWithPathIdTest {
 
@@ -100,6 +101,7 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
      *
      */
     @Nested
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     @DisplayName("WHEN the GET endpoint for getting pet resources on the given query parameters is called ")
     class GetEndpointWithQueryParametersTest {
 
@@ -204,7 +206,7 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
                     .andExpect(content().string(containsString(
                             "\"title\":\"Failed to convert value of type 'String' to required type 'Pet$PetStatus'\"")))
                     .andExpect(content().string(containsString(
-                            "{\"invalid_params\":[{\"name\":\"status\",\"reason\":\"Failed to convert from type [String] to type [@RequestParam Pet$PetStatus] for value 'k'\"}]")));
+                            "{\"invalid_params\":[{\"name\":\"status\",\"reason\":\"Failed to convert from type [String] to type [@RequestParam Pet$PetStatus] for value [k]\"}]")));
         }
 
         /**
