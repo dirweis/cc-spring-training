@@ -42,8 +42,8 @@ import lombok.SneakyThrows;
  *
  */
 @Service
-@RequiredArgsConstructor
 @Transactional
+@RequiredArgsConstructor
 public class StoreService {
 
     private static final String ERROR_MSG_FORMAT = "Resource with ID %s not found in the persistence";
@@ -127,8 +127,8 @@ public class StoreService {
     /**
      * Overrides a {@link PetEntity} with the given {@link Pet} DTO.
      * 
-     * @param petId the {@link PetEntity}'s ID
-     * @param pet   the given DTO
+     * @param petId the {@link PetEntity}'s ID, never {@code null}
+     * @param pet   the given DTO, never {@code null}
      */
     public void overwritePetEntity(final UUID petId, final Pet pet) {
         final PetEntity entity = petRepository.findById(petId)
@@ -178,7 +178,7 @@ public class StoreService {
      * The crazy JPA "feature": Even though the {@link TagEntity} objects are already allocated to the
      * {@link PetEntity}, it must also be done the other way.
      * 
-     * @param petEntity the {@link PetEntity} for allocation
+     * @param petEntity the {@link PetEntity} for allocation, never {@code null}
      */
     private static void linkTags(final PetEntity petEntity) {
         petEntity.getTags().forEach(tagEntity -> tagEntity.setPet(petEntity));

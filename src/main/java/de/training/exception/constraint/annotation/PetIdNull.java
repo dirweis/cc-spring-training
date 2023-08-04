@@ -21,8 +21,8 @@ import jakarta.validation.Payload;
  *
  */
 @Documented
-@Retention(RUNTIME)
 @Target(PARAMETER)
+@Retention(RUNTIME)
 @Constraint(validatedBy = PetIdNullValidator.class)
 public @interface PetIdNull {
 

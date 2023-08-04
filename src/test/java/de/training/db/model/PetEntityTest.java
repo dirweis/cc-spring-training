@@ -2,9 +2,8 @@ package de.training.db.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.UUID;
-
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -35,11 +34,11 @@ class PetEntityTest extends AbstractSpringTestRunner {
     }
 
     /**
-     * Tests the getters for all fields. Most of these assertions will become obsolete shortly (when the behavior tests
-     * for a GET endpoint is implemented). But this test is OK anyways.
+     * Tests the automatically created time stamps.
      */
     @Test
-    void testAllGetters() {
+    @DisplayName("WHEN a new entry is created THEN the 'created' and the 'modified' time stamps must equal")
+    void testTimestampCreation() {
         final PetEntity entity = new PetEntity();
 
         entity.setCategory(Category.BIRD);
@@ -48,14 +47,6 @@ class PetEntityTest extends AbstractSpringTestRunner {
         entity.setStatus(PetStatus.AVAILABLE);
 
         petRepository.save(entity);
-
-        assertThat(entity.getId()).isInstanceOf(UUID.class);
-        assertThat(entity.getCategory()).isEqualTo(Category.BIRD);
-        assertThat(entity.getDescription()).isNotEmpty();
-        assertThat(entity.getName()).startsWith("Bob");
-        assertThat(entity.getStatus()).isEqualTo(PetStatus.AVAILABLE);
-        assertThat(entity.getTags()).isNull();
-        assertThat(entity.getPhotoUrls()).isNull();
 
         assertThat(entity.getCreatedTime()).isEqualTo(entity.getModifiedTime());
     }

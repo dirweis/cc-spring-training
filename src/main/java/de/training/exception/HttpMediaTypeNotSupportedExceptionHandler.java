@@ -36,8 +36,8 @@ import lombok.NoArgsConstructor;
  *      getSupportedMediaTypes() fails for unknown values in Content-Type header</a>
  */
 @Order(0)
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @RestControllerAdvice
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 class HttpMediaTypeNotSupportedExceptionHandler {
 
     @Autowired

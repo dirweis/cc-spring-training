@@ -1,7 +1,7 @@
 package de.training.db.model;
 
 import java.net.URL;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -27,10 +27,10 @@ import lombok.NoArgsConstructor;
  * @version 1.0
  *
  */
-@Entity(name = "photo_url")
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = { "pet_id", "url" }))
 @NoArgsConstructor
+@Entity(name = "photo_url")
 @EntityListeners(AuditingEntityListener.class)
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = { "pet_id", "url" }))
 public class PhotoUrlEntity {
 
     @Id
@@ -45,9 +45,9 @@ public class PhotoUrlEntity {
     @JoinColumn(name = "pet_id", nullable = false)
     private PetEntity pet;
 
-    @Column(nullable = false, updatable = false)
     @CreatedDate
-    private Date createdTime;
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdTime;
 
     /**
      * The constructor for adding a new entity on the given URL.

@@ -33,6 +33,7 @@ import de.training.db.model.TagEntity;
 import de.training.model.Pet;
 import de.training.model.Pet.Category;
 import io.minio.MinioClient;
+import io.minio.RemoveBucketArgs;
 import io.minio.RemoveObjectArgs;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityNotFoundException;
@@ -265,6 +266,7 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
         @SneakyThrows
         static void cleanUp() {
             minioClient.removeObject(RemoveObjectArgs.builder().bucket(minioBucketName).object(imageId).build());
+            minioClient.removeBucket(RemoveBucketArgs.builder().bucket(minioBucketName).build());
         }
     }
 }

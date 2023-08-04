@@ -34,24 +34,24 @@ import lombok.NoArgsConstructor;
  * @version 1.5
  *
  */
-@Order(Ordered.LOWEST_PRECEDENCE)
 @RestControllerAdvice
+@Order(Ordered.LOWEST_PRECEDENCE)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class FurtherExceptionHandler {
 
-	@Autowired
-	private ErrorService errorService;
+    @Autowired
+    private ErrorService errorService;
 
-	/**
-	 * Catches the defined {@link Exception}s and creates an {@link Error} response body.
-	 * 
-	 * @param ex the {@link Exception} to catch, never {@code null}
-	 * 
-	 * @return the created {@link Error} object as response body, never {@code null}
-	 * 
-	 */
-	@ExceptionHandler(Throwable.class)
-	private ResponseEntity<Error> handleException(final Throwable ex) {
-		return errorService.create500Response(ex);
-	}
+    /**
+     * Catches the defined {@link Exception}s and creates an {@link Error} response body.
+     * 
+     * @param ex the {@link Exception} to catch, never {@code null}
+     * 
+     * @return the created {@link Error} object as response body, never {@code null}
+     * 
+     */
+    @ExceptionHandler(Throwable.class)
+    private ResponseEntity<Error> handleException(final Throwable ex) {
+        return errorService.create500Response(ex);
+    }
 }

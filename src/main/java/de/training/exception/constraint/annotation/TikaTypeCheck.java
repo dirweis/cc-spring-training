@@ -20,8 +20,8 @@ import jakarta.validation.Payload;
  *
  */
 @Documented
-@Retention(RUNTIME)
 @Target(PARAMETER)
+@Retention(RUNTIME)
 @Constraint(validatedBy = TikaTypeCheckValidator.class)
 public @interface TikaTypeCheck {
 

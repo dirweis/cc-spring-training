@@ -235,6 +235,7 @@ class WebControllerGetTest extends AbstractSpringTestRunner {
      */
     @Nested
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @DisplayName("WHEN a valid request is sent to the GET endpoint for retrieving a pet resource")
     class GetByIdTest {
 
         /**
@@ -242,7 +243,7 @@ class WebControllerGetTest extends AbstractSpringTestRunner {
          */
         @Test
         @SneakyThrows
-        @DisplayName("WHEN a valid request is sent to the GET endpoint for retrieving a pet resource by its ID which is not found THEN the response status 404 is returned")
+        @DisplayName("by its ID which is not found THEN the response status 404 is returned")
         void testGetPetByNotFoundIdAndExpect404() {
             mockMvc.perform(get(EndPointWithTestId))
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
@@ -259,7 +260,7 @@ class WebControllerGetTest extends AbstractSpringTestRunner {
          */
         @Test
         @SneakyThrows
-        @DisplayName("WHEN a valid request is sent to the GET endpoint for retrieving a pet resource with tags by its ID which is found THEN the response status 200 is returned")
+        @DisplayName("with tags by its ID which is found THEN the response status 200 is returned")
         void testGetPetByFoundWithTagsIdAndExpect200() {
             final PetEntity testEntity = createTestEntity(true);
 
@@ -277,7 +278,7 @@ class WebControllerGetTest extends AbstractSpringTestRunner {
          */
         @Test
         @SneakyThrows
-        @DisplayName("WHEN a valid request is sent to the GET endpoint for retrieving a pet resource without tags by its ID which is found THEN the response status 200 is returned")
+        @DisplayName("without tags by its ID which is found THEN the response status 200 is returned")
         void testGetPetByFoundWithoutTagsIdAndExpect200() {
             final PetEntity testEntity = createTestEntity(false);
 

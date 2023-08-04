@@ -35,42 +35,42 @@ import lombok.NoArgsConstructor;
  * @author Dirk Weissmann
  *
  */
-@RestControllerAdvice
 @Order(7)
+@RestControllerAdvice
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class DataIntegrityViolationExceptionHandler {
 
-	@Autowired
-	private ErrorService errorService;
+    @Autowired
+    private ErrorService errorService;
 
-	/**
-	 * Catches the defined {@link Exception}s and creates an {@link Error} response body.
-	 * 
-	 * @param ex the {@link Exception} to catch, never {@code null}
-	 * 
-	 * @return the created {@link ResponseEntity} as response, never {@code null}
-	 * 
-	 */
-	@ExceptionHandler(DataIntegrityViolationException.class)
-	private ResponseEntity<Error> handleException(final DataIntegrityViolationException ex) {
-		final String rawMessage = ex.getMostSpecificCause().getLocalizedMessage();
+    /**
+     * Catches the defined {@link Exception}s and creates an {@link Error} response body.
+     * 
+     * @param ex the {@link Exception} to catch, never {@code null}
+     * 
+     * @return the created {@link ResponseEntity} as response, never {@code null}
+     * 
+     */
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    private ResponseEntity<Error> handleException(final DataIntegrityViolationException ex) {
+        final String rawMessage = ex.getMostSpecificCause().getLocalizedMessage();
 
-		if (rawMessage.contains("Unique")) {
-			return create409Response();
-		}
+        if (rawMessage.contains("Unique")) {
+            return create409Response();
+        }
 
-		return errorService.create500Response(ex);
-	}
+        return errorService.create500Response(ex);
+    }
 
-	/**
-	 * Creates a conflict (code {@code 409}) {@link ResponseEntity}.
-	 * 
-	 * @return the {@link ResponseEntity} object with code {@code 409}
-	 */
-	private ResponseEntity<Error> create409Response() {
-		final Error error = errorService.finalizeRfc7807Error("Entry already exists",
-				"Unique constraint violated (already exist)");
+    /**
+     * Creates a conflict (code {@code 409}) {@link ResponseEntity}.
+     * 
+     * @return the {@link ResponseEntity} object with code {@code 409}
+     */
+    private ResponseEntity<Error> create409Response() {
+        final Error error = errorService.finalizeRfc7807Error("Entry already exists",
+                "Unique constraint violated (already exist)");
 
-		return ResponseEntity.status(HttpStatus.CONFLICT).contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
-	}
+        return ResponseEntity.status(HttpStatus.CONFLICT).contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
+    }
 }

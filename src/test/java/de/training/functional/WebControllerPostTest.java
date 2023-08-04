@@ -32,6 +32,7 @@ import lombok.SneakyThrows;
  *
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@DisplayName("WHEN a valid request with a body")
 class WebControllerPostTest extends AbstractSpringTestRunner {
 
     @AfterEach
@@ -44,7 +45,7 @@ class WebControllerPostTest extends AbstractSpringTestRunner {
      */
     @Test
     @SneakyThrows
-    @DisplayName("WHEN a valid request with a body including tags is sent to the Post endpoint for pet creation THEN the response status 201 is expected and the database must contain the entry")
+    @DisplayName("including tags is sent to the Post endpoint for pet creation THEN the response status 201 is expected and the database must contain the entry")
     void testAddPetMaxBodyAndExpect201() {
         final MvcResult result = mockMvc
                 .perform(post(EndPointPrefix).contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -67,7 +68,7 @@ class WebControllerPostTest extends AbstractSpringTestRunner {
      */
     @Test
     @SneakyThrows
-    @DisplayName("WHEN a valid request with a body without tags is sent to the Post endpoint for pet creation THEN the response status 201 is expected and the database must contain the entry")
+    @DisplayName("without tags is sent to the Post endpoint for pet creation THEN the response status 201 is expected and the database must contain the entry")
     void testAddPetMinBodyAndExpect201() {
         final MvcResult result = mockMvc
                 .perform(
