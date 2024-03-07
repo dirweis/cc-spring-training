@@ -3,7 +3,6 @@ package de.training.exception;
 import java.util.List;
 import java.util.Objects;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,8 +20,7 @@ import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import de.training.exception.service.ErrorService;
 import de.training.model.Error;
 import de.training.model.Error.InvalidParam;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * The implementation of the {@link ExceptionHandler}s rising from sub classes of an
@@ -30,16 +28,15 @@ import lombok.NoArgsConstructor;
  * 
  * @author Dirk Weissmann
  * @since 2022-03-14
- * @version 1.3
+ * @version 1.4
  *
  */
 @Order(1)
 @RestControllerAdvice
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-class JsonParseErrorsHandler {
+@RequiredArgsConstructor
+final class JsonParseErrorsHandler {
 
-    @Autowired
-    private ErrorService errorService;
+    private final ErrorService errorService;
 
     /**
      * The implementation of a {@link MismatchedInputException} {@link ExceptionHandler} for {@code JSON} mismatches.

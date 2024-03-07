@@ -44,9 +44,9 @@ public class MinioService {
             client.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
         }
 
-        final PutObjectArgs argl = PutObjectArgs.builder().bucket(bucketName).object(imageId).contentType(contentType)
-                .stream(ByteSource.wrap(image).openStream(), image.length, minioConfig.blocksize()).build();
+        final PutObjectArgs putObject = PutObjectArgs.builder().bucket(bucketName).object(imageId)
+                .contentType(contentType).stream(ByteSource.wrap(image).openStream(), image.length, -1).build();
 
-        client.putObject(argl);
+        client.putObject(putObject);
     }
 }

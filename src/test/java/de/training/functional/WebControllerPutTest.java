@@ -7,7 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.File;
-import java.net.URL;
+import java.net.URI;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.UUID;
@@ -46,7 +46,7 @@ import lombok.SneakyThrows;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-21
- * @version 1.0
+ * @version 1.1
  *
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -155,7 +155,7 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
      * 
      * @author Dirk Weissmann
      * @since 2022-02-22
-     * @version 1.0
+     * @version 1.1
      *
      */
     @Nested
@@ -167,8 +167,6 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
         private static String minioBucketName;
         private static byte[] content;
         private static String imageId;
-
-        private static URL minioUrl;
 
         /**
          * The Show Case for initializing some of the service's parameters in a static context: Initializes a
@@ -183,13 +181,13 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
 
             final Properties properties = yamlFactory.getObject();
 
-            minioUrl = new URL(properties.getProperty("minio.url"));
-
+            final String minioUrl = properties.getProperty("minio.url");
             final String minioAccessKey = properties.getProperty("minio.access-key");
             final String minioSecretKey = properties.getProperty("minio.secret-key");
 
             minioBucketName = properties.getProperty("minio.images-bucket-name");
-            minioClient = MinioClient.builder().endpoint(minioUrl).credentials(minioAccessKey, minioSecretKey).build();
+            minioClient = MinioClient.builder().endpoint(URI.create(minioUrl).toURL())
+                    .credentials(minioAccessKey, minioSecretKey).build();
 
             final File contentFile = ResourceUtils.getFile("classpath:valid_test.jpg");
 
@@ -254,10 +252,9 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
                     .content(content)).andExpect(status().isCreated());
 
             mockMvc.perform(put(EndPointPrefix + "/" + petEntity.getId() + "/image").contentType(MediaType.IMAGE_JPEG)
-                    .content(content))
+                    .content(content)).andExpect(status().isConflict())
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(DataIntegrityViolationException.class))
-                    .andExpect(status().isConflict())
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                     .andExpect(content().string(containsString("\"title\":\"Entry already exists\"")));
         }

@@ -3,7 +3,6 @@ package de.training.exception.constraint;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,6 +17,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
 import jakarta.validation.Path.Node;
+import lombok.RequiredArgsConstructor;
 
 /**
  * The {@link ExceptionHandler} implementation for creating {@link Error} response bodies in case of a caught
@@ -41,15 +41,15 @@ import jakarta.validation.Path.Node;
  * 
  * @author Dirk Weissmann
  * @since 2021-10-25
- * @version 1.4
+ * @version 1.5
  *
  */
 @Order(5)
 @RestControllerAdvice
-class ConstraintViolationExceptionHandler {
+@RequiredArgsConstructor
+final class ConstraintViolationExceptionHandler {
 
-    @Autowired
-    private ErrorService errorService;
+    private final ErrorService errorService;
 
     /**
      * Catches the defined {@link Exception}s and creates an {@link Error} response body.

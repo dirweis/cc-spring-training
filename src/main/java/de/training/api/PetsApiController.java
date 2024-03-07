@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.catalina.mapper.Mapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -20,6 +19,7 @@ import de.training.model.Pet;
 import de.training.model.Pet.Category;
 import de.training.model.Pet.PetStatus;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -27,15 +27,15 @@ import lombok.extern.log4j.Log4j2;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-15
- * @version 1.1
+ * @version 1.2
  *
  */
 @Log4j2
 @RestController
+@RequiredArgsConstructor
 class PetsApiController implements PetsApi {
 
-    @Autowired
-    private StoreService storeService;
+    private final StoreService storeService;
 
     /**
      * {@inheritDoc}
@@ -76,8 +76,9 @@ class PetsApiController implements PetsApi {
         log.info("Start retrieving pets on the parameters page: {}, size: {}, tags: {}, status: {}, category: {}", page,
                 size, tags, status, category);
 
-        final List<Pet> responseBody = storeService.findByParameters(tags, status, category,
-                PageRequest.of(page, size, Sort.by(Direction.DESC, "createdTime")));
+        final PageRequest pr = PageRequest.of(page, size, Sort.by(Direction.DESC, "createdTime"));
+
+        final List<Pet> responseBody = storeService.findByParameters(tags, status, category, pr);
 
         return ResponseEntity.ok(responseBody);
     }

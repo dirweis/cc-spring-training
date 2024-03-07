@@ -6,18 +6,17 @@ spring:
     mapper:
       accept-case-insensitive-enums: true
   datasource:
-    url: 'jdbc:h2:mem:testdb;DB_CLOSE_ON_EXIT=FALSE'
-    driverClassName: org.h2.Driver
+    url: 'jdbc:hsqldb:mem:testdb;DB_CLOSE_DELAY=-1'
+    driverClassName: org.hsqldb.jdbc.JDBCDriver
     username: sa
-    password: password
+    password: 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     open-in-view: false
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.HSQLDialect
 minio:
   url: https://play.min.io
   access-key: Q3AM3UQ867SPQQA43P2F
   secret-key: zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG
-  blocksize: 6000000
   images-bucket-name: images-test

@@ -1,6 +1,5 @@
 package de.training.exception;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -12,8 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import de.training.exception.service.ErrorService;
 import de.training.model.Error;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * The {@link ExceptionHandler} implementation for creating {@link Error} response bodies in case of a caught
@@ -32,16 +30,15 @@ import lombok.NoArgsConstructor;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-17
- * @version 1.2
+ * @version 1.3
  *
  */
 @RestControllerAdvice
+@RequiredArgsConstructor
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-class HttpRequestMethodNotSupportedExceptionHandler {
+final class HttpRequestMethodNotSupportedExceptionHandler {
 
-    @Autowired
-    private ErrorService errorService;
+    private final ErrorService errorService;
 
     /**
      * Catches the defined {@link Exception}s and creates an {@link Error} response body.
