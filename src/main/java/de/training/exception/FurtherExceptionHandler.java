@@ -1,6 +1,5 @@
 package de.training.exception;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
@@ -10,8 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import de.training.exception.service.ErrorService;
 import de.training.model.Error;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -38,12 +36,11 @@ import lombok.extern.log4j.Log4j2;
  */
 @Log4j2
 @RestControllerAdvice
+@RequiredArgsConstructor
 @Order(Ordered.LOWEST_PRECEDENCE)
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 class FurtherExceptionHandler {
 
-    @Autowired
-    private ErrorService errorService;
+    private final ErrorService errorService;
 
     /**
      * Catches the defined {@link Exception}s and creates an {@link Error} response body.

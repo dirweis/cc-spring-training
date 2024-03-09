@@ -1,6 +1,5 @@
 package de.training.exception;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -9,8 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import de.training.exception.service.ErrorService;
 import de.training.model.Error;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * The {@link ExceptionHandler} in case the request body is missing. Other request body violations get processed in
@@ -34,26 +32,25 @@ import lombok.NoArgsConstructor;
  */
 @Order(2)
 @RestControllerAdvice
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 class HttpMessageNotReadableExceptionHandler {
 
-	@Autowired
-	private ErrorService errorService;
+    private final ErrorService errorService;
 
-	/**
-	 * Creates the {@link ResponseEntity} including an {@link Error} body with status {@code 400}.
-	 * 
-	 * @param ex the {@link Exception} object for handling, never {@code null}
-	 * 
-	 * @return the {@link ResponseEntity} including an {@link Error} body
-	 * 
-	 */
-	@ExceptionHandler(HttpMessageNotReadableException.class)
-	private ResponseEntity<Error> handleException(final HttpMessageNotReadableException ex) {
-		final String errorMsg = ex.getLocalizedMessage();
+    /**
+     * Creates the {@link ResponseEntity} including an {@link Error} body with status {@code 400}.
+     * 
+     * @param ex the {@link Exception} object for handling, never {@code null}
+     * 
+     * @return the {@link ResponseEntity} including an {@link Error} body
+     * 
+     */
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    private ResponseEntity<Error> handleException(final HttpMessageNotReadableException ex) {
+        final String errorMsg = ex.getLocalizedMessage();
 
-		final String detailInfo = errorMsg.substring(0, errorMsg.indexOf(':'));
+        final String detailInfo = errorMsg.substring(0, errorMsg.indexOf(':'));
 
-		return errorService.handleBodySyntaxViolations(detailInfo);
-	}
+        return errorService.handleBodySyntaxViolations(detailInfo);
+    }
 }

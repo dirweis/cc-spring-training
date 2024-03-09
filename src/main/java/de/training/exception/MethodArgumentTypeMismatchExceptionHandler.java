@@ -2,7 +2,6 @@ package de.training.exception;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +12,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import de.training.exception.service.ErrorService;
 import de.training.model.Error;
 import de.training.model.Error.InvalidParam;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * The {@link ExceptionHandler} implementation for creating {@link Error} response bodies in case of a caught
@@ -43,11 +41,10 @@ import lombok.NoArgsConstructor;
  */
 @Order(4)
 @RestControllerAdvice
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 class MethodArgumentTypeMismatchExceptionHandler {
 
-    @Autowired
-    private ErrorService errorService;
+    private final ErrorService errorService;
 
     /**
      * Catches the defined {@link Exception}s and creates an {@link Error} response body.
