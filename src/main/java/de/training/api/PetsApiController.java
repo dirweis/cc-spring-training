@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.catalina.mapper.Mapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +14,7 @@ import de.training.db.service.StoreService;
 import de.training.model.Pet;
 import de.training.model.Pet.Category;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -27,10 +27,10 @@ import lombok.extern.log4j.Log4j2;
  */
 @Log4j2
 @RestController
+@RequiredArgsConstructor
 class PetsApiController implements PetsApi {
 
-    @Autowired
-    private StoreService storeService;
+    private final StoreService storeService;
 
     /**
      * {@inheritDoc}

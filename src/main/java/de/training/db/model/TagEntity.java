@@ -45,8 +45,8 @@ public class TagEntity {
     @JoinColumn(name = "pet_id", nullable = false)
     private PetEntity pet;
 
-    @Column(nullable = false, updatable = false)
     @CreatedDate
+    @Column(nullable = false, updatable = false)
     private Date createdTime;
 
     /**

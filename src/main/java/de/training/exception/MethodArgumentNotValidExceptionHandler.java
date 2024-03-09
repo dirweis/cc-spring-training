@@ -2,7 +2,6 @@ package de.training.exception;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import de.training.exception.service.ErrorService;
 import de.training.model.Error;
 import de.training.model.Error.InvalidParam;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * The {@link ExceptionHandler} implementation for creating {@link Error} response bodies in case of a caught
@@ -38,30 +36,29 @@ import lombok.NoArgsConstructor;
  *
  */
 @Order(2)
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @RestControllerAdvice
+@RequiredArgsConstructor
 class MethodArgumentNotValidExceptionHandler {
 
-	@Autowired
-	private ErrorService errorService;
+    private final ErrorService errorService;
 
-	/**
-	 * Catches the defined {@link Exception}s and creates an {@link Error} response body.
-	 * 
-	 * @param ex the {@link Exception} to catch, never {@code null}
-	 * 
-	 * @return the created {@link Error} object as response body, never {@code null}
-	 * 
-	 */
-	@ExceptionHandler(MethodArgumentNotValidException.class)
-	private ResponseEntity<Error> handleException(final MethodArgumentNotValidException ex) {
-		final List<InvalidParam> invalidParams = ex.getAllErrors().stream().filter(FieldError.class::isInstance)
-				.map(FieldError.class::cast).map(fieldError -> InvalidParam.builder().name(fieldError.getField())
-						.reason(fieldError.getDefaultMessage()).build())
-				.toList();
+    /**
+     * Catches the defined {@link Exception}s and creates an {@link Error} response body.
+     * 
+     * @param ex the {@link Exception} to catch, never {@code null}
+     * 
+     * @return the created {@link Error} object as response body, never {@code null}
+     * 
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    private ResponseEntity<Error> handleException(final MethodArgumentNotValidException ex) {
+        final List<InvalidParam> invalidParams = ex.getAllErrors().stream().filter(FieldError.class::isInstance)
+                .map(FieldError.class::cast).map(fieldError -> InvalidParam.builder().name(fieldError.getField())
+                        .reason(fieldError.getDefaultMessage()).build())
+                .toList();
 
-		final Error error = errorService.finalizeRfc7807Error("Request body validation failed", invalidParams);
+        final Error error = errorService.finalizeRfc7807Error("Request body validation failed", invalidParams);
 
-		return ResponseEntity.unprocessableEntity().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
-	}
+        return ResponseEntity.unprocessableEntity().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
+    }
 }

@@ -32,10 +32,10 @@ import lombok.Setter;
  * @version 1.0
  *
  */
-@Entity(name = "pet")
-@NoArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
 @Getter
+@NoArgsConstructor
+@Entity(name = "pet")
+@EntityListeners(AuditingEntityListener.class)
 public class PetEntity {
 
     @Id
@@ -67,11 +67,11 @@ public class PetEntity {
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<PhotoUrlEntity> photoUrls;
 
-    @Column(nullable = false, updatable = false)
     @CreatedDate
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdTime;
 
-    @Column(nullable = false)
     @LastModifiedDate
+    @Column(nullable = false)
     private LocalDateTime modifiedTime;
 }
