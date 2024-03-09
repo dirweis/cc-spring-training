@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants.ComponentModel;
 import org.mapstruct.MappingTarget;
 
 import de.training.db.model.PetEntity;
@@ -23,72 +24,73 @@ import de.training.model.Pet;
  * @author Dirk Weissmann
  *
  */
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = ComponentModel.SPRING)
 public interface PetMapper {
 
-	/**
-	 * Maps a {@link Pet} DTO into a {@link PetEntity}.
-	 * 
-	 * @param pet the input DTO
-	 * 
-	 * @return the mapped entity
-	 */
-	@Mapping(target = "id", ignore = true)
-	@Mapping(target = "photoUrls", ignore = true)
-	@Mapping(target = "tags", expression = "java(mapTags2Entities(pet.tags()))")
-	PetEntity dto2Entity(Pet pet);
+    /**
+     * Maps a {@link Pet} DTO into a {@link PetEntity}.
+     * 
+     * @param pet the input DTO
+     * 
+     * @return the mapped entity
+     */
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "photoUrls", ignore = true)
+    @Mapping(target = "tags", expression = "java(mapTags2Entities(pet.tags()))")
+    PetEntity dto2Entity(Pet pet);
 
-	/**
-	 * Maps a {@link PetEntity} DTO into a {@link Pet} DTO.
-	 * 
-	 * @param petEntity the input entity
-	 * 
-	 * @return the mapped entity
-	 */
-	@Mapping(target = "photoUrls", expression = "java(mapPhotoEntities2PhotoUrls(petEntity.getPhotoUrls()))")
-	@Mapping(target = "tags", expression = "java(mapTagEntities2Tags(petEntity.getTags()))")
-	Pet entity2Dto(PetEntity petEntity);
+    /**
+     * Maps a {@link PetEntity} DTO into a {@link Pet} DTO.
+     * 
+     * @param petEntity the input entity
+     * 
+     * @return the mapped entity
+     */
+    @Mapping(target = "photoUrls", expression = "java(mapPhotoEntities2PhotoUrls(petEntity.getPhotoUrls()))")
+    @Mapping(target = "tags", expression = "java(mapTagEntities2Tags(petEntity.getTags()))")
+    Pet entity2Dto(PetEntity petEntity);
 
-	@Mapping(target = "id", ignore = true)
-	@Mapping(target = "photoUrls", ignore = true)
-	PetEntity update(@MappingTarget PetEntity targetEntity, PetEntity updateEntity);
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "photoUrls", ignore = true)
+    @Mapping(target = "tags", expression = "java(new java.util.ArrayList<>(mapTags2Entities(updateDto.tags())))")
+    PetEntity updatePetEntity(@MappingTarget PetEntity targetEntity, Pet updateDto);
 
-	/**
-	 * A little helper for mapping the tags of a {@link Pet} resource into a complex {@link TagEntity}.
-	 * 
-	 * @param tags the {@link Pet}'s tags, may be {@code null}
-	 * 
-	 * @return the {@link List} of mapped {@link TagEntity} objects
-	 */
-	default List<TagEntity> mapTags2Entities(final Collection<String> tags) {
-		if (null == tags) {
-			return Collections.emptyList();
-		}
+    /**
+     * A little helper for mapping the tags of a {@link Pet} resource into a complex {@link TagEntity}.
+     * 
+     * @param tags the {@link Pet}'s tags, may be {@code null}
+     * 
+     * @return the {@link List} of mapped {@link TagEntity} objects
+     */
+    default List<TagEntity> mapTags2Entities(final Collection<String> tags) {
+        if (null == tags) {
+            return Collections.emptyList();
+        }
 
-		return tags.stream().map(TagEntity::new).toList();
-	}
+        return tags.stream().map(TagEntity::new).toList();
+    }
 
-	/**
-	 * A little helper for mapping the {@link TagEntity} objects of a {@link PetEntity} into a {@link List} of tags as
-	 * {@link String}s.
-	 * 
-	 * @param tagEntities the {@link PetEntity}'s tags, must not be {@code null}
-	 * 
-	 * @return the {@link List} of mapped tags
-	 */
-	default List<String> mapTagEntities2Tags(final Collection<TagEntity> tagEntities) {
-		return tagEntities.stream().map(TagEntity::getTag).toList();
-	}
+    /**
+     * A little helper for mapping the {@link TagEntity} objects of a {@link PetEntity} into a {@link List} of tags as
+     * {@link String}s.
+     * 
+     * @param tagEntities the {@link PetEntity}'s tags, must not be {@code null}
+     * 
+     * @return the {@link List} of mapped tags
+     */
+    default List<String> mapTagEntities2Tags(final Collection<TagEntity> tagEntities) {
+        return tagEntities.stream().map(TagEntity::getTag).toList();
+    }
 
-	/**
-	 * A little helper for mapping the {@link PhotoUrlEntity} objects of a {@link PetEntity} into a {@link List} of tags
-	 * as {@link URL}s.
-	 * 
-	 * @param photoUrlEntities the {@link PetEntity}'s photo URLs, must not be {@code null}
-	 * 
-	 * @return the {@link List} of mapped photo URLs
-	 */
-	default List<URL> mapPhotoEntities2PhotoUrls(final Collection<PhotoUrlEntity> photoUrlEntities) {
-		return photoUrlEntities.stream().map(PhotoUrlEntity::getUrl).toList();
-	}
+    /**
+     * A little helper for mapping the {@link PhotoUrlEntity} objects of a {@link PetEntity} into a {@link List} of tags
+     * as {@link URL}s.
+     * 
+     * @param photoUrlEntities the {@link PetEntity}'s photo URLs, must not be {@code null}
+     * 
+     * @return the {@link List} of mapped photo URLs
+     */
+    default List<URL> mapPhotoEntities2PhotoUrls(final Collection<PhotoUrlEntity> photoUrlEntities) {
+        return photoUrlEntities.stream().map(PhotoUrlEntity::getUrl).toList();
+    }
 }

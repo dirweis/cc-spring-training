@@ -3,6 +3,8 @@ package de.training.db.mapper;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.mapstruct.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import de.training.AbstractSpringTestRunner;
 import de.training.db.model.PetEntity;
 import de.training.db.model.TagEntity;
+import de.training.model.Pet;
+import de.training.model.Pet.Category;
+import de.training.model.Pet.PetStatus;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -34,20 +39,23 @@ class MapperTest extends AbstractSpringTestRunner {
     void testMapperOnNullValues() {
         assertThat(mapper.dto2Entity(null)).isNull();
         assertThat(mapper.entity2Dto(null)).isNull();
-        assertThat(mapper.update(null, null)).isNull();
 
-        final PetEntity entityWithTag = createTestEntity(true);
+        final PetEntity nullEntity = null;
 
-        assertThat(mapper.update(entityWithTag, null)).isEqualTo(entityWithTag);
+        mapper.updatePetEntity(nullEntity, null);
 
-        assertThatNullPointerException().isThrownBy(() -> mapper.update(null, entityWithTag));
+        assertThat(nullEntity).isNull();
+
+        final Pet petWithoutTags = new Pet(null, Category.BIRD, "Wuffi", null, null, PetStatus.AVAILABLE,
+                "I'm a description");
+
+        assertThatNullPointerException().isThrownBy(() -> mapper.updatePetEntity(null, petWithoutTags));
 
         final PetEntity targetEntity = createTestEntity(false);
-        final PetEntity sourceEntity = createTestEntity(false);
 
-        mapper.update(targetEntity, sourceEntity);
+        mapper.updatePetEntity(targetEntity, petWithoutTags);
 
-        assertThat(targetEntity.getTags()).isNull();
+        assertThat(targetEntity.getTags()).isEmpty();
     }
 
     /**
@@ -56,9 +64,10 @@ class MapperTest extends AbstractSpringTestRunner {
     @Test
     void testMapperUpdateAddTags() {
         final PetEntity targetEntity = createTestEntity(false);
-        final PetEntity sourceEntity = createTestEntity(true);
+        final Pet source = new Pet(null, Category.BIRD, "Wuffi", null, List.of("Lovely"), PetStatus.AVAILABLE,
+                "I'm a description");
 
-        mapper.update(targetEntity, sourceEntity);
+        mapper.updatePetEntity(targetEntity, source);
 
         assertThat(targetEntity.getTags().size()).isOne();
     }
@@ -70,10 +79,10 @@ class MapperTest extends AbstractSpringTestRunner {
     @Test
     void testMapperUpdateRemoveTags() {
         final PetEntity targetEntity = createTestEntity(true);
-        final PetEntity sourceEntity = createTestEntity(false);
+        final Pet source = new Pet(null, Category.BIRD, "Wuffi", null, null, PetStatus.AVAILABLE, "I'm a description");
 
-        mapper.update(targetEntity, sourceEntity);
+        mapper.updatePetEntity(targetEntity, source);
 
-        assertThat(targetEntity.getTags()).isNull();
+        assertThat(targetEntity.getTags()).isEmpty();
     }
 }

@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import de.training.AbstractSpringTestRunner;
 import de.training.model.Error;
 import de.training.model.Pet;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
@@ -33,27 +34,27 @@ import lombok.SneakyThrows;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class MockedControllerTest extends AbstractSpringTestRunner {
 
-	@MockBean
-	private PetsApiController controller;
+    @MockBean
+    private PetsApiController controller;
 
-	/**
-	 * Test for the internal server problems: Send something to the {@code POST} endpoint for creating a new {@link Pet}
-	 * resource and make the controller throw a {@link NullPointerException}.
-	 * <p>
-	 * Checks the response on the expected {@link HttpStatus#INTERNAL_SERVER_ERROR} and the expected {@link Error}
-	 * response body.
-	 */
-	@Test
-	@SneakyThrows
-	@DisplayName("WHEN the Post endpoint for adding a new Pet resource is called an the implementation crashes internally on an exception THEN expect a response with status code 500 and an appropriate body")
-	void testFurtherExceptionHandlerOnInternalFailAndExpect500() {
-		when(controller.addPet(any(), any())).thenThrow(NullPointerException.class);
+    /**
+     * Test for the internal server problems: Send something to the {@code POST} endpoint for creating a new {@link Pet}
+     * resource and make the controller throw a {@link NullPointerException}.
+     * <p>
+     * Checks the response on the expected {@link HttpStatus#INTERNAL_SERVER_ERROR} and the expected {@link Error}
+     * response body.
+     */
+    @Test
+    @SneakyThrows
+    @DisplayName("WHEN the Post endpoint for adding a new Pet resource is called an the implementation crashes internally on an exception THEN expect a response with status code 500 and an appropriate body")
+    void testFurtherExceptionHandlerOnInternalFailAndExpect500() {
+        when(controller.addPet(any(Pet.class), any(HttpServletRequest.class))).thenThrow(NullPointerException.class);
 
-		mockMvc.perform(post(EndPointPrefix).contentType(MediaType.APPLICATION_JSON).content(validPetBodyWithTags))
-				.andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
-						.isInstanceOf(NullPointerException.class))
-				.andExpect(status().isInternalServerError())
-				.andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON)).andExpect(content()
-						.string(containsString("\"title\":\"Internal problem. Please contact the support.\"")));
-	}
+        mockMvc.perform(post(EndPointPrefix).contentType(MediaType.APPLICATION_JSON).content(validPetBodyWithTags))
+                .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
+                        .isInstanceOf(NullPointerException.class))
+                .andExpect(status().isInternalServerError())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON)).andExpect(content()
+                        .string(containsString("\"title\":\"Internal problem. Please contact the support.\"")));
+    }
 }

@@ -121,10 +121,8 @@ public class StoreService {
         final PetEntity entity = petRepository.findById(petId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format(ERROR_MSG_FORMAT, petId)));
 
-        final PetEntity updateEntity = mapper.dto2Entity(pet);
-
         tagRepository.deleteAllInBatch(entity.getTags());
-        mapper.update(entity, updateEntity);
+        mapper.updatePetEntity(entity, pet);
 
         linkTags(entity);
 
