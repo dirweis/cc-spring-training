@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang3.RegExUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import de.training.model.Error;
 import de.training.model.Error.InvalidParam;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -24,20 +24,10 @@ import lombok.extern.log4j.Log4j2;
  */
 @Log4j2
 @Service
+@RequiredArgsConstructor
 public class ErrorService {
 
     private final HttpServletRequest request;
-
-    /**
-     * The constructor used for the injection of the fields (constructor injection). (Direct) field injection is not
-     * thread-safe here since this class is a Spring {@link Service} bean.
-     * 
-     * @param request the {@link HttpServletRequest} object for providing meta information, never {@code null}
-     */
-    @Autowired
-    public ErrorService(final HttpServletRequest request) {
-        this.request = request;
-    }
 
     /**
      * Finalizes the {@link Error} object with the title and commonly used values.
