@@ -45,8 +45,7 @@ public class MinioService {
         }
 
         final PutObjectArgs content = PutObjectArgs.builder().bucket(bucketName).object(imageId)
-                .contentType(contentType).stream(new ByteArrayInputStream(image), image.length, minioConfig.blocksize())
-                .build();
+                .contentType(contentType).stream(new ByteArrayInputStream(image), image.length, -1).build();
 
         client.putObject(content);
     }

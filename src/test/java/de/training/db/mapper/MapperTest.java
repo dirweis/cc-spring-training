@@ -3,6 +3,8 @@ package de.training.db.mapper;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNullPointerException;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.mapstruct.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import de.training.AbstractSpringTestRunner;
 import de.training.db.model.PetEntity;
 import de.training.db.model.TagEntity;
+import de.training.model.Pet;
+import de.training.model.Pet.Category;
+import de.training.model.Pet.PetStatus;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -24,59 +29,60 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class MapperTest extends AbstractSpringTestRunner {
 
-	@Autowired
-	private PetMapper mapper;
+    @Autowired
+    private PetMapper mapper;
 
-	/**
-	 * Ensures the mapper's correct behavior with {@code null} values.
-	 */
-	@Test
-	void testMapperOnNullValues() {
-		assertThat(mapper.dto2Entity(null)).isNull();
-		assertThat(mapper.entity2Dto(null)).isNull();
+    /**
+     * Ensures the mapper's correct behavior with {@code null} values.
+     */
+    @Test
+    void testMapperOnNullValues() {
+        assertThat(mapper.dto2Entity(null)).isNull();
+        assertThat(mapper.entity2Dto(null)).isNull();
 
-		final PetEntity nullEntity = null;
+        final PetEntity nullEntity = null;
 
-		mapper.update(nullEntity, null);
+        mapper.updatePetEntity(nullEntity, null);
 
-		assertThat(nullEntity).isNull();
+        assertThat(nullEntity).isNull();
 
-		final PetEntity entityWithTag = createTestEntity(true);
+        final Pet petWithoutTags = new Pet(null, Category.BIRD, "Wuffi", null, null, PetStatus.AVAILABLE,
+                "I'm a description");
 
-		assertThatNullPointerException().isThrownBy(() -> mapper.update(null, entityWithTag));
+        assertThatNullPointerException().isThrownBy(() -> mapper.updatePetEntity(null, petWithoutTags));
 
-		final PetEntity targetEntity = createTestEntity(false);
-		final PetEntity sourceEntity = createTestEntity(false);
+        final PetEntity targetEntity = createTestEntity(false);
 
-		mapper.update(targetEntity, sourceEntity);
+        mapper.updatePetEntity(targetEntity, petWithoutTags);
 
-		assertThat(targetEntity.getTags()).isNull();
-	}
+        assertThat(targetEntity.getTags()).isEmpty();
+    }
 
-	/**
-	 * Ensures the transfer of {@link TagEntity} objects in the {@link PetEntity} in the update method.
-	 */
-	@Test
-	void testMapperUpdateAddTags() {
-		final PetEntity targetEntity = createTestEntity(false);
-		final PetEntity sourceEntity = createTestEntity(true);
+    /**
+     * Ensures the transfer of {@link TagEntity} objects in the {@link PetEntity} in the update method.
+     */
+    @Test
+    void testMapperUpdateAddTags() {
+        final PetEntity targetEntity = createTestEntity(false);
+        final Pet source = new Pet(null, Category.BIRD, "Wuffi", null, List.of("Lovely"), PetStatus.AVAILABLE,
+                "I'm a description");
 
-		mapper.update(targetEntity, sourceEntity);
+        mapper.updatePetEntity(targetEntity, source);
 
-		assertThat(targetEntity.getTags().size()).isOne();
-	}
+        assertThat(targetEntity.getTags().size()).isOne();
+    }
 
-	/**
-	 * Ensures the deletion of {@link TagEntity} objects in the target {@link PetEntity} in case the target entity
-	 * contains some and the source entity doesn't.
-	 */
-	@Test
-	void testMapperUpdateRemoveTags() {
-		final PetEntity targetEntity = createTestEntity(true);
-		final PetEntity sourceEntity = createTestEntity(false);
+    /**
+     * Ensures the deletion of {@link TagEntity} objects in the target {@link PetEntity} in case the target entity
+     * contains some and the source entity doesn't.
+     */
+    @Test
+    void testMapperUpdateRemoveTags() {
+        final PetEntity targetEntity = createTestEntity(true);
+        final Pet source = new Pet(null, Category.BIRD, "Wuffi", null, null, PetStatus.AVAILABLE, "I'm a description");
 
-		mapper.update(targetEntity, sourceEntity);
+        mapper.updatePetEntity(targetEntity, source);
 
-		assertThat(targetEntity.getTags()).isNull();
-	}
+        assertThat(targetEntity.getTags()).isEmpty();
+    }
 }

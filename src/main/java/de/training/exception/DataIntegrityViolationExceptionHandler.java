@@ -1,6 +1,7 @@
 package de.training.exception;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.Locale;
+
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -11,8 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import de.training.exception.service.ErrorService;
 import de.training.model.Error;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * The {@link ExceptionHandler} implementation for creating {@link Error} response bodies in case of a caught
@@ -37,11 +37,10 @@ import lombok.NoArgsConstructor;
  */
 @Order(7)
 @RestControllerAdvice
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 class DataIntegrityViolationExceptionHandler {
 
-    @Autowired
-    private ErrorService errorService;
+    private final ErrorService errorService;
 
     /**
      * Catches the defined {@link Exception}s and creates an {@link Error} response body.
@@ -55,7 +54,7 @@ class DataIntegrityViolationExceptionHandler {
     private ResponseEntity<Error> handleException(final DataIntegrityViolationException ex) {
         final String rawMessage = ex.getMostSpecificCause().getLocalizedMessage();
 
-        if (rawMessage.contains("Unique")) {
+        if (rawMessage.toLowerCase(Locale.getDefault()).contains("unique")) {
             return create409Response();
         }
 

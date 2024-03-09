@@ -7,7 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.File;
-import java.net.URL;
+import java.net.URI;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.UUID;
@@ -180,12 +180,14 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
             yamlFactory.setResources(new ClassPathResource("application.yml"));
 
             final Properties properties = yamlFactory.getObject();
-            final URL minioUrl = new URL(properties.getProperty("minio.url"));
+
+            final String minioUrl = properties.getProperty("minio.url");
             final String minioAccessKey = properties.getProperty("minio.access-key");
             final String minioSecretKey = properties.getProperty("minio.secret-key");
 
             minioBucketName = properties.getProperty("minio.images-bucket-name");
-            minioClient = MinioClient.builder().endpoint(minioUrl).credentials(minioAccessKey, minioSecretKey).build();
+            minioClient = MinioClient.builder().endpoint(URI.create(minioUrl).toURL())
+                    .credentials(minioAccessKey, minioSecretKey).build();
 
             final File contentFile = ResourceUtils.getFile("classpath:valid_test.jpg");
 

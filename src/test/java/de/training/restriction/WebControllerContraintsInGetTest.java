@@ -192,7 +192,7 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
         }
 
         /**
-         * Test for an unknown enum value of the {@code status} parameter: The value {@code k} is not of the type
+         * Test for an unknown enumeration value of the {@code status} parameter: The value {@code k} is not of the type
          * {@link PetStatus}.
          */
         @Test

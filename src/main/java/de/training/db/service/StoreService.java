@@ -1,7 +1,6 @@
 package de.training.db.service;
 
 import java.net.URI;
-import java.net.URL;
 import java.util.List;
 import java.util.UUID;
 
@@ -135,10 +134,8 @@ public class StoreService {
         final PetEntity entity = petRepository.findById(petId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format(StoreService.ERROR_MSG_FORMAT, petId)));
 
-        final PetEntity updateEntity = mapper.dto2Entity(pet);
-
         tagRepository.deleteAllInBatch(entity.getTags());
-        mapper.update(entity, updateEntity);
+        mapper.updatePetEntity(entity, pet);
 
         StoreService.linkTags(entity);
 
@@ -166,13 +163,15 @@ public class StoreService {
         final String imageUrlString = minioConfigDto.url() + ":" + minioConfigDto.browsePort() + "/buckets/"
                 + minioConfigDto.imagesBucketName() + "/browse/" + imageId;
 
-        final PhotoUrlEntity urlEntity = new PhotoUrlEntity(entity, new URL(imageUrlString));
+        final URI minioUri = URI.create(imageUrlString);
+
+        final PhotoUrlEntity urlEntity = new PhotoUrlEntity(entity, minioUri.toURL());
 
         photoUrlRepository.save(urlEntity);
 
         minioService.storeImage(body, imageId, contentType);
 
-        return URI.create(imageUrlString);
+        return minioUri;
     }
 
     /**
