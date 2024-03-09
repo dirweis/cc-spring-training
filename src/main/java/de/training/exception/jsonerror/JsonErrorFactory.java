@@ -15,34 +15,27 @@ import lombok.NoArgsConstructor;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-21
- * @version 1.1
+ * @version 2.0
  *
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class JsonErrorFactory {
 
-	/**
-	 * All that is implemented here: Get a sub of {@link AbstractJsonErrorHandler}.
-	 * 
-	 * @param ex           the exception to specify the specific error handler, must not be {@code null}
-	 * @param errorService the {@link ErrorService} object, must not be {@code null}
-	 * 
-	 * @return the equivalent handler
-	 */
-	public static AbstractJsonErrorHandler getErrorHandler(final Throwable ex, final ErrorService errorService) {
+    /**
+     * All that is implemented here: Get a sub of {@link AbstractJsonErrorHandler}.
+     * 
+     * @param ex           the exception to specify the specific error handler, must not be {@code null}
+     * @param errorService the {@link ErrorService} object, must not be {@code null}
+     * 
+     * @return the equivalent handler
+     */
+    public static AbstractJsonErrorHandler getErrorHandler(final Throwable ex, final ErrorService errorService) {
 
-		if (ex instanceof final MismatchedInputException mex) {
-			return new JsonMismatchHandler(mex, errorService);
-		}
-
-		if (ex instanceof final JsonEOFException jex) {
-			return new JsonEofErrorHandler(jex, errorService);
-		}
-
-		if (ex instanceof final JsonParseException jex) {
-			return new JsonSyntacticalErrorHandler(jex, errorService);
-		}
-
-		return new JsonNotReadableErrorHandler((HttpMessageNotReadableException) ex, errorService);
-	}
+        return switch (ex) {
+            case final MismatchedInputException mex -> new JsonMismatchHandler(mex, errorService);
+            case final JsonEOFException jex -> new JsonEofErrorHandler(jex, errorService);
+            case final JsonParseException jex -> new JsonSyntacticalErrorHandler(jex, errorService);
+            default -> new JsonNotReadableErrorHandler((HttpMessageNotReadableException) ex, errorService);
+        };
+    }
 }
