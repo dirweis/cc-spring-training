@@ -7,8 +7,8 @@ import java.util.UUID;
 import org.apache.commons.lang3.RegExUtils;
 import org.springframework.stereotype.Service;
 
-import de.training.model.Error;
-import de.training.model.Error.InvalidParam;
+import de.training.model.Rfc9457Error;
+import de.training.model.Rfc9457Error.InvalidParam;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ import lombok.extern.log4j.Log4j2;
  * Out-sourcing error handling logic for common use.
  * 
  * @author Dirk Weissmann
- * @since 2021-10-25
+ * @since 2024-03-09
  * @version 1.0
  *
  */
@@ -30,59 +30,59 @@ public class ErrorService {
     private final HttpServletRequest request;
 
     /**
-     * Finalizes the {@link Error} object with the title and commonly used values.
+     * Finalizes the {@link Rfc9457Error} object with the title and commonly used values.
      * 
      * @param title the error's title, must not be {@code null}
      * 
-     * @return the final {@link Error}, never {@code null}
+     * @return the final {@link Rfc9457Error}, never {@code null}
      */
-    public Error finalizeRfc7807Error(final String title) {
-        return finalizeRfc7807Error(title, null, null);
+    public Rfc9457Error finalizeRfc9457Error(final String title) {
+        return finalizeRfc9457Error(title, null, null);
     }
 
     /**
-     * Finalizes the {@link Error} object with the title and the detail {@link String} in addition to commonly used
-     * values.
+     * Finalizes the {@link Rfc9457Error} object with the title and the detail {@link String} in addition to commonly
+     * used values.
      * 
      * @param title  the error's title, must not be {@code null}
      * @param detail the error's detailed description, may be {@code null}
      * 
-     * @return the final {@link Error}, never {@code null}
+     * @return the final {@link Rfc9457Error}, never {@code null}
      */
-    public Error finalizeRfc7807Error(final String title, final String detail) {
-        return finalizeRfc7807Error(title, detail, null);
+    public Rfc9457Error finalizeRfc9457Error(final String title, final String detail) {
+        return finalizeRfc9457Error(title, detail, null);
     }
 
     /**
-     * Finalizes the {@link Error} object with the title and the invalid_params value in addition to commonly used
-     * values.
+     * Finalizes the {@link Rfc9457Error} object with the title and the invalid_params value in addition to commonly
+     * used values.
      * 
      * @param title         the error's title, must not be {@code null}
      * @param invalidParams special field for parameter violations, may be {@code null}
      * 
-     * @return the final {@link Error}, never {@code null}
+     * @return the final {@link Rfc9457Error}, never {@code null}
      */
-    public Error finalizeRfc7807Error(final String title, final List<InvalidParam> invalidParams) {
-        return finalizeRfc7807Error(title, null, invalidParams);
+    public Rfc9457Error finalizeRfc9457Error(final String title, final List<InvalidParam> invalidParams) {
+        return finalizeRfc9457Error(title, null, invalidParams);
     }
 
     /**
-     * Prepares the {@link Error} object with commonly used values.
+     * Prepares the {@link Rfc9457Error} object with commonly used values.
      * 
      * @param title         the error's title, must not be {@code null}
      * @param detail        the error's detailed description, may be {@code null}
      * @param invalidParams special field for parameter violations, may be {@code null}
      * 
-     * @return the final {@link Error}, never {@code null}
+     * @return the final {@link Rfc9457Error}, never {@code null}
      */
-    private Error finalizeRfc7807Error(final String title, final String detail,
+    private Rfc9457Error finalizeRfc9457Error(final String title, final String detail,
             @Valid final List<InvalidParam> invalidParams) {
         final UUID errorId = UUID.randomUUID();
 
         log.warn("Problems in request. ID: {}", errorId);
 
-        return Error.builder().type(URI.create(request.getRequestURI())).title(title)
-                .instance(URI.create("urn:ERROR:" + errorId)).detail(detail).invalidParams(invalidParams).build();
+        return Rfc9457Error.builder().type(URI.create(request.getRequestURI())).title(title)
+                .instance(URI.create("urn:ERROR:" + errorId)).detail(detail).errors(invalidParams).build();
     }
 
     /**

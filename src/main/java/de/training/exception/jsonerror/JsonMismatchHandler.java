@@ -9,8 +9,8 @@ import org.springframework.http.ResponseEntity;
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 
-import de.training.model.Error;
-import de.training.model.Error.InvalidParam;
+import de.training.model.Rfc9457Error;
+import de.training.model.Rfc9457Error.InvalidParam;
 import de.training.service.ErrorService;
 import lombok.AllArgsConstructor;
 
@@ -42,45 +42,47 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 class JsonMismatchHandler extends AbstractJsonErrorHandler {
 
-	private final MismatchedInputException ex;
+    private final MismatchedInputException ex;
 
-	private final ErrorService errorService;
+    private final ErrorService errorService;
 
-	/**
-	 * {@inheritDoc}
-	 * <p>
-	 * In this case for syntactical violations.
-	 */
-	@Override
-	public ResponseEntity<Error> createResponse() {
-		final String errMsg = ex.getLocalizedMessage();
+    /**
+     * {@inheritDoc}
+     * <p>
+     * In this case for syntactical violations.
+     */
+    @Override
+    public ResponseEntity<Rfc9457Error> createResponse() {
+        final String errMsg = ex.getLocalizedMessage();
 
-		if (errMsg.startsWith("Cannot deserialize ")) {
-			return createSemanticResponse();
-		}
+        if (errMsg.startsWith("Cannot deserialize ")) {
+            return createSemanticResponse();
+        }
 
-		final String detailMsg = ErrorService.removePackageInformation(errMsg);
+        final String detailMsg = ErrorService.removePackageInformation(errMsg);
 
-		return handleSyntaxViolations(detailMsg, errorService);
-	}
+        return handleSyntaxViolations(detailMsg, errorService);
+    }
 
-	/**
-	 * Creates a response entity for an {@link Error} body in case of semantic violations in the JSON request body. Sets
-	 * the response status to {@link HttpStatus#UNPROCESSABLE_ENTITY}.
-	 * 
-	 * @return the {@link ResponseEntity} object, never {@code null}
-	 */
-	private ResponseEntity<Error> createSemanticResponse() {
-		final List<String> invalidParamNameParts = ex.getPath().stream().map(Reference::getFieldName).toList();
+    /**
+     * Creates a response entity for an {@link Error} body in case of semantic violations in the JSON request body. Sets
+     * the response status to {@link HttpStatus#UNPROCESSABLE_ENTITY}.
+     * 
+     * @return the {@link ResponseEntity} object, never {@code null}
+     */
+    private ResponseEntity<Rfc9457Error> createSemanticResponse() {
+        final List<String> invalidParamNameParts = ex.getPath().stream().map(Reference::getFieldName).toList();
 
-		final String invalidParamName = String.join(".", invalidParamNameParts);
-		final String reasonString = ErrorService.removePackageInformation(ex.getLocalizedMessage());
-		final String reason = cleanExMsg(reasonString).trim();
+        final String invalidParamName = String.join(".", invalidParamNameParts);
+        final String reasonString = ErrorService.removePackageInformation(ex.getLocalizedMessage());
+        final String reason = cleanExMsg(reasonString).trim();
 
-		final InvalidParam invalidParam = InvalidParam.builder().name(invalidParamName).reason(reason).build();
+        final InvalidParam invalidParam = InvalidParam.builder().pointer("#/" + invalidParamName).detail(reason)
+                .build();
 
-		final Error error = errorService.finalizeRfc7807Error("Request body validation failed", List.of(invalidParam));
+        final Rfc9457Error error = errorService.finalizeRfc9457Error("Request body validation failed",
+                List.of(invalidParam));
 
-		return ResponseEntity.unprocessableEntity().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
-	}
+        return ResponseEntity.unprocessableEntity().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
+    }
 }

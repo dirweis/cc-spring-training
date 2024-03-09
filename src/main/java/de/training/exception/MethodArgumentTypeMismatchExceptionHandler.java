@@ -1,8 +1,5 @@
 package de.training.exception;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -10,11 +7,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import de.training.model.Error;
-import de.training.model.Error.InvalidParam;
+import de.training.model.Rfc9457Error;
 import de.training.service.ErrorService;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * The {@link ExceptionHandler} implementation for creating {@link Error} response bodies in case of a caught
@@ -24,50 +19,39 @@ import lombok.NoArgsConstructor;
  * 
  * <pre>
  {
-    "invalid_params": [
-        {
-            "name": "petId",
-            "reason": "Invalid UUID string: 1"
-        }
-    ],
-    "type": "/petstore/petservice/v1/pets/1",
-    "title": "Failed to convert value of type 'String' to required type 'UUID'",
-    "instance": "urn:ERROR:c252c6f9-f605-4157-ab77-392065f05268"
+    "type": "/petstore/petservice/v1/pets",
+    "title": "Error in parameter 'page'",
+    "instance": "urn:ERROR:ce0663b0-51a9-4f19-9b21-28b94a8d1ab6",
+    "detail": "Failed to convert value of type 'String' to required type 'Integer'; For input string: \"a\""
  }
  * </pre>
  * 
  * @author Dirk Weissmann
- * @since 2022-02-17
+ * @since 2024-03-09
  * @version 1.0
  *
  */
 @Order(3)
 @RestControllerAdvice
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 class MethodArgumentTypeMismatchExceptionHandler {
 
-    @Autowired
-    private ErrorService errorService;
+    private final ErrorService errorService;
 
     /**
-     * Catches the defined {@link Exception}s and creates an {@link Error} response body.
+     * Catches the defined {@link Exception}s and creates an {@link Rfc9457Error} response body.
      * 
      * @param ex the {@link Exception} to catch, never {@code null}
      * 
-     * @return the created {@link Error} object as response body, never {@code null}
+     * @return the created {@link Rfc9457Error} object as response body, never {@code null}
      * 
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    private ResponseEntity<Error> handleException(final MethodArgumentTypeMismatchException ex) {
-        final String errorMsg = ErrorService.removePackageInformation(ex.getLocalizedMessage());
+    private ResponseEntity<Rfc9457Error> handleException(final MethodArgumentTypeMismatchException ex) {
+        final String title = "Error in parameter '" + ex.getPropertyName() + "'";
+        final String detail = ErrorService.removePackageInformation(ex.getLocalizedMessage());
 
-        final String title = errorMsg.substring(0, errorMsg.indexOf(';'));
-        final String name = ex.getName();
-        final String reason = errorMsg.substring(errorMsg.indexOf(';') + 2);
-
-        final List<InvalidParam> invalidParams = List.of(InvalidParam.builder().name(name).reason(reason).build());
-
-        final Error error = errorService.finalizeRfc7807Error(title, invalidParams);
+        final Rfc9457Error error = errorService.finalizeRfc9457Error(title, detail);
 
         return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
     }
