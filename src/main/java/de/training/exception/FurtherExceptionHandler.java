@@ -1,6 +1,5 @@
 package de.training.exception;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
@@ -8,10 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import de.training.model.Error;
+import de.training.model.Rfc9457Error;
 import de.training.service.ErrorService;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -38,12 +36,11 @@ import lombok.extern.log4j.Log4j2;
  */
 @Log4j2
 @RestControllerAdvice
+@RequiredArgsConstructor
 @Order(Ordered.LOWEST_PRECEDENCE)
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 class FurtherExceptionHandler {
 
-    @Autowired
-    private ErrorService errorService;
+    private final ErrorService errorService;
 
     /**
      * Catches the defined {@link Exception}s and creates an {@link Error} response body.
@@ -54,8 +51,8 @@ class FurtherExceptionHandler {
      * 
      */
     @ExceptionHandler(Throwable.class)
-    private ResponseEntity<Error> handleException(final Throwable ex) {
-        final Error error = errorService.finalizeRfc7807Error("Internal problem. Please contact the support.");
+    private ResponseEntity<Rfc9457Error> handleException(final Throwable ex) {
+        final Rfc9457Error error = errorService.finalizeRfc9457Error("Internal problem. Please contact the support.");
 
         log.error("Internal Error Stack trace", ex);
 

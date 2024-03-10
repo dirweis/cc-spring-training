@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.core.io.JsonEOFException;
 
-import de.training.model.Error;
+import de.training.model.Rfc9457Error;
 import de.training.service.ErrorService;
 import lombok.AllArgsConstructor;
 
@@ -30,17 +30,17 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 class JsonEofErrorHandler extends AbstractJsonErrorHandler {
 
-	private final JsonEOFException ex;
+    private final JsonEOFException ex;
 
-	private final ErrorService errorService;
+    private final ErrorService errorService;
 
-	/**
-	 * {@inheritDoc}
-	 * <p>
-	 * In this case for syntactical EOF violations (missing closing brace).
-	 */
-	@Override
-	public ResponseEntity<Error> createResponse() {
-		return handleSyntaxViolations(ex.getLocalizedMessage(), errorService);
-	}
+    /**
+     * {@inheritDoc}
+     * <p>
+     * In this case for syntactical EOF violations (missing closing brace).
+     */
+    @Override
+    public ResponseEntity<Rfc9457Error> createResponse() {
+        return handleSyntaxViolations(ex.getLocalizedMessage(), errorService);
+    }
 }

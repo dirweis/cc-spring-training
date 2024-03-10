@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.fasterxml.jackson.core.JsonParseException;
 
-import de.training.model.Error;
+import de.training.model.Rfc9457Error;
 import de.training.service.ErrorService;
 import lombok.AllArgsConstructor;
 
@@ -17,8 +17,8 @@ import lombok.AllArgsConstructor;
  {
     "type": "/petstore/petservice/v1/pets",
     "title": "JSON Parse Error",
-    "instance": "urn:ERROR:707b29df-bc8e-41d5-8d6e-5caca0f20072",
-    "detail": "Unexpected character : was expecting double-quote to start field name at [Source: line: 2, column: 6]"
+    "instance": "urn:ERROR:8836b156-3a1d-41d8-a6c0-ad0f252732ea",
+    "detail": "Unexpected character ('n' (code 110)): was expecting double-quote to start field name at [Source: line: 4, column: 6]"
  }
  * </pre>
  * 
@@ -30,17 +30,17 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 class JsonSyntacticalErrorHandler extends AbstractJsonErrorHandler {
 
-	private final JsonParseException ex;
+    private final JsonParseException ex;
 
-	private final ErrorService errorService;
+    private final ErrorService errorService;
 
-	/**
-	 * {@inheritDoc}
-	 * <p>
-	 * In this case for syntactical violations.
-	 */
-	@Override
-	public ResponseEntity<Error> createResponse() {
-		return handleSyntaxViolations(ex.getLocalizedMessage(), errorService);
-	}
+    /**
+     * {@inheritDoc}
+     * <p>
+     * In this case for syntactical violations.
+     */
+    @Override
+    public ResponseEntity<Rfc9457Error> createResponse() {
+        return handleSyntaxViolations(ex.getLocalizedMessage(), errorService);
+    }
 }

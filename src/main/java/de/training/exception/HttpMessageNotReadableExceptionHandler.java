@@ -1,6 +1,5 @@
 package de.training.exception;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -9,13 +8,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import de.training.exception.jsonerror.AbstractJsonErrorHandler;
 import de.training.exception.jsonerror.JsonErrorFactory;
-import de.training.model.Error;
+import de.training.model.Rfc9457Error;
 import de.training.service.ErrorService;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
- * The {@link ExceptionHandler} implementation for creating {@link Error} response bodies in case of a caught
+ * The {@link ExceptionHandler} implementation for creating {@link Rfc9457Error} response bodies in case of a caught
  * {@link HttpMessageNotReadableException}. Ensures the response code {@code 400} is returned.
  * <p>
  * Example output:
@@ -37,22 +35,21 @@ import lombok.NoArgsConstructor;
  */
 @Order(1)
 @RestControllerAdvice
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 class HttpMessageNotReadableExceptionHandler {
 
-    @Autowired
-    private ErrorService errorService;
+    private final ErrorService errorService;
 
     /**
-     * Catches the defined {@link Exception}s and creates an {@link Error} response body.
+     * Catches the defined {@link Exception}s and creates an {@link Rfc9457Error} response body.
      * 
      * @param ex the {@link Exception} to catch, never {@code null}
      * 
-     * @return the created {@link Error} object as response body, never {@code null}
+     * @return the created {@link Rfc9457Error} object as response body, never {@code null}
      * 
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    private ResponseEntity<Error> handleException(final HttpMessageNotReadableException ex) {
+    private ResponseEntity<Rfc9457Error> handleException(final HttpMessageNotReadableException ex) {
         final AbstractJsonErrorHandler handler = JsonErrorFactory.getErrorHandler(ex.getMostSpecificCause(),
                 errorService, ex.getLocalizedMessage());
 

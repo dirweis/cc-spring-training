@@ -3,36 +3,35 @@ package de.training.exception;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import de.training.model.Error;
-import de.training.model.Error.InvalidParam;
+import de.training.model.Rfc9457Error;
+import de.training.model.Rfc9457Error.InvalidParam;
 import de.training.service.ErrorService;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
 import jakarta.validation.Path.Node;
+import lombok.RequiredArgsConstructor;
 
 /**
- * The {@link ExceptionHandler} implementation for creating {@link Error} response bodies in case of a caught
+ * The {@link ExceptionHandler} implementation for creating {@link Rfc9457Error} response bodies in case of a caught
  * {@link ConstraintViolationException}. Ensures the response code {@code 400} is returned.
  * <p>
  * Example output:
  * 
  * <pre>
  {
-    "type": "/petstore/petservice/v1/pets/findByStatus",
+    "type": "/petstore/petservice/v1/pets",
     "title": "Constraint violations",
     "instance": "urn:ERROR:61bb8581-9d92-4447-b49f-44ea526f18b8",
     "invalid_params": [
         {
-            "name": "count",
+            "name": "#/count",
             "reason": "11 is not a multiple of 10"
         }
     ]
@@ -46,32 +45,62 @@ import jakarta.validation.Path.Node;
  */
 @Order(4)
 @RestControllerAdvice
+@RequiredArgsConstructor
 class ConstraintViolationExceptionHandler {
 
-    @Autowired
-    private ErrorService errorService;
+    private final ErrorService errorService;
 
     /**
-     * Catches the defined {@link Exception}s and creates an {@link Error} response body.
+     * Catches the defined {@link Exception}s and creates an {@link Rfc9457Error} response body.
      * 
      * @param ex the {@link Exception} to catch, never {@code null}
      * 
-     * @return the created {@link Error} object as response body, never {@code null}
+     * @return the created {@link Rfc9457Error} object as response body, never {@code null}
      * 
      */
     @ExceptionHandler(ConstraintViolationException.class)
-    private ResponseEntity<Error> handleException(final ConstraintViolationException ex) {
+    private ResponseEntity<Rfc9457Error> handleException(final ConstraintViolationException ex) {
+        if (semanticError(ex)) {
+            return create422Response(ex);
+        }
+
+        return create400Response(ex);
+    }
+
+    /**
+     * Creates a {@code BAD_REQUEST} response for path parameter / query parameter violations.
+     * 
+     * @param ex the given {@link ConstraintViolationException} rising from our own customized checks
+     * 
+     * @return the finalized {@link ResponseEntity}, never {@code null}
+     */
+    private ResponseEntity<Rfc9457Error> create400Response(final ConstraintViolationException ex) {
+        final ConstraintViolation<?> violation = ex.getConstraintViolations().stream().findFirst().orElseThrow();
+        final String fieldName = extractParamNameFromPath(violation.getPropertyPath());
+
+        final Rfc9457Error error = errorService.finalizeRfc9457Error("Violation in parameter",
+                fieldName + ": " + violation.getMessage());
+
+        return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
+    }
+
+    /**
+     * Creates a {@code UNPROCESSABLE_ENTITY} response for violations in the request body.
+     * 
+     * @param ex the given {@link ConstraintViolationException} rising from our own customized checks
+     * 
+     * @return the finalized {@link ResponseEntity}, never {@code null}
+     */
+    private ResponseEntity<Rfc9457Error> create422Response(final ConstraintViolationException ex) {
         final List<InvalidParam> invalidParams = ex.getConstraintViolations().stream()
                 .map(constraintViolation -> InvalidParam.builder()
-                        .name(extractParamNameFromPath(constraintViolation.getPropertyPath()))
-                        .reason(constraintViolation.getMessage()).build())
+                        .pointer("#/" + extractParamNameFromPath(constraintViolation.getPropertyPath()))
+                        .detail(constraintViolation.getMessage()).build())
                 .toList();
 
-        final Error error = errorService.finalizeRfc7807Error("Constraint violations", invalidParams);
+        final Rfc9457Error error = errorService.finalizeRfc9457Error("Constraint violations", invalidParams);
 
-        final HttpStatus status = semanticError(ex) ? HttpStatus.UNPROCESSABLE_ENTITY : HttpStatus.BAD_REQUEST;
-
-        return ResponseEntity.status(status).contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
+        return ResponseEntity.unprocessableEntity().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
     }
 
     /**

@@ -1,6 +1,5 @@
 package de.training.exception;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -10,13 +9,12 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import de.training.model.Error;
+import de.training.model.Rfc9457Error;
 import de.training.service.ErrorService;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
- * The {@link ExceptionHandler} implementation for creating {@link Error} response bodies in case of a caught
+ * The {@link ExceptionHandler} implementation for creating {@link Rfc9457Error} response bodies in case of a caught
  * {@link HttpRequestMethodNotSupportedException}. Ensures the response code {@code 405} is returned.
  * <p>
  * Example output:
@@ -36,24 +34,23 @@ import lombok.NoArgsConstructor;
  *
  */
 @RestControllerAdvice
+@RequiredArgsConstructor
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 class HttpRequestMethodNotSupportedExceptionHandler {
 
-    @Autowired
-    private ErrorService errorService;
+    private final ErrorService errorService;
 
     /**
-     * Catches the defined {@link Exception}s and creates an {@link Error} response body.
+     * Catches the defined {@link Exception}s and creates an {@link Rfc9457Error} response body.
      * 
      * @param ex the {@link Exception} to catch, never {@code null}
      * 
-     * @return the created {@link Error} object as response body, never {@code null}
+     * @return the created {@link Rfc9457Error} object as response body, never {@code null}
      * 
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    private ResponseEntity<Error> handleException(final HttpRequestMethodNotSupportedException ex) {
-        final Error error = errorService.finalizeRfc7807Error(ex.getLocalizedMessage(),
+    private ResponseEntity<Rfc9457Error> handleException(final HttpRequestMethodNotSupportedException ex) {
+        final Rfc9457Error error = errorService.finalizeRfc9457Error(ex.getLocalizedMessage(),
                 "Supported method(s): " + ex.getSupportedHttpMethods());
 
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).contentType(MediaType.APPLICATION_PROBLEM_JSON)

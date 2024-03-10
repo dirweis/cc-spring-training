@@ -1,6 +1,5 @@
 package de.training.exception;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -8,11 +7,12 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import de.training.model.Error;
+import de.training.model.Rfc9457Error;
 import de.training.service.ErrorService;
+import lombok.RequiredArgsConstructor;
 
 /**
- * The {@link ExceptionHandler} implementation for creating {@link Error} response bodies in case of a caught
+ * The {@link ExceptionHandler} implementation for creating {@link Rfc9457Error} response bodies in case of a caught
  * {@link MissingServletRequestParameterException}. Ensures the response code {@code 400} is returned.
  * <p>
  * Example output:
@@ -33,23 +33,24 @@ import de.training.service.ErrorService;
  */
 @Order(5)
 @RestControllerAdvice
+@RequiredArgsConstructor
 class MissingServletRequestParameterExceptionHandler {
 
-	@Autowired
-	private ErrorService errorService;
+    private final ErrorService errorService;
 
-	/**
-	 * Catches the defined {@link Exception}s and creates an {@link Error} response body.
-	 * 
-	 * @param ex the {@link Exception} to catch, never {@code null}
-	 * 
-	 * @return the created {@link Error} object as response body, never {@code null}
-	 * 
-	 */
-	@ExceptionHandler(MissingServletRequestParameterException.class)
-	private ResponseEntity<Error> handleException(final MissingServletRequestParameterException ex) {
-		final Error error = errorService.finalizeRfc7807Error("Missing query parameter", ex.getLocalizedMessage());
+    /**
+     * Catches the defined {@link Exception}s and creates an {@link Rfc9457Error} response body.
+     * 
+     * @param ex the {@link Exception} to catch, never {@code null}
+     * 
+     * @return the created {@link Rfc9457Error} object as response body, never {@code null}
+     * 
+     */
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    private ResponseEntity<Rfc9457Error> handleException(final MissingServletRequestParameterException ex) {
+        final Rfc9457Error error = errorService.finalizeRfc9457Error("Missing query parameter",
+                ex.getLocalizedMessage());
 
-		return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
-	}
+        return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
+    }
 }

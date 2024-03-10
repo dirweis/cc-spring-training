@@ -29,7 +29,7 @@ public @interface PetIdNull {
     /**
      * @return the default message: an empty {@link String}
      */
-    String message() default "POST request: The field pet.id must be null";
+    String message() default "POST request: The ID field must be null";
 
     /**
      * The mandatory groups field.
