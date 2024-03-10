@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
-import de.training.model.Error;
+import de.training.model.Rfc9457Error;
 import de.training.service.ErrorService;
 
 /**
@@ -30,12 +30,12 @@ public abstract class AbstractJsonErrorHandler {
 	protected final UUID errorId = UUID.randomUUID();
 
 	/**
-	 * Creates a complete {@link ResponseEntity} object with an {@link Error} object as body and a fitting
+	 * Creates a complete {@link ResponseEntity} object with an {@link Rfc9457Error} object as body and a fitting
 	 * {@link HttpStatus}.
 	 * 
 	 * @return the finalized {@link ResponseEntity}, never {@code null}
 	 */
-	public abstract ResponseEntity<Error> createResponse();
+	public abstract ResponseEntity<Rfc9457Error> createResponse();
 
 	/**
 	 * Builds the whole {@link ResponseEntity} for all syntactical violations.
@@ -45,11 +45,11 @@ public abstract class AbstractJsonErrorHandler {
 	 * 
 	 * @return the object as service error response, never {@code null}
 	 */
-	protected static ResponseEntity<Error> handleSyntaxViolations(final String exMsg, final ErrorService errorService) {
+	protected static ResponseEntity<Rfc9457Error> handleSyntaxViolations(final String exMsg, final ErrorService errorService) {
 		final String preparedDetail = ErrorService.removePackageInformation(exMsg);
 		final String detail = cleanExMsg(preparedDetail);
 
-		final Error error = errorService.finalizeRfc7807Error("JSON Parse Error", detail);
+		final Rfc9457Error error = errorService.finalizeRfc9457Error("JSON Parse Error", detail);
 
 		return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
 	}

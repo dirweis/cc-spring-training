@@ -3,7 +3,7 @@ package de.training.exception.jsonerror;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 
-import de.training.model.Error;
+import de.training.model.Rfc9457Error;
 import de.training.service.ErrorService;
 import lombok.AllArgsConstructor;
 
@@ -40,7 +40,7 @@ class JsonNotReadableErrorHandler extends AbstractJsonErrorHandler {
 	 * In this case for syntactical EOF violations (missing closing brace).
 	 */
 	@Override
-	public ResponseEntity<Error> createResponse() {
+	public ResponseEntity<Rfc9457Error> createResponse() {
 		final String errorMsg = ex.getLocalizedMessage();
 
 		final String detailInfo = errorMsg.substring(0, errorMsg.indexOf(':'));
