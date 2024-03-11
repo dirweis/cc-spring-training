@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.UUID;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,7 +17,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 /**
- * Supplementary test on the {@link PhotoUrlEntity}.
+ * Supplementary test on the {@link PetEntity}.
  * 
  * @since 2022-03-15
  * @version 1.0
@@ -39,6 +40,7 @@ class PetEntityTest extends AbstractSpringTestRunner {
      * for a GET endpoint is implemented). But this test is OK anyways.
      */
     @Test
+    @DisplayName("WHEN a new pet entity is stored THEN all values must be available on the getters")
     void testAllGetters() {
         final PetEntity entity = new PetEntity();
 

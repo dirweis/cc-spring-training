@@ -62,6 +62,6 @@ class WebControllerContraintsInDeleteTest extends AbstractSpringTestRunner {
                 .andExpect(content().string(containsString(
                         "\"title\":\"Failed to convert value of type 'String' to required type 'UUID'\"")))
                 .andExpect(content().string(containsString(
-                        "\"invalid_params\":[{\"name\":\"petId\",\"reason\":\"Invalid UUID string: no\"}]")));
+                        "\"errors\":[{\"pointer\":\"#/petId\",\"detail\":\"Invalid UUID string: no\"}]")));
     }
 }

@@ -47,7 +47,7 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
      */
     @Nested
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    @DisplayName("WHEN the GET endpoint for getting a pet resource on the ID path parameter is called ")
+    @DisplayName("WHEN the GET endpoint for getting a pet resource on the ID path parameter is called")
     class GetEndpointWithPathIdTest {
 
         /**
@@ -79,7 +79,7 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
                     .andExpect(content().string(containsString(
                             "\"title\":\"Failed to convert value of type 'String' to required type 'UUID'\"")))
                     .andExpect(content().string(containsString(
-                            "\"invalid_params\":[{\"name\":\"petId\",\"reason\":\"Invalid UUID string: 1\"}]")));
+                            "\"errors\":[{\"pointer\":\"#/petId\",\"detail\":\"Invalid UUID string: 1\"}]")));
         }
     }
 
@@ -103,7 +103,7 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
      */
     @Nested
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    @DisplayName("WHEN the GET endpoint for getting pet resources on the given query parameters is called ")
+    @DisplayName("WHEN the GET endpoint for getting pet resources on the given query parameters is called")
     class GetEndpointWithQueryParametersTest {
 
         /**
@@ -117,9 +117,9 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(ConstraintViolationException.class))
-                    .andExpect(content().string(containsString("\"title\":\"Constraint violations")))
-                    .andExpect(content().string(containsString(
-                            "\"invalid_params\":[{\"name\":\"page\",\"reason\":\"must be greater than or equal to 0\"}]")));
+                    .andExpect(content().string(containsString("\"title\":\"Violation in parameter")))
+                    .andExpect(content()
+                            .string(containsString("\"detail\":\"page: must be greater than or equal to 0\"")));
         }
 
         /**
@@ -137,41 +137,54 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
                     .andExpect(content().string(containsString(
                             "\"title\":\"Failed to convert value of type 'String' to required type 'Integer'")))
                     .andExpect(content().string(containsString(
-                            "\"invalid_params\":[{\"name\":\"page\",\"reason\":\"For input string: \\\"m\\\"\"}]")));
+                            "\"errors\":[{\"pointer\":\"#/page\",\"detail\":\"For input string: \\\"m\\\"\"}]")));
         }
 
         /**
-         * 1st test for value scope violation of the {@code size} parameter: The value {@code -1} is not permitted.
+         * 1st test for value scope violation of the {@code size} parameter: The value {@code -10} is not permitted.
          */
         @Test
         @SneakyThrows
         @DisplayName("with a size value that is too low THEN respond with status 400 AND content type application/problem+json AND the expected response body")
         void testCallGetWithTooLowSizeIntValue() {
-            mockMvc.perform(get(EndPointPrefix + "?size=-1")).andExpect(status().isBadRequest())
+            mockMvc.perform(get(EndPointPrefix + "?size=-10")).andExpect(status().isBadRequest())
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(ConstraintViolationException.class))
-                    .andExpect(content().string(containsString("\"title\":\"Constraint violations")))
-                    .andExpect(content().string(
-                            containsString("{\"name\":\"size\",\"reason\":\"must be greater than or equal to 10\"}")))
+                    .andExpect(content().string(containsString("\"title\":\"Violation in parameter")))
                     .andExpect(content()
-                            .string(containsString("{\"name\":\"size\",\"reason\":\"-1 is not a multiple of 10\"}")));
+                            .string(containsString("\"detail\":\"size: must be greater than or equal to 10\"")));
         }
 
         /**
-         * 2nd test for value scope violation of the {@code size} parameter: The value {@code 9999999} is not permitted.
+         * 2nd test for value scope violation of the {@code size} parameter: The value {@code 100000} is not permitted.
          */
         @Test
         @SneakyThrows
         @DisplayName("with a size value that is too high THEN respond with status 400 AND content type application/problem+json AND the expected response body")
         void testCallGetWithTooHighSizeIntValue() {
-            mockMvc.perform(get(EndPointPrefix + "?size=999999")).andExpect(status().isBadRequest())
+            mockMvc.perform(get(EndPointPrefix + "?size=100000")).andExpect(status().isBadRequest())
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(ConstraintViolationException.class))
-                    .andExpect(content().string(containsString("\"title\":\"Constraint violations")))
-                    .andExpect(content().string(
-                            containsString("{\"name\":\"size\",\"reason\":\"must be less than or equal to 1000\"}")));
+                    .andExpect(content().string(containsString("\"title\":\"Violation in parameter")))
+                    .andExpect(content()
+                            .string(containsString("\"detail\":\"size: must be less than or equal to 1000\"")));
+        }
+
+        /**
+         * 3rd test for value scope violation of the {@code size} parameter: The value {@code 11} is not permitted.
+         */
+        @Test
+        @SneakyThrows
+        @DisplayName("with a size value that is not a multiple of 10 THEN respond with status 400 AND content type application/problem+json AND the expected response body")
+        void testCallGetWithNo10MultipleSizeIntValue() {
+            mockMvc.perform(get(EndPointPrefix + "?size=11")).andExpect(status().isBadRequest())
+                    .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
+                    .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
+                            .isInstanceOf(ConstraintViolationException.class))
+                    .andExpect(content().string(containsString("\"title\":\"Violation in parameter")))
+                    .andExpect(content().string(containsString("\"detail\":\"size: 11 is not a multiple of 10\"")));
         }
 
         /**
@@ -189,11 +202,11 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
                     .andExpect(content().string(containsString(
                             "\"title\":\"Failed to convert value of type 'String' to required type 'Integer'")))
                     .andExpect(content().string(containsString(
-                            "\"invalid_params\":[{\"name\":\"size\",\"reason\":\"For input string: \\\"k\\\"\"}]")));
+                            "\"errors\":[{\"pointer\":\"#/size\",\"detail\":\"For input string: \\\"k\\\"\"}]")));
         }
 
         /**
-         * Test for an unknown enum value of the {@code status} parameter: The value {@code k} is not of the type
+         * Test for an unknown enumeration value of the {@code status} parameter: The value {@code k} is not of the type
          * {@link PetStatus}.
          */
         @Test
@@ -207,11 +220,11 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
                     .andExpect(content().string(containsString(
                             "\"title\":\"Failed to convert value of type 'String' to required type 'Pet$PetStatus'\"")))
                     .andExpect(content().string(containsString(
-                            "{\"invalid_params\":[{\"name\":\"status\",\"reason\":\"Failed to convert from type [String] to type [@RequestParam Pet$PetStatus] for value [k]\"}]")));
+                            "\"errors\":[{\"pointer\":\"#/status\",\"detail\":\"Failed to convert from type [String] to type [@RequestParam Pet$PetStatus] for value [k]\"}]")));
         }
 
         /**
-         * Test for an unknown enum value of the {@code status} parameter: The value {@code k} is not of the type
+         * Test for an unknown enumeration value of the {@code status} parameter: The value {@code k} is not of the type
          * {@link Category}.
          */
         @Test
@@ -225,7 +238,7 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
                     .andExpect(content().string(containsString(
                             "\"title\":\"Failed to convert value of type 'String' to required type 'Pet$Category'\"")))
                     .andExpect(content().string(containsString(
-                            "{\"invalid_params\":[{\"name\":\"category\",\"reason\":\"Failed to convert from type [String] to type [@RequestParam Pet$Category] for value [k]\"}]")));
+                            "\"errors\":[{\"pointer\":\"#/category\",\"detail\":\"Failed to convert from type [String] to type [@RequestParam Pet$Category] for value [k]\"}]")));
         }
 
         /**
@@ -239,9 +252,9 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(ConstraintViolationException.class))
-                    .andExpect(content().string(containsString("\"title\":\"Constraint violations")))
-                    .andExpect(content().string(containsString(
-                            "{\"invalid_params\":[{\"name\":\"<list element>\",\"reason\":\"size must be between 3 and 20\"}]")));
+                    .andExpect(content().string(containsString("\"title\":\"Violation in parameter")))
+                    .andExpect(content()
+                            .string(containsString("\"detail\":\"<list element>: size must be between 3 and 20\"")));
         }
     }
 }

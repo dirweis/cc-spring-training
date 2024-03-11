@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import de.training.exception.service.ErrorService;
-import de.training.model.Error;
+import de.training.model.Rfc9457Error;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 /**
- * The {@link ExceptionHandler} implementation for creating {@link Error} response bodies in case of a caught
+ * The {@link ExceptionHandler} implementation for creating {@link Rfc9457Error} response bodies in case of a caught
  * {@link EntityNotFoundException} that gets thrown internally if a database entry could not be found. Ensures the
  * response code {@code 404} is returned.
  * <p>
@@ -41,15 +41,15 @@ class EntityNotFoundExceptionHandler {
     private final ErrorService errorService;
 
     /**
-     * Catches the defined {@link Exception}s and creates an {@link Error} response body.
+     * Catches the defined {@link Exception}s and creates an {@link Rfc9457Error} response body.
      * 
      * @param ex the {@link Exception} to catch, never {@code null}
      * 
-     * @return the created {@link Error} object as response body, never {@code null}
+     * @return the created {@link Rfc9457Error} object as response body, never {@code null}
      */
     @ExceptionHandler(EntityNotFoundException.class)
-    private ResponseEntity<Error> handleException(final EntityNotFoundException ex) {
-        final Error error = errorService.finalizeRfc7807Error("Not found", ex.getLocalizedMessage());
+    private ResponseEntity<Rfc9457Error> handleException(final EntityNotFoundException ex) {
+        final Rfc9457Error error = errorService.finalizeRfc9457Error("Not found", ex.getLocalizedMessage());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
     }
