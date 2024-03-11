@@ -84,7 +84,7 @@ class WebControllerContraintsInPutTest extends AbstractSpringTestRunner {
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(HttpMediaTypeNotSupportedException.class))
-                    .andExpect(content().string(containsString("Request header 'content-type' not found")))
+                    .andExpect(content().string(containsString("Request header 'Content-Type' not found")))
                     .andExpect(content()
                             .string(containsString("\"detail\":\"Supported media type(s): [application/json]\"")));
         }
@@ -144,8 +144,8 @@ class WebControllerContraintsInPutTest extends AbstractSpringTestRunner {
          * @version 1.1
          *
          */
-        @DisplayName("WHEN the request body ")
         @Nested
+        @DisplayName("WHEN the request body")
         class JsonSyntacticalViolationTest {
 
             private static final String invalidFolderPath = "classpath:invalid_request_bodies/syntactical/";
@@ -243,8 +243,8 @@ class WebControllerContraintsInPutTest extends AbstractSpringTestRunner {
          * @version 1.1
          *
          */
-        @DisplayName("WHEN the request body ")
         @Nested
+        @DisplayName("WHEN the request body")
         class JsonSemanticViolationTest {
 
             private static final String invalidFolderPath = "classpath:invalid_request_bodies/semantic/";
@@ -297,17 +297,17 @@ class WebControllerContraintsInPutTest extends AbstractSpringTestRunner {
              */
             private static Stream<Arguments> provideParameters() {
                 return Stream.of(Arguments.of("invalid_enum_value", HttpMessageNotReadableException.class,
-                        "\"invalid_params\":[{\"name\":\"category\",\"reason\":\"Cannot deserialize value of type `Pet$Category` from String \\\"cats\\\": not one of the values accepted for Enum class: [BIRD, DOG, MOUSE, CAT, SPIDER] at [Source: line: 8, column: 18] (through reference chain: Pet[\\\"category\\\"])\"}]"),
+                        "\"errors\":[{\"pointer\":\"#/category\",\"detail\":\"Cannot deserialize value of type `Pet$Category` from String \\\"cats\\\": not one of the values accepted for Enum class: [BIRD, DOG, MOUSE, CAT, SPIDER] at [Source: line: 8, column: 18] (through reference chain: Pet[\\\"category\\\"])\"}]"),
                         Arguments.of("invalid_id_type", HttpMessageNotReadableException.class,
-                                "\"invalid_params\":[{\"name\":\"id\",\"reason\":\"Cannot deserialize value of type `UUID` from String \\\"1\\\": UUID has to be represented by standard 36-char representation at [Source: line: 2, column: 8] (through reference chain: Pet[\\\"id\\\"])\"}]"),
+                                "\"errors\":[{\"pointer\":\"#/id\",\"detail\":\"Cannot deserialize value of type `UUID` from String \\\"1\\\": UUID has to be represented by standard 36-char representation at [Source: line: 2, column: 8] (through reference chain: Pet[\\\"id\\\"])\"}]"),
                         Arguments.of("missing_field", MethodArgumentNotValidException.class,
-                                "\"invalid_params\":[{\"name\":\"name\",\"reason\":\"must not be null\"}]"),
+                                "\"errors\":[{\"pointer\":\"#/name\",\"detail\":\"must not be null\"}]"),
                         Arguments.of("various_semantic_violations", MethodArgumentNotValidException.class,
-                                "{\"name\":\"name\",\"reason\":\"size must be between 3 and 30\"}"),
+                                "{\"pointer\":\"#/name\",\"detail\":\"size must be between 3 and 30\"}"),
                         Arguments.of("various_semantic_violations", MethodArgumentNotValidException.class,
-                                "{\"name\":\"description\",\"reason\":\"size must be between 30 and 1000\"}"),
+                                "{\"pointer\":\"#/description\",\"detail\":\"size must be between 30 and 1000\"}"),
                         Arguments.of("forbidden_photo_urls", ConstraintViolationException.class,
-                                "\"invalid_params\":[{\"name\":\"photo-urls\",\"reason\":\"POST request: The field pet.photo-urls must be null\"}]"));
+                                "\"errors\":[{\"pointer\":\"#/photo-urls\",\"detail\":\"POST request: The field pet.photo-urls must be null\"}]"));
             }
         }
     }
@@ -321,6 +321,7 @@ class WebControllerContraintsInPutTest extends AbstractSpringTestRunner {
      *
      */
     @Nested
+    @DisplayName("WHEN the")
     class Put4PetResourceImageTest {
 
         /**
@@ -328,7 +329,7 @@ class WebControllerContraintsInPutTest extends AbstractSpringTestRunner {
          */
         @Test
         @SneakyThrows
-        @DisplayName("WHEN the HTTP method is POST THEN respond with status 405 AND content type application/problem+json AND the expected response body")
+        @DisplayName("HTTP method is POST THEN respond with status 405 AND content type application/problem+json AND the expected response body")
         void testCallPutWithWrongHttpMethodAndExpect405() {
             mockMvc.perform(post(EndPointImageTestId)).andExpect(status().isMethodNotAllowed())
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
@@ -343,13 +344,13 @@ class WebControllerContraintsInPutTest extends AbstractSpringTestRunner {
          */
         @Test
         @SneakyThrows
-        @DisplayName("WHEN the HTTP request header Content-Type is missing THEN respond with status 415 AND content type application/problem+json AND the expected response body")
+        @DisplayName("HTTP request header Content-Type is missing THEN respond with status 415 AND content type application/problem+json AND the expected response body")
         void testCallPutWithMissingContentTypeAndExpect415() {
             mockMvc.perform(put(EndPointImageTestId)).andExpect(status().isUnsupportedMediaType())
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(HttpMediaTypeNotSupportedException.class))
-                    .andExpect(content().string(containsString("Request header 'content-type' not found")))
+                    .andExpect(content().string(containsString("Request header 'Content-Type' not found")))
                     .andExpect(content().string(containsString(
                             "\"detail\":\"Supported media type(s): [image/gif, image/jpeg, image/png]\"")));
         }
@@ -359,7 +360,7 @@ class WebControllerContraintsInPutTest extends AbstractSpringTestRunner {
          */
         @Test
         @SneakyThrows
-        @DisplayName("WHEN the HTTP request header Content-Type is wrong (but known) THEN respond with status 415 AND content type application/problem+json AND the expected response body")
+        @DisplayName("HTTP request header Content-Type is wrong (but known) THEN respond with status 415 AND content type application/problem+json AND the expected response body")
         void testCallPutWithWrongContentTypeAndExpect415() {
             mockMvc.perform(put(EndPointImageTestId).contentType(MediaType.APPLICATION_JSON_VALUE))
                     .andExpect(status().isUnsupportedMediaType())
@@ -377,7 +378,7 @@ class WebControllerContraintsInPutTest extends AbstractSpringTestRunner {
          */
         @Test
         @SneakyThrows
-        @DisplayName("WHEN the HTTP request header Content-Type is wrong (and not known) THEN respond with status 415 AND content type application/problem+json AND the expected response body")
+        @DisplayName("HTTP request header Content-Type is wrong (and not known) THEN respond with status 415 AND content type application/problem+json AND the expected response body")
         void testCallPutWithUnknownContentTypeAndExpect415() {
             mockMvc.perform(put(EndPointImageTestId).contentType("crazy")).andExpect(status().isUnsupportedMediaType())
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
@@ -392,7 +393,7 @@ class WebControllerContraintsInPutTest extends AbstractSpringTestRunner {
          */
         @Test
         @SneakyThrows
-        @DisplayName("WHEN the given pet ID is not well-formed as UUID THEN respond with status 400 AND content type application/problem+json AND the expected response body")
+        @DisplayName("given pet ID is not well-formed as UUID THEN respond with status 400 AND content type application/problem+json AND the expected response body")
         void testCallPutWithInvalidIdFormatAndExpect400() {
             mockMvc.perform(put(EndPointPrefix + "/invalid/image").contentType(MediaType.IMAGE_JPEG_VALUE))
                     .andExpect(status().isBadRequest())
@@ -402,7 +403,7 @@ class WebControllerContraintsInPutTest extends AbstractSpringTestRunner {
                     .andExpect(content().string(containsString(
                             "\"title\":\"Failed to convert value of type 'String' to required type 'UUID'\"")))
                     .andExpect(content().string(containsString(
-                            "\"invalid_params\":[{\"name\":\"petId\",\"reason\":\"Invalid UUID string: invalid\"}]")));
+                            "\"errors\":[{\"pointer\":\"#/petId\",\"detail\":\"Invalid UUID string: invalid\"}]")));
         }
 
         /**
@@ -410,7 +411,7 @@ class WebControllerContraintsInPutTest extends AbstractSpringTestRunner {
          */
         @Test
         @SneakyThrows
-        @DisplayName("WHEN the given image is too small THEN respond with status 422 AND content type application/problem+json AND the expected response body")
+        @DisplayName("given image is too small THEN respond with status 422 AND content type application/problem+json AND the expected response body")
         void testCallPutWithTooSmallBodyAndExpect422() {
             final File contentFile = ResourceUtils
                     .getFile("classpath:invalid_request_bodies/images/TDD_cool_2_icon_size.png");
@@ -423,7 +424,7 @@ class WebControllerContraintsInPutTest extends AbstractSpringTestRunner {
                             .isInstanceOf(ConstraintViolationException.class))
                     .andExpect(content().string(containsString("\"title\":\"Request body validation failed\"")))
                     .andExpect(content().string(containsString(
-                            "\"invalid_params\":[{\"name\":\"body\",\"reason\":\"size must be between 10000 and 2000000\"}]")));
+                            "\"errors\":[{\"pointer\":\"#/body\",\"detail\":\"size must be between 10000 and 2000000\"}]")));
         }
 
         /**
@@ -431,7 +432,7 @@ class WebControllerContraintsInPutTest extends AbstractSpringTestRunner {
          */
         @Test
         @SneakyThrows
-        @DisplayName("WHEN the given image is too big THEN respond with status 422 AND content type application/problem+json AND the expected response body")
+        @DisplayName("given image is too big THEN respond with status 422 AND content type application/problem+json AND the expected response body")
         void testCallPutWithTooBigBodyAndExpect422() {
             final File contentFile = ResourceUtils
                     .getFile("classpath:invalid_request_bodies/images/invalid_too_big.jpg");
@@ -444,7 +445,7 @@ class WebControllerContraintsInPutTest extends AbstractSpringTestRunner {
                             .isInstanceOf(ConstraintViolationException.class))
                     .andExpect(content().string(containsString("\"title\":\"Request body validation failed\"")))
                     .andExpect(content().string(containsString(
-                            "\"invalid_params\":[{\"name\":\"body\",\"reason\":\"size must be between 10000 and 2000000\"}]")));
+                            "\"errors\":[{\"pointer\":\"#/body\",\"detail\":\"size must be between 10000 and 2000000\"}]")));
         }
     }
 }

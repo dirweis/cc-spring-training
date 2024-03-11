@@ -6,9 +6,9 @@ spring:
     mapper:
       accept-case-insensitive-enums: true
   datasource:
-    url: 'jdbc:h2:mem:testdb;DB_CLOSE_ON_EXIT=FALSE'
-    driverClassName: org.h2.Driver
+    url: 'jdbc:hsqldb:mem:testdb;DB_CLOSE_DELAY=-1'
+    driverClassName: org.hsqldb.jdbc.JDBCDriver
     username: sa
-    password: password
+    password: 
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect

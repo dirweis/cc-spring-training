@@ -16,7 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 
 import de.training.AbstractSpringTestRunner;
-import de.training.model.Error;
+import de.training.model.Rfc9457Error;
 import de.training.model.Pet;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -40,7 +40,7 @@ class MockedControllerTest extends AbstractSpringTestRunner {
 	 * Test for the internal server problems: Send something to the {@code POST} endpoint for creating a new {@link Pet}
 	 * resource and make the controller throw a {@link NullPointerException}.
 	 * <p>
-	 * Checks the response on the expected {@link HttpStatus#INTERNAL_SERVER_ERROR} and the expected {@link Error}
+	 * Checks the response on the expected {@link HttpStatus#INTERNAL_SERVER_ERROR} and the expected {@link Rfc9457Error}
 	 * response body.
 	 */
 	@Test
