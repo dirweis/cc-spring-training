@@ -84,9 +84,7 @@ class WebControllerGetTest extends AbstractSpringTestRunner {
         @SneakyThrows
         @DisplayName("test data is inserted in the database AND a valid request is sent to the GET endpoint for retrieving several pet resources THEN the response status 200 is returned with 20 items in the response body")
         void testFindPetsWithoutRestrictionsSuccessfullyAndExpect200With20Entries() {
-            IntStream.range(0, 100).forEach(i -> {
-                petRepository.save(createTestEntity(true));
-            });
+            IntStream.range(0, 100).forEach(i -> petRepository.save(createTestEntity(true)));
 
             mockMvc.perform(get(EndPointPrefix)).andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$", hasSize(20)));
@@ -101,9 +99,7 @@ class WebControllerGetTest extends AbstractSpringTestRunner {
         @SneakyThrows
         @DisplayName("test data is inserted in the database AND a valid request is sent to the GET endpoint for retrieving several pet resources THEN the response status 200 is returned with 10 items in the response body")
         void testFindPetsWithoutRestrictionsSuccessfullyAndExpect200With10Entries() {
-            IntStream.range(0, 10).forEach(i -> {
-                petRepository.save(createTestEntity(true));
-            });
+            IntStream.range(0, 10).forEach(i -> petRepository.save(createTestEntity(true)));
 
             mockMvc.perform(get(EndPointPrefix)).andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$", hasSize(10)));
@@ -118,9 +114,7 @@ class WebControllerGetTest extends AbstractSpringTestRunner {
         @SneakyThrows
         @DisplayName("a valid request is sent to the GET endpoint for retrieving several pet resources restricted by their status THEN the response status 200 is returned with 100 items in the response body")
         void testFindPetsRestrictedByStatusSuccessfullyAndExpect200WithAllItems() {
-            IntStream.range(0, 100).forEach(i -> {
-                petRepository.save(createTestEntity(true));
-            });
+            IntStream.range(0, 100).forEach(i -> petRepository.save(createTestEntity(true)));
 
             mockMvc.perform(get(EndPointPrefix + "?status=pending&size=100")).andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -136,9 +130,7 @@ class WebControllerGetTest extends AbstractSpringTestRunner {
         @SneakyThrows
         @DisplayName("a valid request is sent to the GET endpoint for retrieving several pet resources restricted by their status THEN the response status 200 is returned without items in the response body")
         void testFindPetsRestrictedByStatusSuccessfullyAndExpect200WithNoItems() {
-            IntStream.range(0, 100).forEach(i -> {
-                petRepository.save(createTestEntity(true));
-            });
+            IntStream.range(0, 100).forEach(i -> petRepository.save(createTestEntity(true)));
 
             mockMvc.perform(get(EndPointPrefix + "?status=sold&size=100")).andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$", empty()));
@@ -152,9 +144,7 @@ class WebControllerGetTest extends AbstractSpringTestRunner {
         @SneakyThrows
         @DisplayName("a valid request is sent to the GET endpoint for retrieving several pet resources restricted by their category THEN the response status 200 is returned with 100 items in the response body")
         void testFindPetsRestrictedByCategorySuccessfullyAndExpect200WithAllItems() {
-            IntStream.range(0, 100).forEach(i -> {
-                petRepository.save(createTestEntity(true));
-            });
+            IntStream.range(0, 100).forEach(i -> petRepository.save(createTestEntity(true)));
 
             mockMvc.perform(get(EndPointPrefix + "?category=spider&size=100")).andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -170,9 +160,7 @@ class WebControllerGetTest extends AbstractSpringTestRunner {
         @SneakyThrows
         @DisplayName("a valid request is sent to the GET endpoint for retrieving several pet resources restricted by their category THEN the response status 200 is returned without items in the response body")
         void testFindPetsRestrictedByCategorySuccessfullyAndExpect200WithNoItems() {
-            IntStream.range(0, 100).forEach(i -> {
-                petRepository.save(createTestEntity(true));
-            });
+            IntStream.range(0, 100).forEach(i -> petRepository.save(createTestEntity(true)));
 
             mockMvc.perform(get(EndPointPrefix + "?category=cat&size=100")).andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$", empty()));
@@ -199,9 +187,7 @@ class WebControllerGetTest extends AbstractSpringTestRunner {
         @SneakyThrows
         @DisplayName("the database has a set of 50 tageed entries AND a valid request is sent to the GET endpoint for retrieving several pet resources restricted by the given tags THEN the response status 200 is returned with the data")
         void testFindPetsRestrictedByTagsSuccessfullyAndExpect200With50Items() {
-            IntStream.range(0, 100).forEach(i -> {
-                petRepository.save(createTestEntity(i % 2 == 0));
-            });
+            IntStream.range(0, 100).forEach(i -> petRepository.save(createTestEntity(i % 2 == 0)));
 
             mockMvc.perform(get(EndPointPrefix + "?tags=subba,lovely&size=100")).andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$", hasSize(50)));
@@ -216,9 +202,7 @@ class WebControllerGetTest extends AbstractSpringTestRunner {
         @SneakyThrows
         @DisplayName("a valid request is sent to the GET endpoint for retrieving several pet resources restricted by page and size THEN the response status 200 is returned")
         void testFindPetsRestrictedByPageAndSizeSuccessfullyAndExpect200() {
-            IntStream.range(0, 30).forEach(i -> {
-                petRepository.save(createTestEntity(true));
-            });
+            IntStream.range(0, 30).forEach(i -> petRepository.save(createTestEntity(true)));
 
             mockMvc.perform(get(EndPointPrefix + "?page=1")).andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$", hasSize(10)));

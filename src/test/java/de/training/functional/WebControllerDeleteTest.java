@@ -63,6 +63,7 @@ class WebControllerDeleteTest extends AbstractSpringTestRunner {
     @SneakyThrows
     @DisplayName("is given to the DELETE enpoint THEN respond with status 204")
     void testDeletePetFoundAndExpect204() {
+
         final PetEntity entity = createTestEntity(true);
 
         petRepository.save(entity);

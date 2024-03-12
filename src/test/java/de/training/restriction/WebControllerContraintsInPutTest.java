@@ -86,7 +86,7 @@ class WebControllerContraintsInPutTest extends AbstractSpringTestRunner {
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(HttpMediaTypeNotSupportedException.class))
-                    .andExpect(content().string(containsString("Request header 'content-type' not found")))
+                    .andExpect(content().string(containsString("Request header 'Content-Type' not found")))
                     .andExpect(content()
                             .string(containsString("\"detail\":\"Supported media type(s): [application/json]\"")));
         }
@@ -247,7 +247,6 @@ class WebControllerContraintsInPutTest extends AbstractSpringTestRunner {
          *
          */
         @Nested
-        @DisplayName("WHEN the request body")
         @NoArgsConstructor(access = AccessLevel.PRIVATE)
         class JsonSemanticViolationTest {
 
@@ -273,7 +272,7 @@ class WebControllerContraintsInPutTest extends AbstractSpringTestRunner {
             @SneakyThrows
             @ParameterizedTest
             @MethodSource("provideParameters")
-            @DisplayName("contains an invalid enumeration value OR an invalid ID type OR a missing (mandatory) field OR various constraint violations at once OR a valid ID which is rejected since it's a POST request and IDs are forbidden THEN respond with status 422 AND content type application/problem+json AND the expected response body")
+            @DisplayName("WHEN the request body contains an invalid enumeration value OR an invalid ID type OR a missing (mandatory) field OR various constraint violations at once OR a valid ID which is rejected since it's a POST request and IDs are forbidden THEN respond with status 422 AND content type application/problem+json AND the expected response body")
             void testForSemanticInvalidBody(final String filename, final Class<Exception> exClass,
                     final String expectedDetail) {
                 final File contentFile = ResourceUtils.getFile(invalidFolderPath + filename + ".json");
@@ -301,17 +300,17 @@ class WebControllerContraintsInPutTest extends AbstractSpringTestRunner {
              */
             private static Stream<Arguments> provideParameters() {
                 return Stream.of(Arguments.of("invalid_enum_value", HttpMessageNotReadableException.class,
-                        "\"invalid_params\":[{\"name\":\"category\",\"reason\":\"Cannot deserialize value of type `Pet$Category` from String \\\"cats\\\": not one of the values accepted for Enum class: [BIRD, DOG, MOUSE, CAT, SPIDER] at [Source: line: 8, column: 18] (through reference chain: Pet[\\\"category\\\"])\"}]"),
+                        "\"errors\":[{\"pointer\":\"#/category\",\"detail\":\"Cannot deserialize value of type `Pet$Category` from String \\\"cats\\\": not one of the values accepted for Enum class: [BIRD, DOG, MOUSE, CAT, SPIDER] at [Source: line: 8, column: 18] (through reference chain: Pet[\\\"category\\\"])\"}]"),
                         Arguments.of("invalid_id_type", HttpMessageNotReadableException.class,
-                                "\"invalid_params\":[{\"name\":\"id\",\"reason\":\"Cannot deserialize value of type `UUID` from String \\\"1\\\": UUID has to be represented by standard 36-char representation at [Source: line: 2, column: 8] (through reference chain: Pet[\\\"id\\\"])\"}]"),
+                                "\"errors\":[{\"pointer\":\"#/id\",\"detail\":\"Cannot deserialize value of type `UUID` from String \\\"1\\\": UUID has to be represented by standard 36-char representation at [Source: line: 2, column: 8] (through reference chain: Pet[\\\"id\\\"])\"}]"),
                         Arguments.of("missing_field", MethodArgumentNotValidException.class,
-                                "\"invalid_params\":[{\"name\":\"name\",\"reason\":\"must not be null\"}]"),
+                                "\"errors\":[{\"pointer\":\"#/name\",\"detail\":\"must not be null\"}]"),
                         Arguments.of("various_semantic_violations", MethodArgumentNotValidException.class,
-                                "{\"name\":\"name\",\"reason\":\"size must be between 3 and 30\"}"),
+                                "{\"pointer\":\"#/name\",\"detail\":\"size must be between 3 and 30\"}"),
                         Arguments.of("various_semantic_violations", MethodArgumentNotValidException.class,
-                                "{\"name\":\"description\",\"reason\":\"size must be between 30 and 1000\"}"),
+                                "{\"pointer\":\"#/description\",\"detail\":\"size must be between 30 and 1000\"}"),
                         Arguments.of("forbidden_photo_urls", ConstraintViolationException.class,
-                                "\"invalid_params\":[{\"name\":\"photo-urls\",\"reason\":\"POST request: The field pet.photo-urls must be null\"}]"));
+                                "\"errors\":[{\"pointer\":\"#/photo-urls\",\"detail\":\"POST request: The field pet.photo-urls must be null\"}]"));
             }
         }
     }
@@ -355,7 +354,7 @@ class WebControllerContraintsInPutTest extends AbstractSpringTestRunner {
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(HttpMediaTypeNotSupportedException.class))
-                    .andExpect(content().string(containsString("Request header 'content-type' not found")))
+                    .andExpect(content().string(containsString("Request header 'Content-Type' not found")))
                     .andExpect(content().string(containsString(
                             "\"detail\":\"Supported media type(s): [image/gif, image/jpeg, image/png]\"")));
         }
@@ -408,7 +407,7 @@ class WebControllerContraintsInPutTest extends AbstractSpringTestRunner {
                     .andExpect(content().string(containsString(
                             "\"title\":\"Failed to convert value of type 'String' to required type 'UUID'\"")))
                     .andExpect(content().string(containsString(
-                            "\"invalid_params\":[{\"name\":\"petId\",\"reason\":\"Invalid UUID string: invalid\"}]")));
+                            "\"errors\":[{\"pointer\":\"#/petId\",\"detail\":\"Invalid UUID string: invalid\"}]")));
         }
 
         /**
@@ -429,7 +428,7 @@ class WebControllerContraintsInPutTest extends AbstractSpringTestRunner {
                             .isInstanceOf(ConstraintViolationException.class))
                     .andExpect(content().string(containsString("\"title\":\"Request body validation failed\"")))
                     .andExpect(content().string(containsString(
-                            "\"invalid_params\":[{\"name\":\"body\",\"reason\":\"size must be between 10000 and 2000000\"}]")));
+                            "\"errors\":[{\"pointer\":\"#/body\",\"detail\":\"size must be between 10000 and 2000000\"}]")));
         }
 
         /**
@@ -450,7 +449,7 @@ class WebControllerContraintsInPutTest extends AbstractSpringTestRunner {
                             .isInstanceOf(ConstraintViolationException.class))
                     .andExpect(content().string(containsString("\"title\":\"Request body validation failed\"")))
                     .andExpect(content().string(containsString(
-                            "\"invalid_params\":[{\"name\":\"body\",\"reason\":\"size must be between 10000 and 2000000\"}]")));
+                            "\"errors\":[{\"pointer\":\"#/body\",\"detail\":\"size must be between 10000 and 2000000\"}]")));
         }
 
         /**
@@ -471,7 +470,7 @@ class WebControllerContraintsInPutTest extends AbstractSpringTestRunner {
                             .isInstanceOf(ConstraintViolationException.class))
                     .andExpect(content().string(containsString("\"title\":\"Request body validation failed\"")))
                     .andExpect(content().string(containsString(
-                            "\"invalid_params\":[{\"name\":\"body\",\"reason\":\"The content type given in the request header does not match the content information\"}]")));
+                            "\"errors\":[{\"pointer\":\"#/body\",\"detail\":\"The content type given in the request header does not match the content information\"}]")));
         }
     }
 }

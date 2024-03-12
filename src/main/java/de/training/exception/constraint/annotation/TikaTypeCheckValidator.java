@@ -47,6 +47,6 @@ class TikaTypeCheckValidator implements ConstraintValidator<TikaTypeCheck, byte[
         context.disableDefaultConstraintViolation();
         context.buildConstraintViolationWithTemplate(message).addPropertyNode("body").addConstraintViolation();
 
-        return request.getContentType().equals(tikaChecker.detect(body));
+        return request.getContentType().equals(TikaTypeCheckValidator.tikaChecker.detect(body));
     }
 }

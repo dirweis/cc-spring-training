@@ -46,7 +46,7 @@ import lombok.SneakyThrows;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-21
- * @version 1.1
+ * @version 1.0
  *
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -155,7 +155,7 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
      * 
      * @author Dirk Weissmann
      * @since 2022-02-22
-     * @version 1.1
+     * @version 1.0
      *
      */
     @Nested
@@ -244,24 +244,28 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
         @SneakyThrows
         @DisplayName("to a pet resource twice THEN the response status 409 is returned")
         void testAddImageToPetTwiceAndExpect409() {
-            final PetEntity petEntity = createTestEntity(true);
+            final PetEntity entity = createTestEntity(true);
 
-            petRepository.save(petEntity);
+            petRepository.save(entity);
 
-            mockMvc.perform(put(EndPointPrefix + "/" + petEntity.getId() + "/image").contentType(MediaType.IMAGE_JPEG)
+            mockMvc.perform(put(EndPointPrefix + "/" + entity.getId() + "/image").contentType(MediaType.IMAGE_JPEG)
                     .content(content)).andExpect(status().isCreated());
 
-            mockMvc.perform(put(EndPointPrefix + "/" + petEntity.getId() + "/image").contentType(MediaType.IMAGE_JPEG)
-                    .content(content)).andExpect(status().isConflict())
+            mockMvc.perform(put(EndPointPrefix + "/" + entity.getId() + "/image").contentType(MediaType.IMAGE_JPEG)
+                    .content(content))
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(DataIntegrityViolationException.class))
+                    .andExpect(status().isConflict())
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                     .andExpect(content().string(containsString("\"title\":\"Entry already exists\"")));
         }
 
+        /**
+         * Removes the test bucket's image from the MinIO server after all tests are done.
+         */
         @AfterAll
         @SneakyThrows
-        static void cleanUp() {
+        static void tearDown() {
             minioClient.removeObject(RemoveObjectArgs.builder().bucket(minioBucketName).object(imageId).build());
             minioClient.removeBucket(RemoveBucketArgs.builder().bucket(minioBucketName).build());
         }

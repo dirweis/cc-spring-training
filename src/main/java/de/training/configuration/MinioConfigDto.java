@@ -8,11 +8,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * The DTO to hold the MinIO server configuration from the {@code application.yml}.
  * 
  * @since 2022-03-29
- * @version 1.1
+ * @version 1.0
  * @author Dirk Weissmann
  * 
  * @param url              the MinIO server's URL
- * @param browsePort       the port for browsing the MinIO server
+ * @param browsePort       the port for browsing to the document
  * @param accessKey        the MinIO user's username token
  * @param secretKey        the MinIO user's password token
  * @param imagesBucketName the name for the images' bucket on the MinIO server

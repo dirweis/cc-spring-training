@@ -27,7 +27,7 @@ import lombok.extern.log4j.Log4j2;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-15
- * @version 1.2
+ * @version 1.1
  *
  */
 @Log4j2
@@ -76,9 +76,8 @@ class PetsApiController implements PetsApi {
         log.info("Start retrieving pets on the parameters page: {}, size: {}, tags: {}, status: {}, category: {}", page,
                 size, tags, status, category);
 
-        final PageRequest pr = PageRequest.of(page, size, Sort.by(Direction.DESC, "createdTime"));
-
-        final List<Pet> responseBody = storeService.findByParameters(tags, status, category, pr);
+        final List<Pet> responseBody = storeService.findByParameters(tags, status, category,
+                PageRequest.of(page, size, Sort.by(Direction.DESC, "createdTime")));
 
         return ResponseEntity.ok(responseBody);
     }

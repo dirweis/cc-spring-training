@@ -47,8 +47,8 @@ public class TagEntity {
     @JoinColumn(name = "pet_id", nullable = false)
     private PetEntity pet;
 
-    @CreatedDate
     @Column(nullable = false, updatable = false)
+    @CreatedDate
     private LocalDateTime createdTime;
 
     /**

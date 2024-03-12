@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import de.training.exception.service.ErrorService;
-import de.training.model.Error;
+import de.training.model.Rfc9457Error;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -27,26 +27,26 @@ import lombok.RequiredArgsConstructor;
  * 
  * @author Dirk Weissmann
  * @since 2022-03-11
- * @version 2.1
+ * @version 2.0
  *
  */
 @Order(2)
 @RestControllerAdvice
 @RequiredArgsConstructor
-final class HttpMessageNotReadableExceptionHandler {
+class HttpMessageNotReadableExceptionHandler {
 
     private final ErrorService errorService;
 
     /**
-     * Creates the {@link ResponseEntity} including an {@link Error} body with status {@code 400}.
+     * Creates the {@link ResponseEntity} including an {@link Rfc9457Error} body with status {@code 400}.
      * 
      * @param ex the {@link Exception} object for handling, never {@code null}
      * 
-     * @return the {@link ResponseEntity} including an {@link Error} body
+     * @return the {@link ResponseEntity} including an {@link Rfc9457Error} body
      * 
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    private ResponseEntity<Error> handleException(final HttpMessageNotReadableException ex) {
+    private ResponseEntity<Rfc9457Error> handleException(final HttpMessageNotReadableException ex) {
         final String errorMsg = ex.getLocalizedMessage();
 
         final String detailInfo = errorMsg.substring(0, errorMsg.indexOf(':'));

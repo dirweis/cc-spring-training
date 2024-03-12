@@ -43,8 +43,8 @@ public class PetEntity {
     private UUID id;
 
     @Setter
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 6)
+    @Enumerated(EnumType.STRING)
     private Category category;
 
     @Setter
@@ -52,8 +52,8 @@ public class PetEntity {
     private String name;
 
     @Setter
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 9)
+    @Enumerated(EnumType.STRING)
     private PetStatus status;
 
     @Setter

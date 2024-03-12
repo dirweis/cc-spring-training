@@ -36,7 +36,7 @@ import lombok.SneakyThrows;
  * A {@link Service} bean for database operations, using a {@link Mapper} and a {@link JpaRepository}.
  * 
  * @since 2022-03-15
- * @version 1.2
+ * @version 1.1
  * @author Dirk Weissmann
  *
  */
@@ -67,7 +67,7 @@ public class StoreService {
     public UUID storeNewPet(final Pet petDto) {
         final PetEntity entity = mapper.dto2Entity(petDto);
 
-        linkTags(entity);
+        StoreService.linkTags(entity);
 
         petRepository.save(entity);
 
@@ -85,7 +85,7 @@ public class StoreService {
     @Transactional(readOnly = true)
     public Pet getPetById(final UUID petId) {
         final PetEntity entity = petRepository.findById(petId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format(ERROR_MSG_FORMAT, petId)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format(StoreService.ERROR_MSG_FORMAT, petId)));
 
         return mapper.entity2Dto(entity);
     }
@@ -103,9 +103,10 @@ public class StoreService {
     @Transactional(readOnly = true)
     public List<Pet> findByParameters(final List<String> tags, final PetStatus status, final Category category,
             final Pageable pageable) {
-
         final List<PetEntity> entities = petRepository
-                .findAll(hasStatus(status).and(hasCategory(category).and(isInTags(tags))), pageable).getContent();
+                .findAll(StoreService.hasStatus(status)
+                        .and(StoreService.hasCategory(category).and(StoreService.isInTags(tags))), pageable)
+                .getContent();
 
         return entities.stream().map(mapper::entity2Dto).toList();
     }
@@ -118,7 +119,7 @@ public class StoreService {
      */
     public void deleteEntry(final UUID petId) {
         final PetEntity entity = petRepository.findById(petId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format(ERROR_MSG_FORMAT, petId)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format(StoreService.ERROR_MSG_FORMAT, petId)));
 
         petRepository.delete(entity);
     }
@@ -126,17 +127,17 @@ public class StoreService {
     /**
      * Overrides a {@link PetEntity} with the given {@link Pet} DTO.
      * 
-     * @param petId the {@link PetEntity}'s ID, never {@code null}
-     * @param pet   the given DTO, never {@code null}
+     * @param petId the {@link PetEntity}'s ID
+     * @param pet   the given DTO
      */
     public void overwritePetEntity(final UUID petId, final Pet pet) {
         final PetEntity entity = petRepository.findById(petId)
-                .orElseThrow(() -> new EntityNotFoundException(String.format(ERROR_MSG_FORMAT, petId)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format(StoreService.ERROR_MSG_FORMAT, petId)));
 
         tagRepository.deleteAllInBatch(entity.getTags());
         mapper.updatePetEntity(entity, pet);
 
-        linkTags(entity);
+        StoreService.linkTags(entity);
 
         petRepository.save(entity);
     }
@@ -177,7 +178,7 @@ public class StoreService {
      * The crazy JPA "feature": Even though the {@link TagEntity} objects are already allocated to the
      * {@link PetEntity}, it must also be done the other way.
      * 
-     * @param petEntity the {@link PetEntity} for allocation, never {@code null}
+     * @param petEntity the {@link PetEntity} for allocation
      */
     private static void linkTags(final PetEntity petEntity) {
         petEntity.getTags().forEach(tagEntity -> tagEntity.setPet(petEntity));
@@ -208,7 +209,7 @@ public class StoreService {
     }
 
     /**
-     * The {@link Specification} for enriching the {@code WHERE} statement with a check on given tags..
+     * The {@link Specification} for enriching the {@code WHERE} statement with a check on given tags.
      * 
      * @param tags the {@link List} of tag {@link String}s, may be {@code null}
      * 

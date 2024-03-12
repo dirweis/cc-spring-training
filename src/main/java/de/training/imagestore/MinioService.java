@@ -1,8 +1,8 @@
 package de.training.imagestore;
 
-import org.springframework.stereotype.Service;
+import java.io.ByteArrayInputStream;
 
-import com.google.common.io.ByteSource;
+import org.springframework.stereotype.Service;
 
 import de.training.configuration.MinioConfigDto;
 import io.minio.BucketExistsArgs;
@@ -17,7 +17,7 @@ import lombok.SneakyThrows;
  * 
  * @author Dirk Weissmann
  * @since 2022-03-18
- * @version 2.5
+ * @version 2.0
  * @see <a href="https://docs.min.io/docs/java-client-api-reference.html">MinIO Java API</a>
  *
  */
@@ -44,9 +44,9 @@ public class MinioService {
             client.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
         }
 
-        final PutObjectArgs putObject = PutObjectArgs.builder().bucket(bucketName).object(imageId)
-                .contentType(contentType).stream(ByteSource.wrap(image).openStream(), image.length, -1).build();
+        final PutObjectArgs content = PutObjectArgs.builder().bucket(bucketName).object(imageId)
+                .contentType(contentType).stream(new ByteArrayInputStream(image), image.length, -1).build();
 
-        client.putObject(putObject);
+        client.putObject(content);
     }
 }

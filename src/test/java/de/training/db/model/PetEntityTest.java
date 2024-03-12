@@ -3,7 +3,6 @@ package de.training.db.model;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -26,7 +25,7 @@ import lombok.NoArgsConstructor;
 class PetEntityTest extends AbstractSpringTestRunner {
 
     @Autowired
-    PetRepositoryDao petRepository;
+    private PetRepositoryDao petRepository;
 
     @AfterEach
     void cleanUp() {
@@ -34,10 +33,10 @@ class PetEntityTest extends AbstractSpringTestRunner {
     }
 
     /**
-     * Tests the automatically created time stamps.
+     * Tests the getters for all fields. Most of these assertions will become obsolete shortly (when the behavior tests
+     * for a GET endpoint is implemented). But this test is OK anyways.
      */
     @Test
-    @DisplayName("WHEN a new entry is created THEN the 'created' and the 'modified' time stamps must equal")
     void testTimestampCreation() {
         final PetEntity entity = new PetEntity();
 

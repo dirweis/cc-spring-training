@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import de.training.exception.service.ErrorService;
-import de.training.model.Error;
-import de.training.model.Error.InvalidParam;
+import de.training.model.Rfc9457Error;
+import de.training.model.Rfc9457Error.InvalidParam;
 import lombok.RequiredArgsConstructor;
 
 /**
- * The {@link ExceptionHandler} implementation for creating {@link Error} response bodies in case of a caught
+ * The {@link ExceptionHandler} implementation for creating {@link Rfc9457Error} response bodies in case of a caught
  * {@link MethodArgumentTypeMismatchException}. Ensures the response code {@code 400} is returned.
  * <p>
  * Example output:
@@ -36,35 +36,36 @@ import lombok.RequiredArgsConstructor;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-17
- * @version 1.5
+ * @version 1.4
  *
  */
 @Order(4)
 @RestControllerAdvice
 @RequiredArgsConstructor
-final class MethodArgumentTypeMismatchExceptionHandler {
+class MethodArgumentTypeMismatchExceptionHandler {
 
     private final ErrorService errorService;
 
     /**
-     * Catches the defined {@link Exception}s and creates an {@link Error} response body.
+     * Catches the defined {@link Exception}s and creates an {@link Rfc9457Error} response body.
      * 
      * @param ex the {@link Exception} to catch, never {@code null}
      * 
-     * @return the created {@link Error} object as response body, never {@code null}
+     * @return the created {@link Rfc9457Error} object as response body, never {@code null}
      * 
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    private ResponseEntity<Error> handleException(final MethodArgumentTypeMismatchException ex) {
+    private ResponseEntity<Rfc9457Error> handleException(final MethodArgumentTypeMismatchException ex) {
         final String errorMsg = ErrorService.removePackageInformation(ex.getLocalizedMessage());
 
         final String title = errorMsg.substring(0, errorMsg.indexOf(';'));
         final String name = ex.getName();
         final String reason = errorMsg.substring(errorMsg.indexOf(';') + 2);
 
-        final List<InvalidParam> invalidParams = List.of(InvalidParam.builder().name(name).reason(reason).build());
+        final List<InvalidParam> invalidParams = List
+                .of(InvalidParam.builder().pointer("#/" + name).detail(reason).build());
 
-        final Error error = errorService.finalizeRfc7807Error(title, invalidParams);
+        final Rfc9457Error error = errorService.finalizeRfc9457Error(title, invalidParams);
 
         return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
     }

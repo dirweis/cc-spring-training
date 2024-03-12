@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import de.training.exception.service.ErrorService;
-import de.training.model.Error;
+import de.training.model.Rfc9457Error;
 import lombok.RequiredArgsConstructor;
 
 /**
- * The {@link ExceptionHandler} implementation for creating {@link Error} response bodies in case of a caught
+ * The {@link ExceptionHandler} implementation for creating {@link Rfc9457Error} response bodies in case of a caught
  * {@link HttpMediaTypeNotSupportedException}. Ensures the response code {@code 415} is returned.
  * <p>
  * Example output:
@@ -29,31 +29,31 @@ import lombok.RequiredArgsConstructor;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-16
- * @version 1.3
+ * @version 1.2
  * @see <a href="https://github.com/spring-projects/spring-framework/issues/28062">HttpMediaTypeNotSupportedException
  *      getSupportedMediaTypes() fails for unknown values in Content-Type header</a>
  */
 @Order(0)
 @RestControllerAdvice
 @RequiredArgsConstructor
-final class HttpMediaTypeNotSupportedExceptionHandler {
+class HttpMediaTypeNotSupportedExceptionHandler {
 
     private final ErrorService errorService;
 
     /**
-     * Catches the defined {@link Exception}s and creates an {@link Error} response body.
+     * Catches the defined {@link Exception}s and creates an {@link Rfc9457Error} response body.
      * 
      * @param ex the {@link Exception} to catch, never {@code null}
      * 
-     * @return the created {@link Error} object as response body, never {@code null}
+     * @return the created {@link Rfc9457Error} object as response body, never {@code null}
      * 
      */
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
-    private ResponseEntity<Error> handleException(final HttpMediaTypeNotSupportedException ex) {
+    private ResponseEntity<Rfc9457Error> handleException(final HttpMediaTypeNotSupportedException ex) {
         final String msg = ex.getLocalizedMessage();
-        final String title = !msg.contains("'") ? "Request header 'content-type' not found" : msg;
+        final String title = !msg.contains("'") ? "Request header 'Content-Type' not found" : msg;
 
-        final Error error = errorService.finalizeRfc7807Error(title,
+        final Rfc9457Error error = errorService.finalizeRfc9457Error(title,
                 "Supported media type(s): " + ex.getSupportedMediaTypes());
 
         return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).contentType(MediaType.APPLICATION_PROBLEM_JSON)

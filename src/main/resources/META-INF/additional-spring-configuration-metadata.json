@@ -2,31 +2,31 @@
   {
     "name": "minio.url",
     "type": "java.net.URL",
-    "description": "The MinIO server's URL"
-  },
-  {
-    "name": "minio.access-key",
-    "type": "java.lang.String",
-    "description": "The MinIO username token"
-  },
-  {
-    "name": "minio.secret-key",
-    "type": "java.lang.String",
-    "description": "The MinIO password token"
+    "description": "The MinIo server's URL"
   },
   {
     "name": "minio.blocksize",
     "type": "long",
-    "description": "The blocksize on the MinIO server's bucket'"
+    "description": "The blocksize on the MinIo server's bucket'"
   },
   {
     "name": "minio.images-bucket-name",
     "type": "java.lang.String",
-    "description": "The bucket name of the MinIO bucket for storing the images"
+    "description": "The bucket name of the MinIo bucket for storing the images"
+  },
+  {
+    "name": "minio.access-key",
+    "type": "java.lang.String",
+    "description": "The MinIO server access key"
+  },
+  {
+    "name": "minio.secret-key",
+    "type": "java.lang.String",
+    "description": "The MinIO server secret key"
   },
   {
     "name": "minio.browse-port",
     "type": "int",
-    "description": "The MinIO server browse port"
+    "description": "The Minio server browse port"
   }
 ]}
