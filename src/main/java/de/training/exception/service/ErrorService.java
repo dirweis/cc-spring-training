@@ -12,8 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import de.training.model.Error;
-import de.training.model.Error.InvalidParam;
+import de.training.model.Rfc9457Error;
+import de.training.model.Rfc9457Error.InvalidParam;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -37,57 +37,57 @@ public class ErrorService {
     private final HttpServletRequest request;
 
     /**
-     * Prepares the {@link Error} object with commonly used values and a specific title.
+     * Prepares the {@link Rfc9457Error} object with commonly used values and a specific title.
      * 
      * @param title the error's title, must not be {@code null}
      * 
-     * @return the final {@link Error}, never {@code null}
+     * @return the final {@link Rfc9457Error}, never {@code null}
      */
-    public Error finalizeRfc7807Error(final String title) {
-        return finalizeRfc7807Error(title, null, null);
+    public Rfc9457Error finalizeRfc9457Error(final String title) {
+        return finalizeRfc9457Error(title, null, null);
     }
 
     /**
-     * Prepares the {@link Error} object with commonly used values and a specific title and detail information.
+     * Prepares the {@link Rfc9457Error} object with commonly used values and a specific title and detail information.
      * 
      * @param title  the error's title, must not be {@code null}
      * @param detail the error's {@code detail} field's value, never {@code null}
      * 
-     * @return the final {@link Error}, never {@code null}
+     * @return the final {@link Rfc9457Error}, never {@code null}
      */
-    public Error finalizeRfc7807Error(final String title, final String detail) {
-        return finalizeRfc7807Error(title, detail, null);
+    public Rfc9457Error finalizeRfc9457Error(final String title, final String detail) {
+        return finalizeRfc9457Error(title, detail, null);
     }
 
     /**
-     * Prepares the {@link Error} object with commonly used values and a specific title.
+     * Prepares the {@link Rfc9457Error} object with commonly used values and a specific title.
      * 
      * @param title         the error's title, must not be {@code null}
      * @param invalidParams the error's {@code invalid_params} field's value, never {@code null}
      * 
-     * @return the final {@link Error}, never {@code null}
+     * @return the final {@link Rfc9457Error}, never {@code null}
      */
-    public Error finalizeRfc7807Error(final String title, final List<InvalidParam> invalidParams) {
-        return finalizeRfc7807Error(title, null, invalidParams);
+    public Rfc9457Error finalizeRfc9457Error(final String title, final List<InvalidParam> invalidParams) {
+        return finalizeRfc9457Error(title, null, invalidParams);
     }
 
     /**
-     * Prepares the {@link Error} object with commonly used values.
+     * Prepares the {@link Rfc9457Error} object with commonly used values.
      * 
      * @param title         the error's title, must not be {@code null}
      * @param detail        the error's detailed description, may be {@code null}
      * @param invalidParams special field for parameter violations, may be {@code null}
      * 
-     * @return the final {@link Error}, never {@code null}
+     * @return the final {@link Rfc9457Error}, never {@code null}
      */
-    private Error finalizeRfc7807Error(final String title, final String detail,
+    private Rfc9457Error finalizeRfc9457Error(final String title, final String detail,
             @Valid final List<InvalidParam> invalidParams) {
         final UUID errorId = UUID.randomUUID();
 
         ErrorService.log.warn("Problems in request. ID: {}", errorId);
 
-        return Error.builder().type(URI.create(request.getRequestURI())).title(title)
-                .instance(URI.create("urn:ERROR:" + errorId)).detail(detail).invalidParams(invalidParams).build();
+        return Rfc9457Error.builder().type(URI.create(request.getRequestURI())).title(title)
+                .instance(URI.create("urn:ERROR:" + errorId)).detail(detail).errors(invalidParams).build();
     }
 
     /**
@@ -122,11 +122,11 @@ public class ErrorService {
      * 
      * @return the object as service error response, never {@code null}
      */
-    public ResponseEntity<Error> handleBodySyntaxViolations(final String exMsg) {
+    public ResponseEntity<Rfc9457Error> handleBodySyntaxViolations(final String exMsg) {
         final String preparedDetail = ErrorService.removePackageInformation(exMsg);
         final String detail = ErrorService.cleanExMsg(preparedDetail);
 
-        final Error error = finalizeRfc7807Error("JSON Parse Error", detail, null);
+        final Rfc9457Error error = finalizeRfc9457Error("JSON Parse Error", detail, null);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_PROBLEM_JSON)
                 .body(error);

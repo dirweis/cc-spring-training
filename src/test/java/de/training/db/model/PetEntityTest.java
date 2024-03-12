@@ -16,7 +16,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 /**
- * Supplementary test on the {@link PhotoUrlEntity}.
+ * Supplementary test on the {@link PetEntity}.
  * 
  * @since 2022-03-15
  * @version 1.0

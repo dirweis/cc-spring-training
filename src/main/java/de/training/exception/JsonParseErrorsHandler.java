@@ -3,7 +3,6 @@ package de.training.exception;
 import java.util.List;
 import java.util.Objects;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,10 +18,9 @@ import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 
 import de.training.exception.service.ErrorService;
-import de.training.model.Error;
-import de.training.model.Error.InvalidParam;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import de.training.model.Rfc9457Error;
+import de.training.model.Rfc9457Error.InvalidParam;
+import lombok.RequiredArgsConstructor;
 
 /**
  * The implementation of the {@link ExceptionHandler}s rising from sub classes of an
@@ -35,11 +33,10 @@ import lombok.NoArgsConstructor;
  */
 @Order(1)
 @RestControllerAdvice
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 class JsonParseErrorsHandler {
 
-    @Autowired
-    private ErrorService errorService;
+    private final ErrorService errorService;
 
     /**
      * The implementation of a {@link MismatchedInputException} {@link ExceptionHandler} for {@code JSON} mismatches.
@@ -62,10 +59,10 @@ class JsonParseErrorsHandler {
      * 
      * @param ex the {@link Exception} object for handling, never {@code null}
      * 
-     * @return the {@link ResponseEntity} including an {@link Error} body
+     * @return the {@link ResponseEntity} including an {@link Rfc9457Error} body
      */
     @ExceptionHandler(MismatchedInputException.class)
-    private ResponseEntity<Error> handleMismatchException(final MismatchedInputException ex) {
+    private ResponseEntity<Rfc9457Error> handleMismatchException(final MismatchedInputException ex) {
         final String errMsg = ex.getLocalizedMessage();
 
         if (errMsg.startsWith("Cannot deserialize ")) {
@@ -91,11 +88,11 @@ class JsonParseErrorsHandler {
      * 
      * @param ex the {@link Exception} object for handling, never {@code null}
      * 
-     * @return the {@link ResponseEntity} including an {@link Error} body
+     * @return the {@link ResponseEntity} including an {@link Rfc9457Error} body
      *
      */
     @ExceptionHandler(JsonEOFException.class)
-    private ResponseEntity<Error> handleJsonEOFException(final JsonEOFException ex) {
+    private ResponseEntity<Rfc9457Error> handleJsonEOFException(final JsonEOFException ex) {
         return errorService.handleBodySyntaxViolations(ex.getLocalizedMessage());
     }
 
@@ -115,30 +112,30 @@ class JsonParseErrorsHandler {
      * 
      * @param ex the {@link Exception} object for handling, never {@code null}
      * 
-     * @return the {@link ResponseEntity} including an {@link Error} body
+     * @return the {@link ResponseEntity} including an {@link Rfc9457Error} body
      */
     @ExceptionHandler(JsonParseException.class)
-    private ResponseEntity<Error> handleJsonParseException(final JsonParseException ex) {
+    private ResponseEntity<Rfc9457Error> handleJsonParseException(final JsonParseException ex) {
         final JsonLocation location = ex.getLocation();
 
         final String detail = ex.getOriginalMessage() + " at line " + location.getLineNr() + ", column "
                 + location.getColumnNr();
 
-        final Error error = errorService.finalizeRfc7807Error("JSON Parse Error", detail);
+        final Rfc9457Error error = errorService.finalizeRfc9457Error("JSON Parse Error", detail);
 
         return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
     }
 
     /**
-     * Creates a response entity for an {@link Error} body in case of semantic violations in the JSON request body. Sets
-     * the response status to {@link HttpStatus#UNPROCESSABLE_ENTITY}.
+     * Creates a response entity for an {@link Rfc9457Error} body in case of semantic violations in the JSON request
+     * body. Sets the response status to {@link HttpStatus#UNPROCESSABLE_ENTITY}.
      * 
      * @param ex the {@link Exception} for creating the semantic response with code {@code 422}. Must not be
      *           {@code null}.
      * 
      * @return the {@link ResponseEntity} object, never {@code null}
      */
-    private ResponseEntity<Error> createSemanticResponse(final MismatchedInputException ex) {
+    private ResponseEntity<Rfc9457Error> createSemanticResponse(final MismatchedInputException ex) {
         final List<String> invalidParamNameParts = ex.getPath().stream().map(Reference::getFieldName)
                 .filter(Objects::nonNull).toList();
 
@@ -146,9 +143,11 @@ class JsonParseErrorsHandler {
         final String reasonString = ErrorService.removePackageInformation(ex.getLocalizedMessage()).trim();
         final String reason = ErrorService.cleanExMsg(reasonString);
 
-        final InvalidParam invalidParam = InvalidParam.builder().name(invalidParamName).reason(reason).build();
+        final InvalidParam invalidParam = InvalidParam.builder().pointer("#/" + invalidParamName).detail(reason)
+                .build();
 
-        final Error error = errorService.finalizeRfc7807Error("Request body validation failed", List.of(invalidParam));
+        final Rfc9457Error error = errorService.finalizeRfc9457Error("Request body validation failed",
+                List.of(invalidParam));
 
         return ResponseEntity.unprocessableEntity().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
     }

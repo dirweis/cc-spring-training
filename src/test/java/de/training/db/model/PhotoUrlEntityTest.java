@@ -7,13 +7,24 @@ import org.junit.jupiter.api.Test;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+/**
+ * Supplementary test on the {@link PhotoUrlEntity}.
+ * 
+ * @since 2022-03-15
+ * @version 1.0
+ * @author Dirk Weissmann
+ *
+ */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class PhotoUrlEntityTest {
 
-	@Test
-	void testEmptyEntity() {
-		final PhotoUrlEntity entity = new PhotoUrlEntity();
+    /**
+     * Tests the URL getter. When no value gets set, {@code null} is expected.
+     */
+    @Test
+    void testEmptyEntity() {
+        final PhotoUrlEntity entity = new PhotoUrlEntity();
 
-		assertThat(entity.getUrl()).isNull();
-	}
+        assertThat(entity.getUrl()).isNull();
+    }
 }
