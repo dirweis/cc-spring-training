@@ -2,7 +2,7 @@
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=dirweis_cc-spring-training&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=dirweis_cc-spring-training)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=dirweis_cc-spring-training&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=dirweis_cc-spring-training)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=dirweis_cc-spring-training&metric=security_rating)](https://sonarcloud.io/dashboard?id=dirweis_cc-spring-training)
-[![Test density](https://sonarcloud.io/api/project_badges/measure?project=dirweis_cc-spring-training&metric=test_success_density)](https://sonarcloud.io/dashboard?id=dirweis_cc-spring-training)
+[![Test Success Density](https://sonarcloud.io/api/project_badges/measure?project=dirweis_cc-spring-training&metric=test_success_density)](https://sonarcloud.io/dashboard?id=dirweis_cc-spring-training)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=dirweis_cc-spring-training&metric=coverage)](https://sonarcloud.io/dashboard?id=dirweis_cc-spring-training)
 # cc-spring-training
 Quality-driven software development training on a Spring Boot example. Shows clean coding on a micro service storing data in a relational database as well as documents on a MinIO system.
