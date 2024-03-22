@@ -1,13 +1,11 @@
 package de.training.exception.constraint.annotation;
 
 import org.apache.tika.Tika;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * A little helper for comparing the data type in the given body and the one in the request header {@code Content-Type}.
@@ -17,13 +15,12 @@ import lombok.NoArgsConstructor;
  * @author Dirk Weissmann
  *
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 class TikaTypeCheckValidator implements ConstraintValidator<TikaTypeCheck, byte[]> {
 
     private static final Tika tikaChecker = new Tika();
 
-    @Autowired
-    private HttpServletRequest request;
+    private final HttpServletRequest request;
 
     private String message;
 
