@@ -212,30 +212,30 @@
 			</plugin>
 			
 			<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <show>package</show>
-                    <links>
-                        <link>https://docs.spring.io/spring-framework/docs/current/javadoc-api/</link>
-                        <link>https://docs.spring.io/spring-data/jpa/docs/current/api/</link>
-                        <link>https://jakarta.ee/specifications/persistence/2.2/apidocs/</link>
-                    </links>
-                    <!-- The Mapstruct implementing files must be excluded since
-                    they are generated and will never contain JavaDoc -->
-                    <sourceFileExcludes>
-                        <sourceFileExclude>**/mapper/*Impl.java</sourceFileExclude>
-                    </sourceFileExcludes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-		</plugins>
+                		<groupId>org.apache.maven.plugins</groupId>
+                		<artifactId>maven-javadoc-plugin</artifactId>
+                		<configuration>
+                    			<show>package</show>
+                    			<links>
+                        			<link>https://docs.spring.io/spring-framework/docs/current/javadoc-api/</link>
+                        			<link>https://docs.spring.io/spring-data/jpa/docs/current/api/</link>
+                        			<link>https://jakarta.ee/specifications/persistence/2.2/apidocs/</link>
+                    			</links>
+                    			<!-- The Mapstruct implementing files must be excluded since
+                    			they are generated and will never contain JavaDoc -->
+                    			<sourceFileExcludes>
+                        			<sourceFileExclude>**/mapper/*Impl.java</sourceFileExclude>
+                    			</sourceFileExcludes>
+                		</configuration>
+                		<executions>
+                    			<execution>	
+                        			<id>attach-javadocs</id>
+                        			<goals>
+                            				<goal>jar</goal>
+                        			</goals>
+                    			</execution>
+                		</executions>
+            		</plugin>
+	  	</plugins>
 	</build>
 </project>
