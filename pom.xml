@@ -29,6 +29,7 @@
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<mapstruct.version>1.6.3</mapstruct.version>
+		<byte-buddy-agent.version>1.17.6</byte-buddy-agent.version>
 		<sonar.organization>dirweis</sonar.organization>
   		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
@@ -144,7 +145,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-					<argLine>-XX:+EnableDynamicAgentLoading</argLine>
+					<argLine>@{argLine} -javaagent:${settings.localRepository}/net/bytebuddy/byte-buddy-agent/${byte-buddy-agent.version}/byte-buddy-agent-${byte-buddy-agent.version}.jar</argLine>
 				</configuration>
 			</plugin>
 

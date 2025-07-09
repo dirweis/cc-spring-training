@@ -71,7 +71,7 @@ class WebControllerGetTest extends AbstractSpringTestRunner {
         @SneakyThrows
         @DisplayName("a valid request is sent to the GET endpoint for retrieving several pet resources THEN the response status 200 is returned without content")
         void testFindPetsWithoutRestrictionsSuccessfullyAndExpect200WithoutContent() {
-            mockMvc.perform(get(EndPointPrefix)).andExpect(status().isOk())
+            mockMvc.perform(get(END_POINT_PREFIX)).andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(content().json("[]"));
         }
 
@@ -86,7 +86,7 @@ class WebControllerGetTest extends AbstractSpringTestRunner {
         void testFindPetsWithoutRestrictionsSuccessfullyAndExpect200With20Entries() {
             IntStream.range(0, 100).forEach(i -> petRepository.save(createTestEntity(true)));
 
-            mockMvc.perform(get(EndPointPrefix)).andExpect(status().isOk())
+            mockMvc.perform(get(END_POINT_PREFIX)).andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$", hasSize(20)));
         }
 
@@ -101,7 +101,7 @@ class WebControllerGetTest extends AbstractSpringTestRunner {
         void testFindPetsWithoutRestrictionsSuccessfullyAndExpect200With10Entries() {
             IntStream.range(0, 10).forEach(i -> petRepository.save(createTestEntity(true)));
 
-            mockMvc.perform(get(EndPointPrefix)).andExpect(status().isOk())
+            mockMvc.perform(get(END_POINT_PREFIX)).andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$", hasSize(10)));
         }
 
@@ -116,7 +116,7 @@ class WebControllerGetTest extends AbstractSpringTestRunner {
         void testFindPetsRestrictedByStatusSuccessfullyAndExpect200WithAllItems() {
             IntStream.range(0, 100).forEach(i -> petRepository.save(createTestEntity(true)));
 
-            mockMvc.perform(get(EndPointPrefix + "?status=pending&size=100")).andExpect(status().isOk())
+            mockMvc.perform(get(END_POINT_PREFIX + "?status=pending&size=100")).andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                     .andExpect(jsonPath("$", hasSize(100)));
         }
@@ -132,7 +132,7 @@ class WebControllerGetTest extends AbstractSpringTestRunner {
         void testFindPetsRestrictedByStatusSuccessfullyAndExpect200WithNoItems() {
             IntStream.range(0, 100).forEach(i -> petRepository.save(createTestEntity(true)));
 
-            mockMvc.perform(get(EndPointPrefix + "?status=sold&size=100")).andExpect(status().isOk())
+            mockMvc.perform(get(END_POINT_PREFIX + "?status=sold&size=100")).andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$", empty()));
         }
 
@@ -146,7 +146,7 @@ class WebControllerGetTest extends AbstractSpringTestRunner {
         void testFindPetsRestrictedByCategorySuccessfullyAndExpect200WithAllItems() {
             IntStream.range(0, 100).forEach(i -> petRepository.save(createTestEntity(true)));
 
-            mockMvc.perform(get(EndPointPrefix + "?category=spider&size=100")).andExpect(status().isOk())
+            mockMvc.perform(get(END_POINT_PREFIX + "?category=spider&size=100")).andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                     .andExpect(jsonPath("$", hasSize(100)));
         }
@@ -162,7 +162,7 @@ class WebControllerGetTest extends AbstractSpringTestRunner {
         void testFindPetsRestrictedByCategorySuccessfullyAndExpect200WithNoItems() {
             IntStream.range(0, 100).forEach(i -> petRepository.save(createTestEntity(true)));
 
-            mockMvc.perform(get(EndPointPrefix + "?category=cat&size=100")).andExpect(status().isOk())
+            mockMvc.perform(get(END_POINT_PREFIX + "?category=cat&size=100")).andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$", empty()));
         }
 
@@ -174,7 +174,7 @@ class WebControllerGetTest extends AbstractSpringTestRunner {
         @SneakyThrows
         @DisplayName("a valid request is sent to the GET endpoint for retrieving several pet resources restricted by the given tags THEN the response status 200 is returned without data")
         void testFindPetsRestrictedByTagsSuccessfullyAndExpect200WithoutItems() {
-            mockMvc.perform(get(EndPointPrefix + "?tags=nice,lovely")).andExpect(status().isOk())
+            mockMvc.perform(get(END_POINT_PREFIX + "?tags=nice,lovely")).andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(content().json("[]"));
         }
 
@@ -189,7 +189,7 @@ class WebControllerGetTest extends AbstractSpringTestRunner {
         void testFindPetsRestrictedByTagsSuccessfullyAndExpect200With50Items() {
             IntStream.range(0, 100).forEach(i -> petRepository.save(createTestEntity(i % 2 == 0)));
 
-            mockMvc.perform(get(EndPointPrefix + "?tags=subba,lovely&size=100")).andExpect(status().isOk())
+            mockMvc.perform(get(END_POINT_PREFIX + "?tags=subba,lovely&size=100")).andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$", hasSize(50)));
         }
 
@@ -204,7 +204,7 @@ class WebControllerGetTest extends AbstractSpringTestRunner {
         void testFindPetsRestrictedByPageAndSizeSuccessfullyAndExpect200() {
             IntStream.range(0, 30).forEach(i -> petRepository.save(createTestEntity(true)));
 
-            mockMvc.perform(get(EndPointPrefix + "?page=1")).andExpect(status().isOk())
+            mockMvc.perform(get(END_POINT_PREFIX + "?page=1")).andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$", hasSize(10)));
         }
     }
@@ -229,13 +229,13 @@ class WebControllerGetTest extends AbstractSpringTestRunner {
         @SneakyThrows
         @DisplayName("by its ID which is not found THEN the response status 404 is returned")
         void testGetPetByNotFoundIdAndExpect404() {
-            mockMvc.perform(get(EndPointWithTestId))
+            mockMvc.perform(get(END_POINT_WITH_TEST_ID))
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(EntityNotFoundException.class))
                     .andExpect(status().isNotFound())
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                     .andExpect(content().string(containsString(
-                            "\"detail\":\"Resource with ID " + testId + " not found in the persistence")));
+                            "\"detail\":\"Resource with ID " + TEST_ID + " not found in the persistence")));
         }
 
         /**
@@ -250,7 +250,7 @@ class WebControllerGetTest extends AbstractSpringTestRunner {
 
             petRepository.save(testEntity);
 
-            mockMvc.perform(get(EndPointPrefix + "/" + testEntity.getId())).andExpect(status().isOk())
+            mockMvc.perform(get(END_POINT_PREFIX + "/" + testEntity.getId())).andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                     .andExpect(content().string(containsString("\"name\":\"Peter")))
                     .andExpect(content().string(containsString("\"tags\":[\"subba")));
@@ -268,7 +268,7 @@ class WebControllerGetTest extends AbstractSpringTestRunner {
 
             petRepository.save(testEntity);
 
-            mockMvc.perform(get(EndPointPrefix + "/" + testEntity.getId())).andExpect(status().isOk())
+            mockMvc.perform(get(END_POINT_PREFIX + "/" + testEntity.getId())).andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                     .andExpect(content().string(containsString("\"name\":\"Peter")))
                     .andExpect(content().string(containsString("\"tags\":[]")));

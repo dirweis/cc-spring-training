@@ -77,13 +77,13 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
         @DisplayName("not already stored in the database THEN the response with status 404 and an appropriate body is returned")
         void testUpdatePetNotFoundAndExpect404() {
             mockMvc.perform(
-                    put(EndPointWithTestId).contentType(MediaType.APPLICATION_JSON).content(validPetBodyWithTags))
+                    put(END_POINT_WITH_TEST_ID).contentType(MediaType.APPLICATION_JSON).content(validPetBodyWithTags))
                     .andExpect(status().isNotFound())
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(EntityNotFoundException.class))
                     .andExpect(content()
-                            .string(containsString("Resource with ID " + testId + " not found in the persistence")));
+                            .string(containsString("Resource with ID " + TEST_ID + " not found in the persistence")));
         }
 
         /**
@@ -101,7 +101,7 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
 
             final UUID id = entity.getId();
 
-            mockMvc.perform(put(EndPointPrefix + "/" + id).contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(put(END_POINT_PREFIX + "/" + id).contentType(MediaType.APPLICATION_JSON)
                     .content(validPetBodyWithTags)).andExpect(status().isNoContent());
 
             final Optional<PetEntity> newEntityOptional = petRepository.findById(id);
@@ -130,7 +130,7 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
             final UUID id = entity.getId();
 
             mockMvc.perform(
-                    put(EndPointPrefix + "/" + id).contentType(MediaType.APPLICATION_JSON).content(validMinimumPetBody))
+                    put(END_POINT_PREFIX + "/" + id).contentType(MediaType.APPLICATION_JSON).content(validMinimumPetBody))
                     .andExpect(status().isNoContent());
 
             final Optional<PetEntity> newEntityOptional = petRepository.findById(id);
@@ -196,14 +196,14 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
         @SneakyThrows
         @DisplayName("to an unknown pet resource THEN the response status 404 is returned")
         void testAddImageToPetNotFoundAndExpect404() {
-            mockMvc.perform(put(EndPointImageTestId).contentType(MediaType.IMAGE_JPEG).content(content))
+            mockMvc.perform(put(END_POINT_IMAGE_TEST_ID).contentType(MediaType.IMAGE_JPEG).content(content))
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(EntityNotFoundException.class))
                     .andExpect(status().isNotFound())
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                     .andExpect(content().string(containsString("\"title\":\"Not found\"")))
                     .andExpect(content().string(containsString(
-                            "\"detail\":\"Resource with ID " + testId + " not found in the persistence\"")));
+                            "\"detail\":\"Resource with ID " + TEST_ID + " not found in the persistence\"")));
         }
 
         /**
@@ -217,7 +217,7 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
 
             petRepository.save(entity);
 
-            mockMvc.perform(put(EndPointPrefix + "/" + entity.getId() + "/image").contentType(MediaType.IMAGE_JPEG)
+            mockMvc.perform(put(END_POINT_PREFIX + "/" + entity.getId() + "/image").contentType(MediaType.IMAGE_JPEG)
                     .content(content)).andExpect(status().isCreated());
 
             final Optional<PetEntity> resultEntityOption = petRepository.findById(entity.getId());
@@ -242,10 +242,10 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
 
             petRepository.save(entity);
 
-            mockMvc.perform(put(EndPointPrefix + "/" + entity.getId() + "/image").contentType(MediaType.IMAGE_JPEG)
+            mockMvc.perform(put(END_POINT_PREFIX + "/" + entity.getId() + "/image").contentType(MediaType.IMAGE_JPEG)
                     .content(content)).andExpect(status().isCreated());
 
-            mockMvc.perform(put(EndPointPrefix + "/" + entity.getId() + "/image").contentType(MediaType.IMAGE_JPEG)
+            mockMvc.perform(put(END_POINT_PREFIX + "/" + entity.getId() + "/image").contentType(MediaType.IMAGE_JPEG)
                     .content(content))
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(DataIntegrityViolationException.class))

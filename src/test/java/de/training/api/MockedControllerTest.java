@@ -52,7 +52,7 @@ class MockedControllerTest extends AbstractSpringTestRunner {
 	void testFurtherExceptionHandlerOnInternalFailAndExpect500() {
 		when(controller.addPet(any(), any())).thenThrow(NullPointerException.class);
 
-		mockMvc.perform(post(EndPointPrefix).contentType(MediaType.APPLICATION_JSON).content(validPetBodyWithTags))
+		mockMvc.perform(post(END_POINT_PREFIX).contentType(MediaType.APPLICATION_JSON).content(validPetBodyWithTags))
 				.andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
 						.isInstanceOf(NullPointerException.class))
 				.andExpect(status().isInternalServerError())
@@ -73,7 +73,7 @@ class MockedControllerTest extends AbstractSpringTestRunner {
 	void testDataIntegrityExceptionHandlerOnInternalFailAndExpect500() {
 		when(controller.addPet(any(), any())).thenThrow(new DataIntegrityViolationException(StringUtils.EMPTY));
 
-		mockMvc.perform(post(EndPointPrefix).contentType(MediaType.APPLICATION_JSON).content(validPetBodyWithTags))
+		mockMvc.perform(post(END_POINT_PREFIX).contentType(MediaType.APPLICATION_JSON).content(validPetBodyWithTags))
 				.andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
 						.isInstanceOf(DataIntegrityViolationException.class))
 				.andExpect(status().isInternalServerError())

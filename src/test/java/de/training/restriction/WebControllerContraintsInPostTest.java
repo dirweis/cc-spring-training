@@ -53,7 +53,7 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
     @SneakyThrows
     @DisplayName("method is DELETE THEN respond with status 405 AND content type application/problem+json AND the expected response body")
     void testCallPostWithWrongHttpMethodAndExpect405() {
-        mockMvc.perform(delete(EndPointPrefix)).andExpect(status().isMethodNotAllowed())
+        mockMvc.perform(delete(END_POINT_PREFIX)).andExpect(status().isMethodNotAllowed())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                 .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                         .isInstanceOf(HttpRequestMethodNotSupportedException.class))
@@ -68,7 +68,7 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
     @SneakyThrows
     @DisplayName("request header Content-Type is missing THEN respond with status 415 AND content type application/problem+json AND the expected response body")
     void testCallPostWithMissingContentTypeAndExpect415() {
-        mockMvc.perform(post(EndPointPrefix)).andExpect(status().isUnsupportedMediaType())
+        mockMvc.perform(post(END_POINT_PREFIX)).andExpect(status().isUnsupportedMediaType())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                 .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                         .isInstanceOf(HttpMediaTypeNotSupportedException.class))
@@ -83,7 +83,7 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
     @SneakyThrows
     @DisplayName("request header Content-Type is wrong (but known) THEN respond with status 415 AND content type application/problem+json AND the expected response body")
     void testCallPostWithWrongContentTypeAndExpect415() {
-        mockMvc.perform(post(EndPointPrefix).contentType(MediaType.APPLICATION_XML_VALUE))
+        mockMvc.perform(post(END_POINT_PREFIX).contentType(MediaType.APPLICATION_XML_VALUE))
                 .andExpect(status().isUnsupportedMediaType())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                 .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
@@ -101,7 +101,7 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
     @SneakyThrows
     @DisplayName("request header Content-Type is wrong (and not known) THEN respond with status 415 AND content type application/problem+json AND the expected response body")
     void testCallPostWithUnknownContentTypeAndExpect415() {
-        mockMvc.perform(post(EndPointPrefix).contentType("crazy")).andExpect(status().isUnsupportedMediaType())
+        mockMvc.perform(post(END_POINT_PREFIX).contentType("crazy")).andExpect(status().isUnsupportedMediaType())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                 .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                         .isInstanceOf(HttpMediaTypeNotSupportedException.class))
@@ -136,7 +136,7 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     class JsonSyntacticalViolationTest {
 
-        private static final String invalidFolderPath = "classpath:invalid_request_bodies/syntactical/";
+        private static final String INVALID_FOLDER_PATH = "classpath:invalid_request_bodies/syntactical/";
 
         /**
          * 1st invalid body test: The body is missing.
@@ -145,7 +145,7 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
         @SneakyThrows
         @DisplayName("is missing THEN respond with status 400 AND content type application/problem+json AND the expected response body")
         void testCallPostWithMissingBodyAndExpect400() {
-            mockMvc.perform(post(EndPointPrefix).contentType(MediaType.APPLICATION_JSON_VALUE))
+            mockMvc.perform(post(END_POINT_PREFIX).contentType(MediaType.APPLICATION_JSON_VALUE))
                     .andExpect(status().isBadRequest())
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
@@ -173,10 +173,10 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
         @MethodSource("provideParameters")
         @DisplayName("contains no opening brace OR is in the wrong format OR with a missing comma OR with a missing quotation THEN respond with status 400 AND content type application/problem+json AND the expected response body")
         void testForSyntacticalInvalidBody(final String filename, final String expectedDetail) {
-            final File contentFile = ResourceUtils.getFile(invalidFolderPath + filename);
+            final File contentFile = ResourceUtils.getFile(INVALID_FOLDER_PATH + filename);
             final String content = Files.contentOf(contentFile, StandardCharsets.UTF_8);
 
-            mockMvc.perform(post(EndPointPrefix).contentType(MediaType.APPLICATION_JSON).content(content))
+            mockMvc.perform(post(END_POINT_PREFIX).contentType(MediaType.APPLICATION_JSON).content(content))
                     .andExpect(status().isBadRequest())
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(HttpMessageNotReadableException.class))
@@ -235,7 +235,7 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     class JsonSemanticViolationTest {
 
-        private static final String invalidFolderPath = "classpath:invalid_request_bodies/semantic/";
+        private static final String INVALID_FOLDER_PATH = "classpath:invalid_request_bodies/semantic/";
 
         /**
          * 5 invalid body tests: The body is semantic violated with
@@ -261,10 +261,10 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
         @DisplayName("WHEN the request body contains an invalid enumeration value OR an invalid ID type OR a missing (mandatory) field OR various constraint violations at once OR a valid ID which is rejected since it's a POST request and IDs are forbidden THEN respond with status 422 AND content type application/problem+json AND the expected response body")
         void testForSemanticInvalidBody(final String filename, final Class<Exception> exClass,
                 final String expectedDetail) {
-            final File contentFile = ResourceUtils.getFile(invalidFolderPath + filename + ".json");
+            final File contentFile = ResourceUtils.getFile(INVALID_FOLDER_PATH + filename + ".json");
             final String content = Files.contentOf(contentFile, StandardCharsets.UTF_8);
 
-            mockMvc.perform(post(EndPointPrefix).contentType(MediaType.APPLICATION_JSON).content(content))
+            mockMvc.perform(post(END_POINT_PREFIX).contentType(MediaType.APPLICATION_JSON).content(content))
                     .andExpect(status().isUnprocessableEntity())
                     .andExpect(
                             (final MvcResult result) -> assertThat(result.getResolvedException()).isInstanceOf(exClass))

@@ -56,7 +56,7 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
         @SneakyThrows
         @DisplayName("on the wrong HTTP method POST THEN respond with status 405 AND content type application/problem+json AND the expected response body")
         void testCallGetWithWrongHttpMethodAndExpect405() {
-            mockMvc.perform(post(EndPointWithTestId)).andExpect(status().isMethodNotAllowed())
+            mockMvc.perform(post(END_POINT_WITH_TEST_ID)).andExpect(status().isMethodNotAllowed())
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(HttpRequestMethodNotSupportedException.class))
@@ -71,7 +71,7 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
         @SneakyThrows
         @DisplayName("with the pet ID is in the wrong format THEN respond with status 400 AND content type application/problem+json AND the expected response body")
         void testCallGetWithWrongIdFormatAndExpect400() {
-            mockMvc.perform(get(EndPointPrefix + "/1")).andExpect(status().isBadRequest())
+            mockMvc.perform(get(END_POINT_PREFIX + "/1")).andExpect(status().isBadRequest())
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(MethodArgumentTypeMismatchException.class))
@@ -112,7 +112,7 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
         @SneakyThrows
         @DisplayName("with a not acceptable page integer value THEN respond with status 400 AND content type application/problem+json AND the expected response body")
         void testCallGetWithInacceptablePageIntValue() {
-            mockMvc.perform(get(EndPointPrefix + "?page=-1")).andExpect(status().isBadRequest())
+            mockMvc.perform(get(END_POINT_PREFIX + "?page=-1")).andExpect(status().isBadRequest())
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(ConstraintViolationException.class))
@@ -129,7 +129,7 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
         @SneakyThrows
         @DisplayName("with a not acceptable page string value THEN respond with status 400 AND content type application/problem+json AND the expected response body")
         void testCallGetWithInacceptablePageStringValue() {
-            mockMvc.perform(get(EndPointPrefix + "?page=m")).andExpect(status().isBadRequest())
+            mockMvc.perform(get(END_POINT_PREFIX + "?page=m")).andExpect(status().isBadRequest())
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(MethodArgumentTypeMismatchException.class))
@@ -146,7 +146,7 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
         @SneakyThrows
         @DisplayName("with a size value that is too low THEN respond with status 400 AND content type application/problem+json AND the expected response body")
         void testCallGetWithTooLowSizeIntValue() {
-            mockMvc.perform(get(EndPointPrefix + "?size=-10")).andExpect(status().isBadRequest())
+            mockMvc.perform(get(END_POINT_PREFIX + "?size=-10")).andExpect(status().isBadRequest())
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(ConstraintViolationException.class))
@@ -162,7 +162,7 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
         @SneakyThrows
         @DisplayName("with a size value that is too high THEN respond with status 400 AND content type application/problem+json AND the expected response body")
         void testCallGetWithTooHighSizeIntValue() {
-            mockMvc.perform(get(EndPointPrefix + "?size=100000")).andExpect(status().isBadRequest())
+            mockMvc.perform(get(END_POINT_PREFIX + "?size=100000")).andExpect(status().isBadRequest())
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(ConstraintViolationException.class))
@@ -178,7 +178,7 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
         @SneakyThrows
         @DisplayName("with a size value that is no multiple of 10 THEN respond with status 400 AND content type application/problem+json AND the expected response body")
         void testCallGetWithNo10MultipleSizeIntValue() {
-            mockMvc.perform(get(EndPointPrefix + "?size=11")).andExpect(status().isBadRequest())
+            mockMvc.perform(get(END_POINT_PREFIX + "?size=11")).andExpect(status().isBadRequest())
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(ConstraintViolationException.class))
@@ -194,7 +194,7 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
         @SneakyThrows
         @DisplayName("with a not acceptable size string value THEN respond with status 400 AND content type application/problem+json AND the expected response body")
         void testCallGetWithInacceptableSizeStringValue() {
-            mockMvc.perform(get(EndPointPrefix + "?size=k")).andExpect(status().isBadRequest())
+            mockMvc.perform(get(END_POINT_PREFIX + "?size=k")).andExpect(status().isBadRequest())
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(MethodArgumentTypeMismatchException.class))
@@ -212,7 +212,7 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
         @SneakyThrows
         @DisplayName("with a not acceptable status value THEN respond with status 400 AND content type application/problem+json AND the expected response body")
         void testCallGetWithInacceptableStatusValue() {
-            mockMvc.perform(get(EndPointPrefix + "?status=k")).andExpect(status().isBadRequest())
+            mockMvc.perform(get(END_POINT_PREFIX + "?status=k")).andExpect(status().isBadRequest())
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(MethodArgumentTypeMismatchException.class))
@@ -229,7 +229,7 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
         @SneakyThrows
         @DisplayName("with a not acceptable value for a tag THEN respond with status 400 AND content type application/problem+json AND the expected response body")
         void testCallGetWithInacceptableTagsValue() {
-            mockMvc.perform(get(EndPointPrefix + "?tags=lovely,m")).andExpect(status().isBadRequest())
+            mockMvc.perform(get(END_POINT_PREFIX + "?tags=lovely,m")).andExpect(status().isBadRequest())
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(ConstraintViolationException.class))

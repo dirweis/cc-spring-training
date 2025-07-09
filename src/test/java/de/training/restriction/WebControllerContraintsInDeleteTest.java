@@ -40,7 +40,7 @@ class WebControllerContraintsInDeleteTest extends AbstractSpringTestRunner {
     @SneakyThrows
     @DisplayName("a wrong HTTP method THEN respond with status 405 AND content type application/problem+json AND the expected response body")
     void testWrongHttpMethodAndExpect405() {
-        mockMvc.perform(post(EndPointWithTestId)).andExpect(status().isMethodNotAllowed())
+        mockMvc.perform(post(END_POINT_WITH_TEST_ID)).andExpect(status().isMethodNotAllowed())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                 .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                         .isInstanceOf(HttpRequestMethodNotSupportedException.class))
@@ -55,7 +55,7 @@ class WebControllerContraintsInDeleteTest extends AbstractSpringTestRunner {
     @SneakyThrows
     @DisplayName("an ID that is not well-formed THEN respond with status 400 AND content type application/problem+json AND the expected response body")
     void testInvalidPetIdAndExpect400() {
-        mockMvc.perform(delete(EndPointPrefix + "/no")).andExpect(status().isBadRequest())
+        mockMvc.perform(delete(END_POINT_PREFIX + "/no")).andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                 .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                         .isInstanceOf(MethodArgumentTypeMismatchException.class))

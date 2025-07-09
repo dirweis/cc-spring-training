@@ -49,19 +49,19 @@ public class AbstractSpringTestRunner {
 	/**
 	 * The general endpoint's prefix.
 	 */
-	protected static final String EndPointPrefix = "http://localhost:8080/petstore/petservice/v1/pets";
+	protected static final String END_POINT_PREFIX = "http://localhost:8080/petstore/petservice/v1/pets";
 
-	protected static final String testId = "6f09a3c7-fdec-4949-9da5-d089f9ccb378";
+	protected static final String TEST_ID = "6f09a3c7-fdec-4949-9da5-d089f9ccb378";
 
 	/**
 	 * The general endpoint with a test {@link UUID}.
 	 */
-	protected static final String EndPointWithTestId = EndPointPrefix + "/" + testId;
+	protected static final String END_POINT_WITH_TEST_ID = END_POINT_PREFIX + "/" + TEST_ID;
 
 	/**
 	 * The image endpoint with a test {@link UUID} for a {@link Pet} resource.
 	 */
-	protected static final String EndPointImageTestId = EndPointWithTestId + "/image";
+	protected static final String END_POINT_IMAGE_TEST_ID = END_POINT_WITH_TEST_ID + "/image";
 
 	/**
 	 * The {@link String} representing a valid maximum request body for the {@link Pet} resource.

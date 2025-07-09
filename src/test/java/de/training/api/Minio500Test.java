@@ -61,7 +61,7 @@ class Minio500Test extends AbstractSpringTestRunner {
 
         petRepository.save(entity);
 
-        mockMvc.perform(put(EndPointPrefix + "/" + entity.getId() + "/image").contentType(MediaType.IMAGE_JPEG)
+        mockMvc.perform(put(END_POINT_PREFIX + "/" + entity.getId() + "/image").contentType(MediaType.IMAGE_JPEG)
                 .content(content))
                 .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                         .isInstanceOf(IllegalArgumentException.class))

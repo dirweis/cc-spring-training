@@ -47,12 +47,12 @@ class WebControllerDeleteTest extends AbstractSpringTestRunner {
     @SneakyThrows
     @DisplayName("that is not stored yet is given to the DELETE enpoint THEN respond with status 404 and the appropriate body")
     void testDeletePetNotFoundAndExpect404() {
-        mockMvc.perform(delete(EndPointWithTestId))
+        mockMvc.perform(delete(END_POINT_WITH_TEST_ID))
                 .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                         .isInstanceOf(EntityNotFoundException.class))
                 .andExpect(status().isNotFound()).andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                 .andExpect(content().string(
-                        containsString("\"detail\":\"Resource with ID " + testId + " not found in the persistence\"")));
+                        containsString("\"detail\":\"Resource with ID " + TEST_ID + " not found in the persistence\"")));
     }
 
     /**
@@ -70,7 +70,7 @@ class WebControllerDeleteTest extends AbstractSpringTestRunner {
 
         final UUID entityId = entity.getId();
 
-        mockMvc.perform(delete(EndPointPrefix + "/" + entityId)).andExpect(status().isNoContent());
+        mockMvc.perform(delete(END_POINT_PREFIX + "/" + entityId)).andExpect(status().isNoContent());
 
         assertThat(petRepository.findById(entityId)).isNotPresent();
     }
