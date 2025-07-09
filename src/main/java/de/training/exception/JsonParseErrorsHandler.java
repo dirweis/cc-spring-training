@@ -69,7 +69,7 @@ class JsonParseErrorsHandler {
             return createSemanticResponse(ex);
         }
 
-        return errorService.handleBodySyntaxViolations(errMsg);
+        return errorService.handleBodySyntaxViolations("No parsable JSON. Opening brace missing?");
     }
 
     /**
@@ -82,7 +82,7 @@ class JsonParseErrorsHandler {
         "type": "/petstore/petservice/v1/pets",
         "title": "JSON Parse Error",
         "instance": "urn:ERROR:bc438273-070b-47e9-9f9b-fc4663f77e31",
-        "detail": "Unexpected end-of-input: expected close marker for Object (start marker at [Source: line: 1, column: 1]) at [Source: line: 11, column: 1]"
+        "detail": "Not well-formed for the JSON end. Missing brace?"
      }
      * </pre>
      * 
@@ -93,7 +93,7 @@ class JsonParseErrorsHandler {
      */
     @ExceptionHandler(JsonEOFException.class)
     private ResponseEntity<Rfc9457Error> handleJsonEOFException(final JsonEOFException ex) {
-        return errorService.handleBodySyntaxViolations(ex.getLocalizedMessage());
+        return errorService.handleBodySyntaxViolations("Not well-formed for the JSON end. Missing brace?");
     }
 
     /**
@@ -140,11 +140,11 @@ class JsonParseErrorsHandler {
                 .filter(Objects::nonNull).toList();
 
         final String invalidParamName = String.join(".", invalidParamNameParts);
-        final String reasonString = ErrorService.removePackageInformation(ex.getLocalizedMessage()).trim();
-        final String reason = ErrorService.cleanExMsg(reasonString);
+        final String reasonString = ErrorService.removePackageInformation(ex.getOriginalMessage()).trim();
+        final String reason = reasonString + " (line " + ex.getLocation().getLineNr() + ", column "
+                + ex.getLocation().getColumnNr() + ")";
 
-        final InvalidParam invalidParam = InvalidParam.builder().pointer("#/" + invalidParamName).detail(reason)
-                .build();
+        final InvalidParam invalidParam = new InvalidParam("#/" + invalidParamName, reason);
 
         final Rfc9457Error error = errorService.finalizeRfc9457Error("Request body validation failed",
                 List.of(invalidParam));

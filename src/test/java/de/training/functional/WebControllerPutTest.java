@@ -16,7 +16,6 @@ import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -52,11 +51,6 @@ import lombok.SneakyThrows;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 class WebControllerPutTest extends AbstractSpringTestRunner {
 
-    @BeforeEach
-    void prepareDb() {
-        petRepository.deleteAll();
-    }
-
     @AfterEach
     void cleanUpDb() {
         petRepository.deleteAll();
@@ -72,7 +66,7 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
      */
     @Nested
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    @DisplayName("WHEN a valid request is sent to the PUT endpoint for a pet that is ")
+    @DisplayName("WHEN a valid request is sent to the PUT endpoint for a pet that is")
     class OverridePetResourceTest {
 
         /**

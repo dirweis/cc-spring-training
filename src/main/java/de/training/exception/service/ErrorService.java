@@ -3,10 +3,8 @@ package de.training.exception.service;
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.RegExUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -30,8 +28,6 @@ import lombok.extern.log4j.Log4j2;
 @Service
 @RequiredArgsConstructor
 public class ErrorService {
-
-    private static final Pattern doubleSpacePattern = Pattern.compile("\\p{IsSpace}{2}");
 
     private final HttpServletRequest request;
 
@@ -101,29 +97,13 @@ public class ErrorService {
     }
 
     /**
-     * Clean-up of the exception message: Removing implementation-specific information and ugly characters.
-     * 
-     * @param exMsg the original exception message, may not be {@code null}
-     * 
-     * @return the clean {@link String}, never {@code null}
-     */
-    public static String cleanExMsg(final String exMsg) {
-        final String intermediate = RegExUtils.removeAll(exMsg, "\\((\\p{IsUpper}.*?)\\)");
-
-        return doubleSpacePattern.matcher(RegExUtils.removeAll(intermediate, "(; |\\n)")).replaceAll(StringUtils.SPACE);
-    }
-
-    /**
      * Builds the whole {@link ResponseEntity} for all syntactical violations.
      * 
-     * @param exMsg the {@link Exception} message, may not be {@code null}
+     * @param detail the message for the {@code detail} field, may not be {@code null}
      * 
      * @return the object as service error response, never {@code null}
      */
-    public ResponseEntity<Rfc9457Error> handleBodySyntaxViolations(final String exMsg) {
-        final String preparedDetail = removePackageInformation(exMsg);
-        final String detail = cleanExMsg(preparedDetail);
-
+    public ResponseEntity<Rfc9457Error> handleBodySyntaxViolations(final String detail) {
         final Rfc9457Error error = finalizeRfc9457Error("JSON Parse Error", detail);
 
         return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);

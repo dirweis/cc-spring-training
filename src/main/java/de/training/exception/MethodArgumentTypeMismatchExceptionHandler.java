@@ -56,14 +56,14 @@ class MethodArgumentTypeMismatchExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     private ResponseEntity<Rfc9457Error> handleException(final MethodArgumentTypeMismatchException ex) {
-        final String errorMsg = ErrorService.removePackageInformation(ex.getLocalizedMessage());
+        final String errorMsg = ErrorService.removePackageInformation(ex.getMessage());
+        final String rawTitle = errorMsg.substring(errorMsg.indexOf(":") + 2);
+        final String title = rawTitle.substring(0, rawTitle.indexOf(';'));
 
-        final String title = errorMsg.substring(0, errorMsg.indexOf(';'));
-        final String name = ex.getName();
         final String reason = errorMsg.substring(errorMsg.indexOf(';') + 2);
 
         final List<InvalidParam> invalidParams = List
-                .of(InvalidParam.builder().pointer("#/" + name).detail(reason).build());
+                .of(InvalidParam.builder().pointer("#/" + ex.getName()).detail(reason).build());
 
         final Rfc9457Error error = errorService.finalizeRfc9457Error(title, invalidParams);
 

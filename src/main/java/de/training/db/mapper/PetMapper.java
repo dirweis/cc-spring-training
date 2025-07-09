@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants.ComponentModel;
 import org.mapstruct.MappingTarget;
 
 import de.training.db.model.PetEntity;
@@ -19,11 +20,11 @@ import de.training.model.Pet;
  * transformation of tag {@link String}s into complex {@link TagEntity} objects.
  * 
  * @since 2022-03-15
- * @version 1.0
+ * @version 1.1
  * @author Dirk Weissmann
  *
  */
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = ComponentModel.SPRING)
 public interface PetMapper {
 
     /**

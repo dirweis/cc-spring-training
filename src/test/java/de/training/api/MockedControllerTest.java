@@ -11,15 +11,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MvcResult;
 
 import de.training.AbstractSpringTestRunner;
-import de.training.model.Rfc9457Error;
 import de.training.model.Pet;
+import de.training.model.Rfc9457Error;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
@@ -36,15 +36,15 @@ import lombok.SneakyThrows;
 @DisplayName("WHEN the Post endpoint for adding a new Pet resource is called and the implementation crashes internally")
 class MockedControllerTest extends AbstractSpringTestRunner {
 
-	@MockBean
+	@MockitoBean
 	private PetsApiController controller;
 
 	/**
 	 * Send something to the {@code POST} endpoint for creating a new {@link Pet} resource and make the controller throw
 	 * a {@link NullPointerException}.
 	 * <p>
-	 * Checks the response on the expected {@link HttpStatus#INTERNAL_SERVER_ERROR} and the expected {@link Rfc9457Error}
-	 * response body.
+	 * Checks the response on the expected {@link HttpStatus#INTERNAL_SERVER_ERROR} and the expected
+	 * {@link Rfc9457Error} response body.
 	 */
 	@Test
 	@SneakyThrows
@@ -64,8 +64,8 @@ class MockedControllerTest extends AbstractSpringTestRunner {
 	 * Send something to the {@code POST} endpoint for creating a new {@link Pet} resource and make the controller throw
 	 * a {@link DataIntegrityViolationException} with a message not containing {@code Unique}.
 	 * <p>
-	 * Checks the response on the expected {@link HttpStatus#INTERNAL_SERVER_ERROR} and the expected {@link Rfc9457Error}
-	 * response body.
+	 * Checks the response on the expected {@link HttpStatus#INTERNAL_SERVER_ERROR} and the expected
+	 * {@link Rfc9457Error} response body.
 	 */
 	@Test
 	@SneakyThrows
