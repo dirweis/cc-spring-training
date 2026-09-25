@@ -18,13 +18,13 @@ import de.training.model.Pet.PetStatus;
 @Configuration
 class StatusConverter implements Converter<String, PetStatus> {
 
-	/**
-	 * {@inheritDoc}
-	 * <p>
-	 * In this case convert a given {@link String} case insensitive into a value for the enumeration {@link PetStatus}.
-	 */
-	@Override
-	public PetStatus convert(final String source) {
-		return PetStatus.valueOf(source.toUpperCase(Locale.getDefault()));
-	}
+    /**
+     * {@inheritDoc}
+     * <p>
+     * In this case convert a given {@link String} case insensitive into a value for the enumeration {@link PetStatus}.
+     */
+    @Override
+    public PetStatus convert(final String source) {
+        return PetStatus.valueOf(source.toUpperCase(Locale.getDefault()));
+    }
 }

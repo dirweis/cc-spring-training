@@ -6,15 +6,15 @@ spring:
     mapper:
       accept-case-insensitive-enums: true
   datasource:
-    url: 'jdbc:hsqldb:mem:testdb;DB_CLOSE_DELAY=-1'
-    driverClassName: org.hsqldb.jdbc.JDBCDriver
+    url: 'jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1'
+    driverClassName: org.h2.Driver
     username: sa
     password: 
   jpa:
     hibernate:
       ddl-auto: update
     open-in-view: false
-    database-platform: org.hibernate.dialect.HSQLDialect
+    database-platform: org.hibernate.dialect.H2Dialect
 minio:
   url: https://play.min.io
   access-key: Q3AM3UQ867SPQQA43P2F

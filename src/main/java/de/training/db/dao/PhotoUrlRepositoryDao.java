@@ -13,5 +13,5 @@ import de.training.db.model.PhotoUrlEntity;
  *
  */
 public interface PhotoUrlRepositoryDao extends JpaRepository<PhotoUrlEntity, Long> {
-	/* Nothing special needed so far */
+    /* Nothing special needed so far */
 }

@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import de.training.exception.service.ErrorService;
 import de.training.model.Rfc9457Error;
@@ -36,7 +37,7 @@ import lombok.RequiredArgsConstructor;
 @Order(6)
 @RestControllerAdvice
 @RequiredArgsConstructor
-class EntityNotFoundExceptionHandler {
+class NotFoundExceptionHandler {
 
     private final ErrorService errorService;
 
@@ -47,8 +48,8 @@ class EntityNotFoundExceptionHandler {
      * 
      * @return the created {@link Rfc9457Error} object as response body, never {@code null}
      */
-    @ExceptionHandler(EntityNotFoundException.class)
-    private ResponseEntity<Rfc9457Error> handleException(final EntityNotFoundException ex) {
+    @ExceptionHandler({ EntityNotFoundException.class, NoResourceFoundException.class })
+    private ResponseEntity<Rfc9457Error> handleException(final Exception ex) {
         final Rfc9457Error error = errorService.finalizeRfc9457Error("Not found", ex.getLocalizedMessage());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);

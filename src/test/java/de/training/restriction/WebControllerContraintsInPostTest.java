@@ -205,7 +205,7 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
                     Arguments.of("missing_comma.json",
                             "\"detail\":\"Unexpected character ('\\\"' (code 34)): was expecting comma to separate Object entries at line 3, column 2\""),
                     Arguments.of("missing_quotation.json",
-                            "\"detail\":\"Unexpected character ('i' (code 105)): was expecting double-quote to start field name at line 2, column 5\""));
+                            "\"detail\":\"Unexpected character ('i' (code 105)): was expecting double-quote to start property name at line 2, column 5\""));
         }
     }
 
@@ -265,7 +265,7 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
             final String content = Files.contentOf(contentFile, StandardCharsets.UTF_8);
 
             mockMvc.perform(post(END_POINT_PREFIX).contentType(MediaType.APPLICATION_JSON).content(content))
-                    .andExpect(status().isUnprocessableEntity())
+                    .andExpect(status().isUnprocessableContent())
                     .andExpect(
                             (final MvcResult result) -> assertThat(result.getResolvedException()).isInstanceOf(exClass))
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))

@@ -13,5 +13,5 @@ import de.training.db.model.TagEntity;
  *
  */
 public interface TagRepositoryDao extends JpaRepository<TagEntity, Long> {
-	/* Nothing special needed so far */
+    /* Nothing special needed so far */
 }

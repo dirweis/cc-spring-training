@@ -18,13 +18,13 @@ import de.training.model.Pet.Category;
 @Configuration
 class CategoryConverter implements Converter<String, Category> {
 
-	/**
-	 * {@inheritDoc}
-	 * <p>
-	 * In this case convert a given {@link String} case insensitive into a value for the enumeration {@link Category}.
-	 */
-	@Override
-	public Category convert(final String source) {
-		return Category.valueOf(source.toUpperCase(Locale.getDefault()));
-	}
+    /**
+     * {@inheritDoc}
+     * <p>
+     * In this case convert a given {@link String} case insensitive into a value for the enumeration {@link Category}.
+     */
+    @Override
+    public Category convert(final String source) {
+        return Category.valueOf(source.toUpperCase(Locale.getDefault()));
+    }
 }

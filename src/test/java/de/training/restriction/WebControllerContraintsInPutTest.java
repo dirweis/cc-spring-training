@@ -116,7 +116,8 @@ class WebControllerContraintsInPutTest extends AbstractSpringTestRunner {
         @SneakyThrows
         @DisplayName("request header Content-Type is wrong (and not known) THEN respond with status 415 AND content type application/problem+json AND the expected response body")
         void testCallPutWithUnknownContentTypeAndExpect415() {
-            mockMvc.perform(put(END_POINT_WITH_TEST_ID).contentType("crazy")).andExpect(status().isUnsupportedMediaType())
+            mockMvc.perform(put(END_POINT_WITH_TEST_ID).contentType("crazy"))
+                    .andExpect(status().isUnsupportedMediaType())
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(HttpMediaTypeNotSupportedException.class))
@@ -221,7 +222,7 @@ class WebControllerContraintsInPutTest extends AbstractSpringTestRunner {
                         Arguments.of("missing_comma.json",
                                 "\"detail\":\"Unexpected character ('\\\"' (code 34)): was expecting comma to separate Object entries at line 3, column 2\""),
                         Arguments.of("missing_quotation.json",
-                                "\"detail\":\"Unexpected character ('i' (code 105)): was expecting double-quote to start field name at line 2, column 5\""));
+                                "\"detail\":\"Unexpected character ('i' (code 105)): was expecting double-quote to start property name at line 2, column 5\""));
             }
         }
 
@@ -280,7 +281,7 @@ class WebControllerContraintsInPutTest extends AbstractSpringTestRunner {
                 final String content = Files.contentOf(contentFile, StandardCharsets.UTF_8);
 
                 mockMvc.perform(put(END_POINT_WITH_TEST_ID).contentType(MediaType.APPLICATION_JSON).content(content))
-                        .andExpect(status().isUnprocessableEntity())
+                        .andExpect(status().isUnprocessableContent())
                         .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                                 .isInstanceOf(exClass))
                         .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
@@ -385,7 +386,8 @@ class WebControllerContraintsInPutTest extends AbstractSpringTestRunner {
         @SneakyThrows
         @DisplayName("HTTP request header Content-Type is wrong (and not known) THEN respond with status 415 AND content type application/problem+json AND the expected response body")
         void testCallPutWithUnknownContentTypeAndExpect415() {
-            mockMvc.perform(put(END_POINT_IMAGE_TEST_ID).contentType("crazy")).andExpect(status().isUnsupportedMediaType())
+            mockMvc.perform(put(END_POINT_IMAGE_TEST_ID).contentType("crazy"))
+                    .andExpect(status().isUnsupportedMediaType())
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(HttpMediaTypeNotSupportedException.class))
@@ -423,7 +425,7 @@ class WebControllerContraintsInPutTest extends AbstractSpringTestRunner {
             final byte[] content = FileUtils.readFileToByteArray(contentFile);
 
             mockMvc.perform(put(END_POINT_IMAGE_TEST_ID).contentType(MediaType.IMAGE_PNG_VALUE).content(content))
-                    .andExpect(status().isUnprocessableEntity())
+                    .andExpect(status().isUnprocessableContent())
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(ConstraintViolationException.class))
@@ -444,7 +446,7 @@ class WebControllerContraintsInPutTest extends AbstractSpringTestRunner {
             final byte[] content = FileUtils.readFileToByteArray(contentFile);
 
             mockMvc.perform(put(END_POINT_IMAGE_TEST_ID).contentType(MediaType.IMAGE_JPEG).content(content))
-                    .andExpect(status().isUnprocessableEntity())
+                    .andExpect(status().isUnprocessableContent())
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(ConstraintViolationException.class))
@@ -465,7 +467,7 @@ class WebControllerContraintsInPutTest extends AbstractSpringTestRunner {
             final byte[] content = FileUtils.readFileToByteArray(contentFile);
 
             mockMvc.perform(put(END_POINT_IMAGE_TEST_ID).contentType(MediaType.IMAGE_GIF).content(content))
-                    .andExpect(status().isUnprocessableEntity())
+                    .andExpect(status().isUnprocessableContent())
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(ConstraintViolationException.class))

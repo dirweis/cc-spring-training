@@ -11,8 +11,9 @@ import de.training.model.Rfc9457Error;
 import lombok.RequiredArgsConstructor;
 
 /**
- * The {@link ExceptionHandler} implementation for creating {@link Rfc9457Error} response bodies in case of a caught further
- * exception that is not caught explicitly by another handler. Ensures the response code {@code 500} is returned.
+ * The {@link ExceptionHandler} implementation for creating {@link Rfc9457Error} response bodies in case of a caught
+ * further exception that is not caught explicitly by another handler. Ensures the response code {@code 500} is
+ * returned.
  * <p>
  * <em>Must not occur in the productive area! Whenever this {@link ExceptionHandler} fires, there is definitely
  * something wrong with the implementation or with the infrastructure!</em>
