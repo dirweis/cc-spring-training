@@ -20,17 +20,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 class MinioConfiguration {
 
-	/**
-	 * Injects the {@link MinioClient} object on the given values in the {@link MinioConfigDto} parameter.
-	 * 
-	 * @param configDto the {@link ConfigurationProperties} DTO for providing the properties starting with {@code minio}
-	 *                  in the service's configuration
-	 * 
-	 * @return the injected {@link MinioClient}, never {@code null}
-	 */
-	@Bean
-	MinioClient getMinioClient(final MinioConfigDto configDto) {
-		return MinioClient.builder().endpoint(configDto.url()).credentials(configDto.accessKey(), configDto.secretKey())
-				.build();
-	}
+    /**
+     * Injects the {@link MinioClient} object on the given values in the {@link MinioConfigDto} parameter.
+     * 
+     * @param configDto the {@link ConfigurationProperties} DTO for providing the properties starting with {@code minio}
+     *                  in the service's configuration
+     * 
+     * @return the injected {@link MinioClient}, never {@code null}
+     */
+    @Bean
+    MinioClient getMinioClient(final MinioConfigDto configDto) {
+        return MinioClient.builder().endpoint(configDto.url()).credentials(configDto.accessKey(), configDto.secretKey())
+                .build();
+    }
 }

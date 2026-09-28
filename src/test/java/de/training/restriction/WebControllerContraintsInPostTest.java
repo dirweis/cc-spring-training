@@ -132,7 +132,7 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
      *
      */
     @Nested
-    @DisplayName("WHEN the request body ")
+    @DisplayName("request body")
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     class JsonSyntacticalViolationTest {
 
@@ -196,16 +196,16 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
          * @return the {@link Stream} of {@link Arguments}
          */
         private static Stream<Arguments> provideParameters() {
-            return Stream.of(Arguments.of("missing_opening_brace.json",
-                    "\"detail\":\"Cannot construct instance of `Pet` (although at least one Creator exists): no String-argument constructor/factory method to deserialize from String value ('name') at [Source: line: 2, column: 2]\""),
+            return Stream.of(
+                    Arguments.of("missing_opening_brace.json", "\"detail\":\"No parsable JSON. Opening brace missing?"),
                     Arguments.of("noJson.xml",
-                            "\"detail\":\"Unexpected character ('<' (code 60)): expected a valid value (JSON String, Number, Array, Object or token 'null', 'true' or 'false') at line 1, column 2\""),
+                            "\"detail\":\"Unexpected character ('<' (code 60)): expected a valid value (JSON String, Number, Array, Object or token 'null', 'true' or 'false') at line 1, column 1\""),
                     Arguments.of("missing_closing_brace.json",
-                            "\"detail\":\"Unexpected end-of-input: expected close marker for Object (start marker at [Source: line: 1, column: 1]) at [Source: line: 11, column: 1]\""),
+                            "\"detail\":\"Not well-formed for the JSON end. Missing brace?\""),
                     Arguments.of("missing_comma.json",
-                            "\"detail\":\"Unexpected character ('\\\"' (code 34)): was expecting comma to separate Object entries at line 3, column 3\""),
+                            "\"detail\":\"Unexpected character ('\\\"' (code 34)): was expecting comma to separate Object entries at line 3, column 2\""),
                     Arguments.of("missing_quotation.json",
-                            "\"detail\":\"Unexpected character ('i' (code 105)): was expecting double-quote to start field name at line 2, column 6\""));
+                            "\"detail\":\"Unexpected character ('i' (code 105)): was expecting double-quote to start property name at line 2, column 5\""));
         }
     }
 
@@ -232,6 +232,7 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
      *
      */
     @Nested
+    @DisplayName("request body")
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     class JsonSemanticViolationTest {
 
@@ -258,14 +259,14 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
         @SneakyThrows
         @ParameterizedTest
         @MethodSource("provideParameters")
-        @DisplayName("WHEN the request body contains an invalid enumeration value OR an invalid ID type OR a missing (mandatory) field OR various constraint violations at once OR a valid ID which is rejected since it's a POST request and IDs are forbidden THEN respond with status 422 AND content type application/problem+json AND the expected response body")
+        @DisplayName("contains an invalid enumeration value OR an invalid ID type OR a missing (mandatory) field OR various constraint violations at once OR a valid ID which is rejected since it's a POST request and IDs are forbidden THEN respond with status 422 AND content type application/problem+json AND the expected response body")
         void testForSemanticInvalidBody(final String filename, final Class<Exception> exClass,
                 final String expectedDetail) {
             final File contentFile = ResourceUtils.getFile(invalidFolderPath + filename + ".json");
             final String content = Files.contentOf(contentFile, StandardCharsets.UTF_8);
 
             mockMvc.perform(post(EndPointPrefix).contentType(MediaType.APPLICATION_JSON).content(content))
-                    .andExpect(status().isUnprocessableEntity())
+                    .andExpect(status().isUnprocessableContent())
                     .andExpect(
                             (final MvcResult result) -> assertThat(result.getResolvedException()).isInstanceOf(exClass))
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
@@ -286,9 +287,9 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
          */
         private static Stream<Arguments> provideParameters() {
             return Stream.of(Arguments.of("invalid_enum_value", HttpMessageNotReadableException.class,
-                    "\"errors\":[{\"pointer\":\"#/category\",\"detail\":\"Cannot deserialize value of type `Pet$Category` from String \\\"cats\\\": not one of the values accepted for Enum class: [BIRD, DOG, MOUSE, CAT, SPIDER] at [Source: line: 8, column: 18] (through reference chain: Pet[\\\"category\\\"])\"}]"),
+                    "\"errors\":[{\"pointer\":\"#/category\",\"detail\":\"Cannot deserialize value of type `Pet$Category` from String \\\"cats\\\": not one of the values accepted for Enum class: [BIRD, DOG, MOUSE, CAT, SPIDER] (line 8, column 18)\"}]"),
                     Arguments.of("invalid_id_type", HttpMessageNotReadableException.class,
-                            "\"errors\":[{\"pointer\":\"#/id\",\"detail\":\"Cannot deserialize value of type `UUID` from String \\\"1\\\": UUID has to be represented by standard 36-char representation at [Source: line: 2, column: 8] (through reference chain: Pet[\\\"id\\\"])\"}]"),
+                            "\"errors\":[{\"pointer\":\"#/id\",\"detail\":\"Cannot deserialize value of type `UUID` from String \\\"1\\\": UUID has to be represented by standard 36-char representation (line 2, column 8)\"}]"),
                     Arguments.of("missing_field", MethodArgumentNotValidException.class,
                             "\"errors\":[{\"pointer\":\"#/name\",\"detail\":\"must not be null\"}]"),
                     Arguments.of("various_semantic_violations", MethodArgumentNotValidException.class,

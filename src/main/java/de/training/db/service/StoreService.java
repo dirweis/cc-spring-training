@@ -36,7 +36,7 @@ import lombok.SneakyThrows;
  * A {@link Service} bean for database operations, using a {@link Mapper} and a {@link JpaRepository}.
  * 
  * @since 2022-03-15
- * @version 1.1
+ * @version 1.2
  * @author Dirk Weissmann
  *
  */
@@ -192,7 +192,7 @@ public class StoreService {
      * @return the {@link Specification} for restrictions or {@code null} in case it's not needed
      */
     private static Specification<PetEntity> hasStatus(final PetStatus status) {
-        return (final Root<PetEntity> root, final CriteriaQuery<?> cq,
+        return (final Root<PetEntity> root, final CriteriaQuery<?> _,
                 final CriteriaBuilder cb) -> status != null ? cb.equal(root.get("status"), status) : null;
     }
 
@@ -204,7 +204,7 @@ public class StoreService {
      * @return the {@link Specification} for restrictions or {@code null} in case it's not needed
      */
     private static Specification<PetEntity> hasCategory(final Category category) {
-        return (final Root<PetEntity> root, final CriteriaQuery<?> cq,
+        return (final Root<PetEntity> root, final CriteriaQuery<?> _,
                 final CriteriaBuilder cb) -> category != null ? cb.equal(root.get("category"), category) : null;
     }
 
@@ -216,7 +216,7 @@ public class StoreService {
      * @return the {@link Specification} for restrictions or {@code null} in case it's not needed
      */
     private static Specification<PetEntity> isInTags(final List<String> tags) {
-        return (final Root<PetEntity> root, final CriteriaQuery<?> cq,
+        return (final Root<PetEntity> root, final CriteriaQuery<?> _,
                 final CriteriaBuilder cb) -> tags != null ? cb.in(root.join("tags").get("tag")).value(tags) : null;
     }
 }

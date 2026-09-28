@@ -17,7 +17,7 @@ import lombok.SneakyThrows;
  * 
  * @author Dirk Weissmann
  * @since 2022-03-18
- * @version 2.0
+ * @version 2.1
  * @see <a href="https://docs.min.io/docs/java-client-api-reference.html">MinIO Java API</a>
  *
  */
@@ -45,7 +45,7 @@ public class MinioService {
         }
 
         final PutObjectArgs content = PutObjectArgs.builder().bucket(bucketName).object(imageId)
-                .contentType(contentType).stream(new ByteArrayInputStream(image), image.length, -1).build();
+                .contentType(contentType).stream(new ByteArrayInputStream(image), (long) image.length, -1L).build();
 
         client.putObject(content);
     }

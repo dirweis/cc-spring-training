@@ -26,7 +26,7 @@ import lombok.SneakyThrows;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-22
- * @version 1.1
+ * @version 1.2
  *
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -60,7 +60,7 @@ class WebControllerContraintsInDeleteTest extends AbstractSpringTestRunner {
                 .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                         .isInstanceOf(MethodArgumentTypeMismatchException.class))
                 .andExpect(content().string(containsString(
-                        "\"title\":\"Failed to convert value of type 'String' to required type 'UUID'\"")))
+                        "\"title\":\"Method parameter 'petId': Failed to convert value of type 'String' to required type 'UUID'\"")))
                 .andExpect(content().string(containsString(
                         "\"errors\":[{\"pointer\":\"#/petId\",\"detail\":\"Invalid UUID string: no\"}]")));
     }

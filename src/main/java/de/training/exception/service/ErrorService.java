@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import de.training.model.Rfc9457Error;
 import de.training.model.Rfc9457Error.InvalidParam;
@@ -28,6 +29,7 @@ import lombok.extern.log4j.Log4j2;
  */
 @Log4j2
 @Service
+@Validated
 @RequiredArgsConstructor
 public class ErrorService {
 
@@ -66,7 +68,7 @@ public class ErrorService {
      * 
      * @return the final {@link Rfc9457Error}, never {@code null}
      */
-    public Rfc9457Error finalizeRfc9457Error(final String title, final List<InvalidParam> invalidParams) {
+    public Rfc9457Error finalizeRfc9457Error(final String title, final List<@Valid InvalidParam> invalidParams) {
         return finalizeRfc9457Error(title, null, invalidParams);
     }
 
@@ -80,7 +82,7 @@ public class ErrorService {
      * @return the final {@link Rfc9457Error}, never {@code null}
      */
     private Rfc9457Error finalizeRfc9457Error(final String title, final String detail,
-            @Valid final List<InvalidParam> invalidParams) {
+            final List<@Valid InvalidParam> invalidParams) {
         final UUID errorId = UUID.randomUUID();
 
         log.warn("Problems in request. ID: {}", errorId);

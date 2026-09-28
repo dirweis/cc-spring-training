@@ -8,7 +8,7 @@ spring:
   datasource:
     url: 'jdbc:postgresql://localhost:5432/postgres'
     username: postgres
-    password: admin
+    password: ${db-pw}
   jpa:
     hibernate:
       ddl-auto: update
@@ -20,3 +20,8 @@ minio:
   access-key: Q3AM3UQ867SPQQA43P2F
   secret-key: zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG
   images-bucket-name: cc-spring-training
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false

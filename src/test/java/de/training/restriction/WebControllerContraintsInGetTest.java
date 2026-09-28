@@ -30,7 +30,7 @@ import lombok.SneakyThrows;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-21
- * @version 1.1
+ * @version 1.2
  *
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -76,7 +76,7 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(MethodArgumentTypeMismatchException.class))
                     .andExpect(content().string(containsString(
-                            "\"title\":\"Failed to convert value of type 'String' to required type 'UUID'\"")))
+                            "\"title\":\"Method parameter 'petId': Failed to convert value of type 'String' to required type 'UUID'\"")))
                     .andExpect(content().string(containsString(
                             "\"errors\":[{\"pointer\":\"#/petId\",\"detail\":\"Invalid UUID string: 1\"}]")));
         }
@@ -134,7 +134,7 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(MethodArgumentTypeMismatchException.class))
                     .andExpect(content().string(containsString(
-                            "\"title\":\"Failed to convert value of type 'String' to required type 'Integer'")))
+                            "\"title\":\"Method parameter 'page': Failed to convert value of type 'String' to required type 'Integer'")))
                     .andExpect(content().string(containsString(
                             "\"errors\":[{\"pointer\":\"#/page\",\"detail\":\"For input string: \\\"m\\\"\"}]")));
         }
@@ -199,7 +199,7 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(MethodArgumentTypeMismatchException.class))
                     .andExpect(content().string(containsString(
-                            "\"title\":\"Failed to convert value of type 'String' to required type 'Integer'")))
+                            "\"title\":\"Method parameter 'size': Failed to convert value of type 'String' to required type 'Integer'")))
                     .andExpect(content().string(containsString(
                             "\"errors\":[{\"pointer\":\"#/size\",\"detail\":\"For input string: \\\"k\\\"\"}]")));
         }
@@ -217,7 +217,7 @@ class WebControllerContraintsInGetTest extends AbstractSpringTestRunner {
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(MethodArgumentTypeMismatchException.class))
                     .andExpect(content().string(containsString(
-                            "\"title\":\"Failed to convert value of type 'String' to required type 'Pet$PetStatus'\"")))
+                            "\"title\":\"Method parameter 'status': Failed to convert value of type 'String' to required type 'Pet$PetStatus'\"")))
                     .andExpect(content().string(containsString(
                             "\"errors\":[{\"pointer\":\"#/status\",\"detail\":\"Failed to convert from type [String] to type [@RequestParam Pet$PetStatus] for value [k]\"}]")));
         }
