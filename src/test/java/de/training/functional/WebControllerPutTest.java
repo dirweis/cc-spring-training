@@ -50,7 +50,7 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
         @DisplayName("body containing tags is sent to the PUT endpoint for a complete pet update THEN the response status 501 is returned since the endpoint is not yet implemented")
         void testUpdatePetWithMaxBodyAndExpect501() {
             mockMvc.perform(
-                    put(EndPointWithTestId).contentType(MediaType.APPLICATION_JSON_VALUE).content(validPetBodyWithTags))
+                    put(END_POINT_WITH_TEST_ID).contentType(MediaType.APPLICATION_JSON_VALUE).content(validPetBodyWithTags))
                     .andExpect(status().isNotImplemented());
         }
 
@@ -62,7 +62,7 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
         @DisplayName("minimalist body is sent to the PUT endpoint for a complete pet update THEN the response status 501 is returned since the endpoint is not yet implemented")
         void testUpdatePetWithMinBodyAndExpect501() {
             mockMvc.perform(
-                    put(EndPointWithTestId).contentType(MediaType.APPLICATION_JSON_VALUE).content(validMinimumPetBody))
+                    put(END_POINT_WITH_TEST_ID).contentType(MediaType.APPLICATION_JSON_VALUE).content(validMinimumPetBody))
                     .andExpect(status().isNotImplemented());
         }
     }
@@ -89,7 +89,7 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
             final File contentFile = ResourceUtils.getFile("classpath:valid_test.jpg");
             final byte[] content = FileUtils.readFileToByteArray(contentFile);
 
-            mockMvc.perform(put(EndPointImageTestId).contentType(MediaType.IMAGE_JPEG_VALUE).content(content))
+            mockMvc.perform(put(END_POINT_IMAGE_TEST_ID).contentType(MediaType.IMAGE_JPEG_VALUE).content(content))
                     .andExpect(status().isNotImplemented());
         }
     }

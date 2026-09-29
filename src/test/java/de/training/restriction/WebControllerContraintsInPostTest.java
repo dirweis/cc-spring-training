@@ -39,7 +39,7 @@ import lombok.SneakyThrows;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-18
- * @version 1.2
+ * @version 1.3
  *
  */
 @DisplayName("WHEN the HTTP")
@@ -53,7 +53,7 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
     @SneakyThrows
     @DisplayName("method is DELETE THEN respond with status 405 AND content type application/problem+json AND the expected response body")
     void testCallPostWithWrongHttpMethodAndExpect405() {
-        mockMvc.perform(delete(EndPointPrefix)).andExpect(status().isMethodNotAllowed())
+        mockMvc.perform(delete(END_POINT_PREFIX)).andExpect(status().isMethodNotAllowed())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                 .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                         .isInstanceOf(HttpRequestMethodNotSupportedException.class))
@@ -68,7 +68,7 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
     @SneakyThrows
     @DisplayName("request header Content-Type is missing THEN respond with status 415 AND content type application/problem+json AND the expected response body")
     void testCallPostWithMissingContentTypeAndExpect415() {
-        mockMvc.perform(post(EndPointPrefix)).andExpect(status().isUnsupportedMediaType())
+        mockMvc.perform(post(END_POINT_PREFIX)).andExpect(status().isUnsupportedMediaType())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                 .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                         .isInstanceOf(HttpMediaTypeNotSupportedException.class))
@@ -83,7 +83,7 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
     @SneakyThrows
     @DisplayName("request header Content-Type is wrong (but known) THEN respond with status 415 AND content type application/problem+json AND the expected response body")
     void testCallPostWithWrongContentTypeAndExpect415() {
-        mockMvc.perform(post(EndPointPrefix).contentType(MediaType.APPLICATION_XML_VALUE))
+        mockMvc.perform(post(END_POINT_PREFIX).contentType(MediaType.APPLICATION_XML_VALUE))
                 .andExpect(status().isUnsupportedMediaType())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                 .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
@@ -101,7 +101,7 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
     @SneakyThrows
     @DisplayName("request header Content-Type is wrong (and not known) THEN respond with status 415 AND content type application/problem+json AND the expected response body")
     void testCallPostWithUnknownContentTypeAndExpect415() {
-        mockMvc.perform(post(EndPointPrefix).contentType("crazy")).andExpect(status().isUnsupportedMediaType())
+        mockMvc.perform(post(END_POINT_PREFIX).contentType("crazy")).andExpect(status().isUnsupportedMediaType())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                 .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                         .isInstanceOf(HttpMediaTypeNotSupportedException.class))
@@ -136,7 +136,7 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     class JsonSyntacticalViolationTest {
 
-        private static final String invalidFolderPath = "classpath:invalid_request_bodies/syntactical/";
+        private static final String INVALID_FOLDER_PATH = "classpath:invalid_request_bodies/syntactical/";
 
         /**
          * 1st invalid body test: The body is missing.
@@ -145,7 +145,7 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
         @SneakyThrows
         @DisplayName("is missing THEN respond with status 400 AND content type application/problem+json AND the expected response body")
         void testCallPostWithMissingBodyAndExpect400() {
-            mockMvc.perform(post(EndPointPrefix).contentType(MediaType.APPLICATION_JSON_VALUE))
+            mockMvc.perform(post(END_POINT_PREFIX).contentType(MediaType.APPLICATION_JSON_VALUE))
                     .andExpect(status().isBadRequest())
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
@@ -173,10 +173,10 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
         @MethodSource("provideParameters")
         @DisplayName("contains no opening brace OR is in the wrong format OR with a missing comma OR with a missing quotation THEN respond with status 400 AND content type application/problem+json AND the expected response body")
         void testForSyntacticalInvalidBody(final String filename, final String expectedDetail) {
-            final File contentFile = ResourceUtils.getFile(invalidFolderPath + filename);
+            final File contentFile = ResourceUtils.getFile(INVALID_FOLDER_PATH + filename);
             final String content = Files.contentOf(contentFile, StandardCharsets.UTF_8);
 
-            mockMvc.perform(post(EndPointPrefix).contentType(MediaType.APPLICATION_JSON).content(content))
+            mockMvc.perform(post(END_POINT_PREFIX).contentType(MediaType.APPLICATION_JSON).content(content))
                     .andExpect(status().isBadRequest())
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(HttpMessageNotReadableException.class))
@@ -196,16 +196,17 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
          * @return the {@link Stream} of {@link Arguments}
          */
         private static Stream<Arguments> provideParameters() {
-            return Stream.of(Arguments.of("missing_opening_brace.json",
-                    "\"detail\":\"Cannot construct instance of `Pet` (although at least one Creator exists): no String-argument constructor/factory method to deserialize from String value ('name') at [Source: line: 2, column: 2]\""),
+            return Stream.of(
+                    Arguments.of("missing_opening_brace.json",
+                            "\"detail\":\"No parsable JSON. Opening brace missing?\""),
                     Arguments.of("noJson.xml",
-                            "\"detail\":\"Unexpected character ('<' (code 60)): expected a valid value (JSON String, Number, Array, Object or token 'null', 'true' or 'false') at line 1, column 2\""),
+                            "\"detail\":\"Unexpected character ('<' (code 60)): expected a valid value (JSON String, Number, Array, Object or token 'null', 'true' or 'false') at line 1, column 1\""),
                     Arguments.of("missing_closing_brace.json",
-                            "\"detail\":\"Unexpected end-of-input: expected close marker for Object (start marker at [Source: line: 1, column: 1]) at [Source: line: 11, column: 1]\""),
+                            "\"detail\":\"Not well-formed for the JSON end. Missing brace?\""),
                     Arguments.of("missing_comma.json",
-                            "\"detail\":\"Unexpected character ('\\\"' (code 34)): was expecting comma to separate Object entries at line 3, column 3\""),
+                            "\"detail\":\"Unexpected character ('\\\"' (code 34)): was expecting comma to separate Object entries at line 3, column 2\""),
                     Arguments.of("missing_quotation.json",
-                            "\"detail\":\"Unexpected character ('i' (code 105)): was expecting double-quote to start field name at line 2, column 6\""));
+                            "\"detail\":\"Unexpected character ('i' (code 105)): was expecting double-quote to start property name at line 2, column 5\""));
         }
     }
 
@@ -236,7 +237,7 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     class JsonSemanticViolationTest {
 
-        private static final String invalidFolderPath = "classpath:invalid_request_bodies/semantic/";
+        private static final String INVALID_FOLDER_PATH = "classpath:invalid_request_bodies/semantic/";
 
         /**
          * 5 invalid body tests: The body is semantic violated with
@@ -262,11 +263,11 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
         @DisplayName("contains an invalid enumeration value OR an invalid ID type OR a missing (mandatory) field OR various constraint violations at once OR a valid ID which is rejected since it's a POST request and IDs are forbidden THEN respond with status 422 AND content type application/problem+json AND the expected response body")
         void testForSemanticInvalidBody(final String filename, final Class<Exception> exClass,
                 final String expectedDetail) {
-            final File contentFile = ResourceUtils.getFile(invalidFolderPath + filename + ".json");
+            final File contentFile = ResourceUtils.getFile(INVALID_FOLDER_PATH + filename + ".json");
             final String content = Files.contentOf(contentFile, StandardCharsets.UTF_8);
 
-            mockMvc.perform(post(EndPointPrefix).contentType(MediaType.APPLICATION_JSON).content(content))
-                    .andExpect(status().isUnprocessableEntity())
+            mockMvc.perform(post(END_POINT_PREFIX).contentType(MediaType.APPLICATION_JSON).content(content))
+                    .andExpect(status().isUnprocessableContent())
                     .andExpect(
                             (final MvcResult result) -> assertThat(result.getResolvedException()).isInstanceOf(exClass))
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
@@ -287,9 +288,9 @@ class WebControllerContraintsInPostTest extends AbstractSpringTestRunner {
          */
         private static Stream<Arguments> provideParameters() {
             return Stream.of(Arguments.of("invalid_enum_value", HttpMessageNotReadableException.class,
-                    "\"errors\":[{\"pointer\":\"#/category\",\"detail\":\"Cannot deserialize value of type `Pet$Category` from String \\\"cats\\\": not one of the values accepted for Enum class: [BIRD, DOG, MOUSE, CAT, SPIDER] at [Source: line: 8, column: 18] (through reference chain: Pet[\\\"category\\\"])\"}]"),
+                    "\"errors\":[{\"pointer\":\"#/category\",\"detail\":\"Cannot deserialize value of type `Pet$Category` from String \\\"cats\\\": not one of the values accepted for Enum class: [BIRD, DOG, MOUSE, CAT, SPIDER] (line 8, column 18)\"}]"),
                     Arguments.of("invalid_id_type", HttpMessageNotReadableException.class,
-                            "\"errors\":[{\"pointer\":\"#/id\",\"detail\":\"Cannot deserialize value of type `UUID` from String \\\"1\\\": UUID has to be represented by standard 36-char representation at [Source: line: 2, column: 8] (through reference chain: Pet[\\\"id\\\"])\"}]"),
+                            "\"errors\":[{\"pointer\":\"#/id\",\"detail\":\"Cannot deserialize value of type `UUID` from String \\\"1\\\": UUID has to be represented by standard 36-char representation (line 2, column 8)\"}]"),
                     Arguments.of("missing_field", MethodArgumentNotValidException.class,
                             "\"errors\":[{\"pointer\":\"#/name\",\"detail\":\"must not be null\"}]"),
                     Arguments.of("various_semantic_violations", MethodArgumentNotValidException.class,

@@ -40,7 +40,7 @@ import lombok.RequiredArgsConstructor;
  * 
  * @author Dirk Weissmann
  * @since 2021-10-25
- * @version 1.0
+ * @version 1.1
  *
  */
 @Order(4)
@@ -100,7 +100,7 @@ class ConstraintViolationExceptionHandler {
 
         final Rfc9457Error error = errorService.finalizeRfc9457Error("Request body validation failed", invalidParams);
 
-        return ResponseEntity.unprocessableEntity().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
+        return ResponseEntity.unprocessableContent().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
     }
 
     /**
@@ -126,7 +126,7 @@ class ConstraintViolationExceptionHandler {
      * @return the parameter name, never {@code null}
      */
     private static String extractParamNameFromPath(final Path propertyPath) {
-        return StreamSupport.stream(propertyPath.spliterator(), false).map(Node::getName)
-                .reduce((first, second) -> second).orElseGet(propertyPath::toString);
+        return StreamSupport.stream(propertyPath.spliterator(), false).map(Node::getName).reduce((_, second) -> second)
+                .orElseGet(propertyPath::toString);
     }
 }

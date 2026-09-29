@@ -31,6 +31,6 @@ class WebControllerDeleteTest extends AbstractSpringTestRunner {
 	@SneakyThrows
 	@DisplayName("WHEN a valid UUID for a pet resource is given to the DELETE enpoint THEN respond with status 501 gets returned since the endpoint is not yet implemented")
 	void testDeletePetSuccessfullyAndExpect501() {
-		mockMvc.perform(delete(EndPointWithTestId)).andExpect(status().isNotImplemented());
+		mockMvc.perform(delete(END_POINT_WITH_TEST_ID)).andExpect(status().isNotImplemented());
 	}
 }

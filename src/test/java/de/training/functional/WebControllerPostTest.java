@@ -48,7 +48,7 @@ class WebControllerPostTest extends AbstractSpringTestRunner {
     @DisplayName("including tags is sent to the Post endpoint for pet creation THEN the response status 201 is expected and the database must contain the entry")
     void testAddPetMaxBodyAndExpect201() {
         final MvcResult result = mockMvc
-                .perform(post(EndPointPrefix).contentType(MediaType.APPLICATION_JSON_VALUE)
+                .perform(post(END_POINT_PREFIX).contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(validPetBodyWithTags))
                 .andExpect(status().isCreated()).andExpect(header().exists("Location"))
                 .andExpect(header().string("Location", startsWith("/petstore/petservice/v1/pets/"))).andReturn();
@@ -72,7 +72,7 @@ class WebControllerPostTest extends AbstractSpringTestRunner {
     void testAddPetMinBodyAndExpect201() {
         final MvcResult result = mockMvc
                 .perform(
-                        post(EndPointPrefix).contentType(MediaType.APPLICATION_JSON_VALUE).content(validMinimumPetBody))
+                        post(END_POINT_PREFIX).contentType(MediaType.APPLICATION_JSON_VALUE).content(validMinimumPetBody))
                 .andExpect(status().isCreated()).andExpect(header().exists("Location"))
                 .andExpect(header().string("Location", startsWith("/petstore/petservice/v1/pets/"))).andReturn();
 
