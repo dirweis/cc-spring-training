@@ -100,7 +100,7 @@ class ConstraintViolationExceptionHandler {
 
         final Rfc9457Error error = errorService.finalizeRfc9457Error("Request body validation failed", invalidParams);
 
-        return ResponseEntity.unprocessableEntity().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
+        return ResponseEntity.unprocessableContent().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
     }
 
     /**
@@ -126,7 +126,7 @@ class ConstraintViolationExceptionHandler {
      * @return the parameter name, never {@code null}
      */
     private static String extractParamNameFromPath(final Path propertyPath) {
-        return StreamSupport.stream(propertyPath.spliterator(), false).map(Node::getName)
-                .reduce((first, second) -> second).orElseGet(propertyPath::toString);
+        return StreamSupport.stream(propertyPath.spliterator(), false).map(Node::getName).reduce((_, second) -> second)
+                .orElseGet(propertyPath::toString);
     }
 }

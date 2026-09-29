@@ -73,13 +73,13 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
         @DisplayName("not already stored in the database THEN the response with status 404 and an appropriate body is returned")
         void testUpdatePetNotFoundAndExpect404() {
             mockMvc.perform(
-                    put(EndPointWithTestId).contentType(MediaType.APPLICATION_JSON).content(validPetBodyWithTags))
+                    put(END_POINT_WITH_TESTID).contentType(MediaType.APPLICATION_JSON).content(validPetBodyWithTags))
                     .andExpect(status().isNotFound())
                     .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                     .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
                             .isInstanceOf(EntityNotFoundException.class))
                     .andExpect(content()
-                            .string(containsString("Resource with ID " + testId + " not found in the persistence")));
+                            .string(containsString("Resource with ID " + TEST_ID + " not found in the persistence")));
         }
 
         /**
@@ -97,7 +97,7 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
 
             final UUID id = entity.getId();
 
-            mockMvc.perform(put(EndPointPrefix + "/" + id).contentType(MediaType.APPLICATION_JSON)
+            mockMvc.perform(put(END_POINT_PREFIX + "/" + id).contentType(MediaType.APPLICATION_JSON)
                     .content(validPetBodyWithTags)).andExpect(status().isNoContent());
 
             final Optional<PetEntity> newEntityOptional = petRepository.findById(id);
@@ -126,7 +126,7 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
             final UUID id = entity.getId();
 
             mockMvc.perform(
-                    put(EndPointPrefix + "/" + id).contentType(MediaType.APPLICATION_JSON).content(validMinimumPetBody))
+                    put(END_POINT_PREFIX + "/" + id).contentType(MediaType.APPLICATION_JSON).content(validMinimumPetBody))
                     .andExpect(status().isNoContent());
 
             final Optional<PetEntity> newEntityOptional = petRepository.findById(id);
@@ -162,7 +162,7 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
             final File contentFile = ResourceUtils.getFile("classpath:valid_test.jpg");
             final byte[] content = FileUtils.readFileToByteArray(contentFile);
 
-            mockMvc.perform(put(EndPointImageTestId).contentType(MediaType.IMAGE_JPEG_VALUE).content(content))
+            mockMvc.perform(put(END_POINT_IMAGE_TEST_ID).contentType(MediaType.IMAGE_JPEG_VALUE).content(content))
                     .andExpect(status().isNotImplemented());
         }
     }

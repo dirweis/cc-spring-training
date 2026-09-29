@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import de.training.model.Rfc9457Error;
 import de.training.model.Rfc9457Error.InvalidParam;
@@ -29,6 +30,7 @@ import lombok.extern.log4j.Log4j2;
  */
 @Log4j2
 @Service
+@Validated
 @RequiredArgsConstructor
 public class ErrorService {
 

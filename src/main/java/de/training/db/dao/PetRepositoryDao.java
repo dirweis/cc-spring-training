@@ -16,5 +16,5 @@ import de.training.db.model.PetEntity;
  *
  */
 public interface PetRepositoryDao extends JpaRepository<PetEntity, UUID>, JpaSpecificationExecutor<PetEntity> {
-	/* No derived queries (allowed here) */
+    /* No derived queries (allowed here) */
 }
