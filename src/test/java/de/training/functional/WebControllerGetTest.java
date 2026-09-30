@@ -47,7 +47,7 @@ class WebControllerGetTest extends AbstractSpringTestRunner {
 		@SneakyThrows
 		@DisplayName("their status THEN the response status 501 is returned since the endpoint is not yet implemented")
 		void testFindPetsRestrictedByStatusSuccessfullyAndExpect501() {
-			mockMvc.perform(get(EndPointPrefix + "?status=available")).andExpect(status().isNotImplemented());
+			mockMvc.perform(get(END_POINT_PREFIX + "?status=available")).andExpect(status().isNotImplemented());
 		}
 
 		/**
@@ -57,7 +57,7 @@ class WebControllerGetTest extends AbstractSpringTestRunner {
 		@SneakyThrows
 		@DisplayName("their category THEN the response status 501 is returned since the endpoint is not yet implemented")
 		void testFindPetsRestrictedByCategorySuccessfullyAndExpect501() {
-			mockMvc.perform(get(EndPointPrefix + "?category=cat")).andExpect(status().isNotImplemented());
+			mockMvc.perform(get(END_POINT_PREFIX + "?category=cat")).andExpect(status().isNotImplemented());
 		}
 
 		/**
@@ -68,7 +68,7 @@ class WebControllerGetTest extends AbstractSpringTestRunner {
 		@SneakyThrows
 		@DisplayName("the given tags THEN the response status 501 is returned since the endpoint is not yet implemented")
 		void testFindPetsRestrictedByTagsSuccessfullyAndExpect501() {
-			mockMvc.perform(get(EndPointPrefix + "?tags=nice,lovely")).andExpect(status().isNotImplemented());
+			mockMvc.perform(get(END_POINT_PREFIX + "?tags=nice,lovely")).andExpect(status().isNotImplemented());
 		}
 
 		/**
@@ -79,7 +79,7 @@ class WebControllerGetTest extends AbstractSpringTestRunner {
 		@SneakyThrows
 		@DisplayName("page and size THEN the response status 501 is returned since the endpoint is not yet implemented")
 		void testFindPetsRestrictedByPageAndSizeSuccessfullyAndExpect501() {
-			mockMvc.perform(get(EndPointPrefix + "?page=1&size=100")).andExpect(status().isNotImplemented());
+			mockMvc.perform(get(END_POINT_PREFIX + "?page=1&size=100")).andExpect(status().isNotImplemented());
 		}
 	}
 
@@ -101,7 +101,7 @@ class WebControllerGetTest extends AbstractSpringTestRunner {
 		@SneakyThrows
 		@DisplayName("WHEN a valid request is sent to the GET endpoint for retrieving a pet resource by its ID THEN the response status 501 is returned since the endpoint is not yet implemented")
 		void testGetPetByIdSuccessfullyAndExpect501() {
-			mockMvc.perform(get(EndPointWithTestId)).andExpect(status().isNotImplemented());
+			mockMvc.perform(get(END_POINT_WITH_TEST_ID)).andExpect(status().isNotImplemented());
 		}
 	}
 }
