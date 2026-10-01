@@ -59,6 +59,6 @@ class MethodArgumentNotValidExceptionHandler {
 
         final Rfc9457Error error = errorService.finalizeRfc9457Error("Request body validation failed", invalidParams);
 
-        return ResponseEntity.unprocessableEntity().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
+        return ResponseEntity.unprocessableContent().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
     }
 }

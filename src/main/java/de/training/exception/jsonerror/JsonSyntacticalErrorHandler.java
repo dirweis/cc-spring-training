@@ -1,12 +1,13 @@
 package de.training.exception.jsonerror;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-
-import com.fasterxml.jackson.core.JsonParseException;
 
 import de.training.model.Rfc9457Error;
 import de.training.service.ErrorService;
 import lombok.AllArgsConstructor;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.TokenStreamLocation;
 
 /**
  * The implementation of {@link AbstractJsonErrorHandler} for syntactical JSON violations.
@@ -24,23 +25,30 @@ import lombok.AllArgsConstructor;
  * 
  * @author Dirk Weissmann
  * @since 2021-10-25
- * @version 1.0
+ * @version 1.1
  *
  */
 @AllArgsConstructor
 class JsonSyntacticalErrorHandler extends AbstractJsonErrorHandler {
 
-	private final JsonParseException ex;
+    private final JacksonException ex;
 
-	private final ErrorService errorService;
+    private final ErrorService errorService;
 
-	/**
-	 * {@inheritDoc}
-	 * <p>
-	 * In this case for syntactical violations.
-	 */
-	@Override
-	public ResponseEntity<Rfc9457Error> createResponse() {
-		return handleSyntaxViolations(ex.getLocalizedMessage(), errorService);
-	}
+    /**
+     * {@inheritDoc}
+     * <p>
+     * In this case for syntactical violations.
+     */
+    @Override
+    public ResponseEntity<Rfc9457Error> createResponse() {
+        final TokenStreamLocation location = ex.getLocation();
+
+        final String detail = ex.getOriginalMessage() + " at line " + location.getLineNr() + ", column "
+                + location.getColumnNr();
+
+        final Rfc9457Error error = errorService.finalizeRfc9457Error("JSON Parse Error", detail);
+
+        return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
+    }
 }

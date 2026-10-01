@@ -7,8 +7,8 @@ import java.util.UUID;
 import org.assertj.core.util.Files;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.ResourceUtils;
 
@@ -24,47 +24,47 @@ import lombok.SneakyThrows;
  * 
  * @author Dirk Weissmann
  * @since 2022-02-21
- * @version 1.0
+ * @version 1.1
  *
  */
 @SpringBootTest
 @AutoConfigureMockMvc
 public class AbstractSpringTestRunner {
 
-	/**
-	 * The {@link MockMvc} class member for performing the mocked requests to the service's endpoints.
-	 */
-	@Autowired
-	protected MockMvc mockMvc;
+    /**
+     * The {@link MockMvc} class member for performing the mocked requests to the service's endpoints.
+     */
+    @Autowired
+    protected MockMvc mockMvc;
 
-	/**
-	 * The general endpoint's prefix.
-	 */
-	protected static final String EndPointPrefix = "http://localhost:8080/petstore/petservice/v1/pets";
+    /**
+     * The general endpoint's prefix.
+     */
+    protected static final String EndPointPrefix = "http://localhost:8080/petstore/petservice/v1/pets";
 
-	/**
-	 * The general endpoint with a test {@link UUID}.
-	 */
-	protected static final String EndPointWithTestId = EndPointPrefix + "/6f09a3c7-fdec-4949-9da5-d089f9ccb378";
+    /**
+     * The general endpoint with a test {@link UUID}.
+     */
+    protected static final String EndPointWithTestId = EndPointPrefix + "/6f09a3c7-fdec-4949-9da5-d089f9ccb378";
 
-	/**
-	 * The image endpoint with a test {@link UUID} for a {@link Pet} resource.
-	 */
-	protected static final String EndPointImageTestId = EndPointWithTestId + "/image";
+    /**
+     * The image endpoint with a test {@link UUID} for a {@link Pet} resource.
+     */
+    protected static final String EndPointImageTestId = EndPointWithTestId + "/image";
 
-	/**
-	 * The {@link String} representing a valid request body for the {@link Pet} resource.
-	 */
-	protected static String validPetBody;
+    /**
+     * The {@link String} representing a valid request body for the {@link Pet} resource.
+     */
+    protected static String validPetBody;
 
-	/**
-	 * Initializes frequently used objects in the inheriting test classes.
-	 */
-	@BeforeAll
-	@SneakyThrows
-	static void init() {
-		final File contentFile = ResourceUtils.getFile("classpath:valid_pet_body.json");
+    /**
+     * Initializes frequently used objects in the inheriting test classes.
+     */
+    @BeforeAll
+    @SneakyThrows
+    static void init() {
+        final File contentFile = ResourceUtils.getFile("classpath:valid_pet_body.json");
 
-		validPetBody = Files.contentOf(contentFile, StandardCharsets.UTF_8);
-	}
+        validPetBody = Files.contentOf(contentFile, StandardCharsets.UTF_8);
+    }
 }

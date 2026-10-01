@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.RegExUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import de.training.model.Rfc9457Error;
 import de.training.model.Rfc9457Error.InvalidParam;
@@ -19,11 +20,12 @@ import lombok.extern.log4j.Log4j2;
  * 
  * @author Dirk Weissmann
  * @since 2021-10-25
- * @version 1.1
+ * @version 1.2
  *
  */
 @Log4j2
 @Service
+@Validated
 @RequiredArgsConstructor
 public class ErrorService {
 

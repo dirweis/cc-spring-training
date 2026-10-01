@@ -2,20 +2,19 @@ package de.training.exception.jsonerror;
 
 import org.springframework.http.converter.HttpMessageNotReadableException;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.io.JsonEOFException;
-import com.fasterxml.jackson.databind.exc.MismatchedInputException;
-
 import de.training.service.ErrorService;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.exc.UnexpectedEndOfInputException;
+import tools.jackson.databind.exc.MismatchedInputException;
 
 /**
  * A little factory for treating various validations in the JSON request body.
  * 
  * @author Dirk Weissmann
  * @since 2022-02-21
- * @version 2.0
+ * @version 2.1
  *
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -32,10 +31,10 @@ public class JsonErrorFactory {
     public static AbstractJsonErrorHandler getErrorHandler(final Throwable ex, final ErrorService errorService) {
 
         return switch (ex) {
-            case final MismatchedInputException mex -> new JsonMismatchHandler(mex, errorService);
-            case final JsonEOFException jex -> new JsonEofErrorHandler(jex, errorService);
-            case final JsonParseException jex -> new JsonSyntacticalErrorHandler(jex, errorService);
-            default -> new JsonNotReadableErrorHandler((HttpMessageNotReadableException) ex, errorService);
+        case final MismatchedInputException mex -> new JsonMismatchHandler(mex, errorService);
+        case final UnexpectedEndOfInputException _ -> new JsonEofErrorHandler(errorService);
+        case final JacksonException jex -> new JsonSyntacticalErrorHandler(jex, errorService);
+        default -> new JsonNotReadableErrorHandler((HttpMessageNotReadableException) ex, errorService);
         };
     }
 }

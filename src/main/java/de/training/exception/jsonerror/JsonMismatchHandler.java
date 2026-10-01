@@ -1,18 +1,18 @@
 package de.training.exception.jsonerror;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
-import com.fasterxml.jackson.databind.JsonMappingException.Reference;
-import com.fasterxml.jackson.databind.exc.MismatchedInputException;
-
 import de.training.model.Rfc9457Error;
 import de.training.model.Rfc9457Error.InvalidParam;
 import de.training.service.ErrorService;
 import lombok.AllArgsConstructor;
+import tools.jackson.core.JacksonException.Reference;
+import tools.jackson.databind.exc.MismatchedInputException;
 
 /**
  * The implementation of {@link AbstractJsonErrorHandler} for syntactical {@code JSON} mismatches (the {@code JSON}
@@ -25,7 +25,8 @@ import lombok.AllArgsConstructor;
     "invalid_params": [
         {
             "name": "category",
-            "reason": "Cannot deserialize value of type `Pet$Category` from String \"cats\": not one of the values accepted for Enum class: [BIRD, DOG, MOUSE, CAT, SPIDER] at [Source: line: 10, column: 18] (through reference chain: Pet[\"category\"])"
+            "reason": "Cannot deserialize value of type `Pet$Category` from String \"cats\": not one of the values 
+                       accepted for Enum class: [BIRD, DOG, MOUSE, CAT, SPIDER] at [Source: line: 10, column: 18]"
         }
     ],
     "type": "/petstore/petservice/v1/pets",
@@ -59,9 +60,7 @@ class JsonMismatchHandler extends AbstractJsonErrorHandler {
             return createSemanticResponse();
         }
 
-        final String detailMsg = ErrorService.removePackageInformation(errMsg);
-
-        return handleSyntaxViolations(detailMsg, errorService);
+        return handleSyntaxViolations("No parsable JSON. Opening brace missing?", errorService);
     }
 
     /**
@@ -71,18 +70,19 @@ class JsonMismatchHandler extends AbstractJsonErrorHandler {
      * @return the {@link ResponseEntity} object, never {@code null}
      */
     private ResponseEntity<Rfc9457Error> createSemanticResponse() {
-        final List<String> invalidParamNameParts = ex.getPath().stream().map(Reference::getFieldName).toList();
+        final List<String> invalidParamNameParts = ex.getPath().stream().map(Reference::getPropertyName)
+                .filter(Objects::nonNull).toList();
 
         final String invalidParamName = String.join(".", invalidParamNameParts);
-        final String reasonString = ErrorService.removePackageInformation(ex.getLocalizedMessage()).trim();
-        final String reason = cleanExMsg(reasonString);
+        final String reasonString = ErrorService.removePackageInformation(ex.getOriginalMessage()).trim();
+        final String reason = reasonString + " (line " + ex.getLocation().getLineNr() + ", column "
+                + ex.getLocation().getColumnNr() + ")";
 
-        final InvalidParam invalidParam = InvalidParam.builder().pointer("#/" + invalidParamName).detail(reason)
-                .build();
+        final InvalidParam invalidParam = new InvalidParam("#/" + invalidParamName, reason);
 
         final Rfc9457Error error = errorService.finalizeRfc9457Error("Request body validation failed",
                 List.of(invalidParam));
 
-        return ResponseEntity.unprocessableEntity().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
+        return ResponseEntity.unprocessableContent().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
     }
 }
