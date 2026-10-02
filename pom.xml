@@ -11,7 +11,7 @@
 
 	<groupId>de.training</groupId>
 	<artifactId>petshop-service</artifactId>
-	<version>0.8.0</version>
+	<version>0.9.0</version>
 	<packaging>jar</packaging>
 
 	<name>petshop-service</name>
