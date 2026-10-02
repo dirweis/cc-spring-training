@@ -2,8 +2,6 @@ package de.training.exception.jsonerror;
 
 import org.springframework.http.ResponseEntity;
 
-import com.fasterxml.jackson.core.io.JsonEOFException;
-
 import de.training.model.Rfc9457Error;
 import de.training.service.ErrorService;
 import lombok.AllArgsConstructor;
@@ -18,19 +16,17 @@ import lombok.AllArgsConstructor;
     "type": "/petstore/petservice/v1/pets",
     "title": "JSON Parse Error",
     "instance": "urn:ERROR:bc438273-070b-47e9-9f9b-fc4663f77e31",
-    "detail": "Unexpected end-of-input: expected close marker for Object (start marker at [Source: line: 1, column: 1]) at [Source: line: 11, column: 1]"
+    "detail": "Not well-formed for the JSON end. Missing brace?"
  }
  * </pre>
  * 
  * @author Dirk Weissmann
  * @since 2022-02-17
- * @version 1.0
+ * @version 2.0
  *
  */
 @AllArgsConstructor
 class JsonEofErrorHandler extends AbstractJsonErrorHandler {
-
-    private final JsonEOFException ex;
 
     private final ErrorService errorService;
 
@@ -41,6 +37,6 @@ class JsonEofErrorHandler extends AbstractJsonErrorHandler {
      */
     @Override
     public ResponseEntity<Rfc9457Error> createResponse() {
-        return handleSyntaxViolations(ex.getLocalizedMessage(), errorService);
+        return handleSyntaxViolations("Not well-formed for the JSON end. Missing brace?", errorService);
     }
 }

@@ -37,7 +37,7 @@ import lombok.RequiredArgsConstructor;
  * 
  * @author Dirk Weissmann
  * @since 2024-03-09
- * @version 1.0
+ * @version 1.1
  *
  */
 @Order(2)
@@ -64,6 +64,6 @@ class MethodArgumentNotValidExceptionHandler {
 
         final Rfc9457Error error = errorService.finalizeRfc9457Error("Request body validation failed", invalidParams);
 
-        return ResponseEntity.unprocessableEntity().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
+        return ResponseEntity.unprocessableContent().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
     }
 }

@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
  * 
  * @author Dirk Weissmann
  * @since 2021-10-25
- * @version 1.0
+ * @version 1.1
  *
  */
 @AllArgsConstructor
@@ -36,6 +36,6 @@ class JsonSemanticErrorHandler extends AbstractJsonErrorHandler {
         final Rfc9457Error error = errorService.finalizeRfc9457Error("Request body validation failed",
                 detail.substring(firstColonOffset, detail.indexOf(':', firstColonOffset + 1)));
 
-        return ResponseEntity.unprocessableEntity().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
+        return ResponseEntity.unprocessableContent().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
     }
 }
