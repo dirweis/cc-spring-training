@@ -1,19 +1,18 @@
 package de.training.exception.jsonerror;
 
 import java.util.List;
+import java.util.Objects;
 
-import org.apache.commons.lang3.RegExUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-
-import com.fasterxml.jackson.databind.JsonMappingException.Reference;
-import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 
 import de.training.model.Rfc9457Error;
 import de.training.model.Rfc9457Error.InvalidParam;
 import de.training.service.ErrorService;
 import lombok.AllArgsConstructor;
+import tools.jackson.core.JacksonException.Reference;
+import tools.jackson.databind.exc.MismatchedInputException;
 
 /**
  * The implementation of {@link AbstractJsonErrorHandler} for syntactical {@code JSON} mismatches (the {@code JSON}
@@ -29,7 +28,8 @@ import lombok.AllArgsConstructor;
     "errors": [
         {
             "pointer": "#/category",
-            "detail": "Cannot deserialize value of type `Pet$Category` from String \"cast\": not one of the values accepted for Enum class: [BIRD, DOG, MOUSE, CAT, SPIDER] at [Source: (StreamUtils$NonClosingInputStream)line: 2, column: 17] (through reference chain: Pet[\"category\"])"
+            "detail": "Cannot deserialize value of type `Pet$Category` from String \"cast\": not one of the values
+                       accepted for Enum class: [BIRD, DOG, MOUSE, CAT, SPIDER] (line 10, column 15)"
         }
     ]
  }
@@ -37,7 +37,7 @@ import lombok.AllArgsConstructor;
  * 
  * @author Dirk Weissmann
  * @since 2021-10-25
- * @version 1.0
+ * @version 1.1
  *
  */
 @AllArgsConstructor
@@ -72,19 +72,19 @@ class JsonMismatchHandler extends AbstractJsonErrorHandler {
      * @return the {@link ResponseEntity} object, never {@code null}
      */
     private ResponseEntity<Rfc9457Error> createSemanticResponse() {
-        final List<String> invalidParamNameParts = ex.getPath().stream().map(Reference::getFieldName).toList();
+        final List<String> invalidParamNameParts = ex.getPath().stream().map(Reference::getPropertyName)
+                .filter(Objects::nonNull).toList();
 
         final String invalidParamName = String.join(".", invalidParamNameParts);
-        final String reasonString = cleanExMsg(ex.getLocalizedMessage());
-        final String rawReason = ErrorService.removePackageInformation(reasonString).trim();
-        final String reason = RegExUtils.removeAll(rawReason, "\\([^\\\\)]*+\\)");
+        final String reasonString = ErrorService.removePackageInformation(ex.getOriginalMessage()).trim();
+        final String reason = reasonString + " (line " + ex.getLocation().getLineNr() + ", column "
+                + ex.getLocation().getColumnNr() + ")";
 
-        final InvalidParam invalidParam = InvalidParam.builder().pointer("#/" + invalidParamName).detail(reason)
-                .build();
+        final InvalidParam invalidParam = new InvalidParam("#/" + invalidParamName, reason);
 
         final Rfc9457Error error = errorService.finalizeRfc9457Error("Request body validation failed",
                 List.of(invalidParam));
 
-        return ResponseEntity.unprocessableEntity().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
+        return ResponseEntity.unprocessableContent().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
     }
 }

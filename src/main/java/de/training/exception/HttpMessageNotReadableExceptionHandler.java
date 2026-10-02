@@ -23,7 +23,8 @@ import lombok.RequiredArgsConstructor;
     "type": "/petstore/petservice/v1/pets",
     "title": "JSON parse error",
     "instance": "urn:ERROR:0125084f-d9e8-49fe-8c03-64de5b771b57",
-    "detail": "Unexpected end-of-input: expected close marker for Object at [Source: line: 14, column: 1]"
+    "detail": "Illegal unquoted character ((CTRL-CHAR, code 13)): has to be escaped using backslash to be included in
+               string value at line 10, column 19"
  }
  * </pre>
  * 
@@ -51,7 +52,7 @@ class HttpMessageNotReadableExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     private ResponseEntity<Rfc9457Error> handleException(final HttpMessageNotReadableException ex) {
         final AbstractJsonErrorHandler handler = JsonErrorFactory.getErrorHandler(ex.getMostSpecificCause(),
-                errorService, ex.getLocalizedMessage());
+                errorService);
 
         return handler.createResponse();
     }

@@ -27,12 +27,12 @@ import lombok.RequiredArgsConstructor;
  * <pre>
  {
     "type": "/petstore/petservice/v1/pets",
-    "title": "Constraint violations",
-    "instance": "urn:ERROR:61bb8581-9d92-4447-b49f-44ea526f18b8",
-    "invalid_params": [
+    "title": "Request body validation failed",
+    "instance": "urn:ERROR:8d5afbe5-005f-4a3b-8bb8-e13977c02221",
+    "errors": [
         {
-            "name": "#/count",
-            "reason": "11 is not a multiple of 10"
+            "pointer": "#/name",
+            "detail": "Größe muss zwischen 3 und 30 sein"
         }
     ]
  }
@@ -40,7 +40,7 @@ import lombok.RequiredArgsConstructor;
  * 
  * @author Dirk Weissmann
  * @since 2021-10-25
- * @version 1.0
+ * @version 1.1
  *
  */
 @Order(4)
@@ -100,7 +100,7 @@ class ConstraintViolationExceptionHandler {
 
         final Rfc9457Error error = errorService.finalizeRfc9457Error("Constraint violations", invalidParams);
 
-        return ResponseEntity.unprocessableEntity().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
+        return ResponseEntity.unprocessableContent().contentType(MediaType.APPLICATION_PROBLEM_JSON).body(error);
     }
 
     /**
@@ -126,7 +126,7 @@ class ConstraintViolationExceptionHandler {
      * @return the parameter name, never {@code null}
      */
     private static String extractParamNameFromPath(final Path propertyPath) {
-        return StreamSupport.stream(propertyPath.spliterator(), false).map(Node::getName)
-                .reduce((first, second) -> second).orElseGet(propertyPath::toString);
+        return StreamSupport.stream(propertyPath.spliterator(), false).map(Node::getName).reduce((_, second) -> second)
+                .orElseGet(propertyPath::toString);
     }
 }
