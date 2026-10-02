@@ -67,7 +67,7 @@ class JsonMismatchHandler extends AbstractJsonErrorHandler {
 
     /**
      * Creates a response entity for an {@link Error} body in case of semantic violations in the JSON request body. Sets
-     * the response status to {@link HttpStatus#UNPROCESSABLE_ENTITY}.
+     * the response status to {@link HttpStatus#UNPROCESSABLE_CONTENT}.
      * 
      * @return the {@link ResponseEntity} object, never {@code null}
      */

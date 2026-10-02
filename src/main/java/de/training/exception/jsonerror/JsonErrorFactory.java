@@ -25,7 +25,6 @@ public class JsonErrorFactory {
      * 
      * @param ex           the exception to specify the specific error handler, must not be {@code null}
      * @param errorService the {@link ErrorService} object, must not be {@code null}
-     * @param originalMsg  the original {@link HttpMessageNotReadableException} message, may be {@code null}
      * 
      * @return the equivalent handler
      */
