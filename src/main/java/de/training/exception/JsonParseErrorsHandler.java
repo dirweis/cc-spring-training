@@ -98,7 +98,7 @@ class JsonParseErrorsHandler {
     }
 
     /**
-     * The implementation of an {@link ExceptionHandler} in case a {@link JsonParseException} is thrown.
+     * The implementation of an {@link ExceptionHandler} in case a {@link JacksonException} is thrown.
      * <p>
      * Example output:
      * 
@@ -130,7 +130,7 @@ class JsonParseErrorsHandler {
 
     /**
      * Creates a response entity for an {@link Rfc9457Error} body in case of semantic violations in the JSON request
-     * body. Sets the response status to {@link HttpStatus#UNPROCESSABLE_ENTITY}.
+     * body. Sets the response status to {@link HttpStatus#UNPROCESSABLE_CONTENT}.
      * 
      * @param ex the {@link Exception} for creating the semantic response with code {@code 422}. Must not be
      *           {@code null}.
