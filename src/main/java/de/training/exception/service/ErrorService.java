@@ -83,7 +83,7 @@ public class ErrorService {
      * @return the final {@link Rfc9457Error}, never {@code null}
      */
     private Rfc9457Error finalizeRfc9457Error(final String title, final String detail,
-            @Valid final List<InvalidParam> invalidParams) {
+            final List<@Valid InvalidParam> invalidParams) {
         final UUID errorId = UUID.randomUUID();
 
         ErrorService.log.warn("Problems in request. ID: {}", errorId);
