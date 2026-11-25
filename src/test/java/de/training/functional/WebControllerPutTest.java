@@ -7,10 +7,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -125,9 +126,8 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
 
             final UUID id = entity.getId();
 
-            mockMvc.perform(
-                    put(END_POINT_PREFIX + "/" + id).contentType(MediaType.APPLICATION_JSON).content(validMinimumPetBody))
-                    .andExpect(status().isNoContent());
+            mockMvc.perform(put(END_POINT_PREFIX + "/" + id).contentType(MediaType.APPLICATION_JSON)
+                    .content(validMinimumPetBody)).andExpect(status().isNoContent());
 
             final Optional<PetEntity> newEntityOptional = petRepository.findById(id);
 
@@ -160,10 +160,13 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
         @DisplayName("WHEN a valid request is sent to the PUT endpoint for adding an image to a pet resource THEN the response status 501 is returned since the endpoint is not yet implemented")
         void testAddPetSuccessfullyAndExpect501() {
             final File contentFile = ResourceUtils.getFile("classpath:valid_test.jpg");
-            final byte[] content = FileUtils.readFileToByteArray(contentFile);
 
-            mockMvc.perform(put(END_POINT_IMAGE_TEST_ID).contentType(MediaType.IMAGE_JPEG_VALUE).content(content))
-                    .andExpect(status().isNotImplemented());
+            try (final InputStream stream = new FileInputStream(contentFile)) {
+                final byte[] content = stream.readAllBytes();
+
+                mockMvc.perform(put(END_POINT_IMAGE_TEST_ID).contentType(MediaType.IMAGE_JPEG_VALUE).content(content))
+                        .andExpect(status().isNotImplemented());
+            }
         }
     }
 }
