@@ -8,10 +8,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Stream;
 
-import org.apache.commons.io.FileUtils;
 import org.assertj.core.util.Files;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -412,16 +413,19 @@ class WebControllerContraintsInPutTest extends AbstractSpringTestRunner {
         void testCallPutWithTooSmallBodyAndExpect422() {
             final File contentFile = ResourceUtils
                     .getFile("classpath:invalid_request_bodies/images/TDD_cool_2_icon_size.png");
-            final byte[] content = FileUtils.readFileToByteArray(contentFile);
 
-            mockMvc.perform(put(EndPointImageTestId).contentType(MediaType.IMAGE_PNG_VALUE).content(content))
-                    .andExpect(status().isUnprocessableContent())
-                    .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
-                    .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
-                            .isInstanceOf(ConstraintViolationException.class))
-                    .andExpect(content().string(containsString("\"title\":\"Request body validation failed\"")))
-                    .andExpect(content().string(containsString(
-                            "\"errors\":[{\"pointer\":\"#/body\",\"detail\":\"size must be between 10000 and 2000000\"}]")));
+            try (final InputStream stream = new FileInputStream(contentFile)) {
+                final byte[] content = stream.readAllBytes();
+
+                mockMvc.perform(put(EndPointImageTestId).contentType(MediaType.IMAGE_PNG_VALUE).content(content))
+                        .andExpect(status().isUnprocessableContent())
+                        .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
+                        .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
+                                .isInstanceOf(ConstraintViolationException.class))
+                        .andExpect(content().string(containsString("\"title\":\"Request body validation failed\"")))
+                        .andExpect(content().string(containsString(
+                                "\"errors\":[{\"pointer\":\"#/body\",\"detail\":\"size must be between 10000 and 2000000\"}]")));
+            }
         }
 
         /**
@@ -433,16 +437,19 @@ class WebControllerContraintsInPutTest extends AbstractSpringTestRunner {
         void testCallPutWithTooBigBodyAndExpect422() {
             final File contentFile = ResourceUtils
                     .getFile("classpath:invalid_request_bodies/images/invalid_too_big.jpg");
-            final byte[] content = FileUtils.readFileToByteArray(contentFile);
 
-            mockMvc.perform(put(EndPointImageTestId).contentType(MediaType.IMAGE_JPEG_VALUE).content(content))
-                    .andExpect(status().isUnprocessableContent())
-                    .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
-                    .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
-                            .isInstanceOf(ConstraintViolationException.class))
-                    .andExpect(content().string(containsString("\"title\":\"Request body validation failed\"")))
-                    .andExpect(content().string(containsString(
-                            "\"errors\":[{\"pointer\":\"#/body\",\"detail\":\"size must be between 10000 and 2000000\"}]")));
+            try (final InputStream stream = new FileInputStream(contentFile)) {
+                final byte[] content = stream.readAllBytes();
+
+                mockMvc.perform(put(EndPointImageTestId).contentType(MediaType.IMAGE_JPEG_VALUE).content(content))
+                        .andExpect(status().isUnprocessableContent())
+                        .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
+                        .andExpect((final MvcResult result) -> assertThat(result.getResolvedException())
+                                .isInstanceOf(ConstraintViolationException.class))
+                        .andExpect(content().string(containsString("\"title\":\"Request body validation failed\"")))
+                        .andExpect(content().string(containsString(
+                                "\"errors\":[{\"pointer\":\"#/body\",\"detail\":\"size must be between 10000 and 2000000\"}]")));
+            }
         }
     }
 }
