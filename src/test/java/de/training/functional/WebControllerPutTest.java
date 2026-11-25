@@ -4,8 +4,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -49,9 +50,8 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
         @SneakyThrows
         @DisplayName("body containing tags is sent to the PUT endpoint for a complete pet update THEN the response status 501 is returned since the endpoint is not yet implemented")
         void testUpdatePetWithMaxBodyAndExpect501() {
-            mockMvc.perform(
-                    put(END_POINT_WITH_TEST_ID).contentType(MediaType.APPLICATION_JSON_VALUE).content(validPetBodyWithTags))
-                    .andExpect(status().isNotImplemented());
+            mockMvc.perform(put(END_POINT_WITH_TEST_ID).contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .content(validPetBodyWithTags)).andExpect(status().isNotImplemented());
         }
 
         /**
@@ -61,9 +61,8 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
         @SneakyThrows
         @DisplayName("minimalist body is sent to the PUT endpoint for a complete pet update THEN the response status 501 is returned since the endpoint is not yet implemented")
         void testUpdatePetWithMinBodyAndExpect501() {
-            mockMvc.perform(
-                    put(END_POINT_WITH_TEST_ID).contentType(MediaType.APPLICATION_JSON_VALUE).content(validMinimumPetBody))
-                    .andExpect(status().isNotImplemented());
+            mockMvc.perform(put(END_POINT_WITH_TEST_ID).contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .content(validMinimumPetBody)).andExpect(status().isNotImplemented());
         }
     }
 
@@ -87,10 +86,13 @@ class WebControllerPutTest extends AbstractSpringTestRunner {
         @DisplayName("WHEN a valid request is sent to the PUT endpoint for adding an image to a pet resource THEN the response status 501 is returned since the endpoint is not yet implemented")
         void testAddPetSuccessfullyAndExpect501() {
             final File contentFile = ResourceUtils.getFile("classpath:valid_test.jpg");
-            final byte[] content = FileUtils.readFileToByteArray(contentFile);
 
-            mockMvc.perform(put(END_POINT_IMAGE_TEST_ID).contentType(MediaType.IMAGE_JPEG_VALUE).content(content))
-                    .andExpect(status().isNotImplemented());
+            try (final InputStream stream = new FileInputStream(contentFile)) {
+                final byte[] content = stream.readAllBytes();
+
+                mockMvc.perform(put(END_POINT_IMAGE_TEST_ID).contentType(MediaType.IMAGE_JPEG_VALUE).content(content))
+                        .andExpect(status().isNotImplemented());
+            }
         }
     }
 }
